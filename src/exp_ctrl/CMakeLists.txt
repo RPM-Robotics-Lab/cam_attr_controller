@@ -1,3 +1,9 @@
+# SOURCE FILES
+set (SRC
+  img_eval.cpp.cpp
+)
+
+
 # EXTERNAL DEPS
 libhandler_opencv ()
 
