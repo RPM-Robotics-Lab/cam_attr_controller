@@ -1,8 +1,2 @@
-# EXTERNAL DEPS
-libhandler_opencv ()
-
-# BUILD EXE
-add_executable (exp_ctrl main.cpp)
-target_link_libraries (exp_ctrl
-  ${IRPLIB_OPENCV}
-  )
+irap_add_folder (exp_tester "Build exp tester?" ON)
+irap_add_folder (exp_ctrl "Build exp controller?" OFF)

@@ -29,6 +29,18 @@ set (CMAKE_C_CXX_COMMON_FLAGS "-Wall -Wfloat-equal -Wundef -Wno-strict-aliasing 
 set (CMAKE_C_FLAGS "-u MAIN__ -std=gnu99 -fopenmp ${CMAKE_C_CXX_COMMON_FLAGS}")
 set (CMAKE_CXX_FLAGS "-u MAIN__ ${CMAKE_C_CXX_COMMON_FLAGS}")
 
+# OUTPUT DIRECTORIES
+#========================================================================
+# set where files should be output locally
+set (LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
+if (NOT IS_DIRECTORY ${LIBRARY_OUTPUT_PATH})
+  file (MAKE_DIRECTORY ${LIBRARY_OUTPUT_PATH})
+endif ()
+
+set (EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
+if (NOT IS_DIRECTORY ${EXECUTABLE_OUTPUT_PATH})
+  file (MAKE_DIRECTORY ${EXECUTABLE_OUTPUT_PATH})
+endif ()
 
 # INCLUDE SRC
 #========================================================================
