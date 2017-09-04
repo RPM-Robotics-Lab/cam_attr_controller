@@ -15,7 +15,7 @@ endif ()
 
 # INCLUDE LOCAL MODULES
 #========================================================================
-set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "./cmake")
+set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "cmake")
 file (GLOB MODULES "${CMAKE_MODULE_PATH}/*.cmake")
 foreach (MODULE ${MODULES})
   include (${MODULE})
