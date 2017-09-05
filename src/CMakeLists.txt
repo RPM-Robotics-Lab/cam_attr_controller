@@ -1,4 +1,6 @@
 irap_add_folder (irp_imgeval "Build image evaluator library?" OFF)
-
 irap_add_folder (exp_tester "Build exp tester?" ON)
 irap_add_folder (exp_ctrl "Build exp controller?" OFF)
+irap_add_folder (SensorDriver "Build BlueFox2?" ON )
+irap_add_folder (param-util "Build param-util" ON)
+irap_add_folder (BotUtil "Build BotUtility" ON)

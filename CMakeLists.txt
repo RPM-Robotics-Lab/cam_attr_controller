@@ -25,9 +25,42 @@ find_package(PkgConfig REQUIRED)
 
 # CONFIGURE C/C++
 #========================================================================
-set (CMAKE_C_CXX_COMMON_FLAGS "-Wall -Wfloat-equal -Wundef -Wno-strict-aliasing -Wno-unused-function -Wno-unused-but-set-variable -Wno-unused-macros")
+set (CMAKE_C_CXX_COMMON_FLAGS "-Wall -Wfloat-equal -Wundef -Wno-strict-aliasing -Wno-unused-function -Wno-unused-but-set-variable -Wno-unused-macros -Wno-unknown-pragmas")
 set (CMAKE_C_FLAGS "-u MAIN__ -std=gnu99 -fopenmp ${CMAKE_C_CXX_COMMON_FLAGS}")
-set (CMAKE_CXX_FLAGS "-u MAIN__ ${CMAKE_C_CXX_COMMON_FLAGS}")
+set (CMAKE_CXX_FLAGS "-u MAIN__ -std=gnu++11 -fopenmp -msse4.1 ${CMAKE_C_CXX_COMMON_FLAGS}")
+
+
+# CONFIG FILES
+#========================================================================
+set (CONFIG_SOURCE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/config)
+
+add_custom_target (config ALL
+  COMMAND mkdir -p ${CMAKE_SOURCE_DIR}/build/share
+  COMMAND ln -sf ${CONFIG_SOURCE_PATH} ${CMAKE_SOURCE_DIR}/build/share/.
+)
+
+install (DIRECTORY ${CONFIG_SOURCE_PATH}
+  DESTINATION ${CMAKE_SOURCE_DIR}/build/share/.
+  FILE_PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ GROUP_WRITE WORLD_READ WORLD_WRITE
+  DIRECTORY_PERMISSIONS  OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_WRITE  GROUP_EXECUTE WORLD_READ WORLD_WRITE WORLD_EXECUTE
+  PATTERN ".svn" EXCLUDE
+  )
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS "ON")
+set(CMAKE_GENERATOR "Unix Makefiles" CACHE INTERNAL "" FORCE)
+set(CMAKE_EXTRA_GENERATOR "Sublime Text 2" CACHE INTERNAL "" FORCE)
+
+
+# Gen and cook lcmtypes
+#========================================================================
+include(${PROJECT_SOURCE_DIR}/lcmdefs/PACKAGES.cmake)
+lcmtypes_build()
+
+# INCLUDE COMMON LIBRARIES
+#========================================================================
+include_directories(${PROJECT_SOURCE_DIR}/src/)
+
+
 
 # OUTPUT DIRECTORIES
 #========================================================================
