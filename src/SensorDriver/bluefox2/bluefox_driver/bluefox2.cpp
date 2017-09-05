@@ -444,7 +444,7 @@ void Bluefox2::SetCft(int &cft) const {
 
 bool Bluefox2::bluefox2_to_botimg(bot_core::image_t &img_t, const int encoding, const int32_t width, const int32_t height, const int32_t nChannel, const int step, const int bitsPerPixel, const void* data)
 {
-    img_t.nmetadata = 0;
+//    img_t.nmetadata = 0;
     // img_t.utime = idx++;
     img_t.utime = bot_util::timestamp_now();
     img_t.width = width;

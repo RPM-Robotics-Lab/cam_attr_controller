@@ -20,8 +20,8 @@ struct image_t
     byte     data[size];
 
     // metadata dictionary
-    int32_t nmetadata;
-    image_metadata_t metadata[nmetadata];
+   // int32_t nmetadata;
+    //image_metadata_t metadata[nmetadata];
 
     // these values are to be kept in sync with the CamPixelFormat enumeration
     // in the Camunits library.  See camunits/pixels.h in Camunits

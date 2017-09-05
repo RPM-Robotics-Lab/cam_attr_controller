@@ -100,7 +100,6 @@ main(int argc, char *argv[])
     string str_times("response_data/times.txt");
     outFile.open(str_times.c_str());
     
-    lcm::LCM lcm;
 
     int num_data = 0;
 
@@ -139,8 +138,7 @@ main(int argc, char *argv[])
             string save_img_name = str_save_img_path + "/" + str_num_data + ".png";
             cv::imwrite(save_img_name, gray, compression_params);
             
-            lcm.publish ("bluefox2-mono", &test_img);
-            lcm.publish ("bluefox2-mono.SYNC", &test_img_sync_t);    
+            
         }
         
     }

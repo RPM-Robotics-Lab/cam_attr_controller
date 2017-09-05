@@ -3,7 +3,6 @@ set (HEADER
   BotUtils.h
   TimeStamp.h
   ImageConversion.h
-  Datatypes.h
 #  EigenSophusConversion.h
 )
 set (SRC
