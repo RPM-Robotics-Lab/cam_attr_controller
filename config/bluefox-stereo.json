@@ -1,0 +1,171 @@
+{
+    "enumerator":
+    {
+        "ibpf":
+        {
+            "name":["ibpfRaw","ibpfMono8","ibpfMono16","ibpfRGBx888Packed","ibpfYUV422Packed","ibpfRGBx888Planar","ibpfMono10","ibpfMono12","ibpfMono14","ibpfRGB888Packed","ibpfYUV444Planar","ibpfMono32","ibpfYUV422Planar","ibpfRGB101010Packed","ibpfRGB121212Packed","ibpfRGB141414Packed","ibpfRGB161616Packed","ibpfYUV422_UYVYPacked","ibpfMono12Packed_V2","ibpfYUV422_10Packed","ibpfYUV422_UYVY_10Packed","ibpfBGR888Packed","ibpfBGR101010Packed_V2","ibpfYUV444_UYVPacked", "ibpfYUV444_UYV_10Packed", "ibpfYUV444Packed", "ibpfYUV444_10Packed", "ibpfMono12Packed_V1", "ibpfYUV411_UYYVYY_Packed", "ibpfRGB888Planar", "ibpfAuto"],
+            "id":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,20,21,22,23,24,25,26,27,28,29,30,-1]
+        },
+        "cbm":
+        {
+            "name":["cbmOff","cbmBinningH","cbmBinningV","cbmBinningHV","cbmBinning3H","cbmBinning3V","cbmBinning3H3V","cbmBinningHAvg","cbmBinningVAvg","cbmBinning3HAvg","cbmBinning3VAvg","cbmBinning3H3VAvg","cbmDroppingH","cbmDroppingV","cbmDroppingHV","cbmDropping3H","cbmDropping3V","cbmDropping3H3V"],
+            "id":[0,1,2,3,16,32,48,101,102,257,258,272,288,304,4097,4098,4099,4112,4128,4144]
+        },
+        "acs":
+        {
+            "name":["acs_unavailable","acs_slow","acs_medium","acs_fast"],
+            "id":[-1,0,1,2]
+        },
+        "wbp":
+        {
+            "name":["wbp_unavailable","wbp_tungsten","wbp_haloge","wbp_fluorescent","wbp_daylight","wbp_photolight","wbp_bluesky","wbp_user1","wbp_calibrate"],
+            "id":[-1,0,1,2,3,4,5,6,10]
+        },
+        "dcfm":
+        {
+            "name":["dcfm_off","dcfm_on","dcfm_calibrate","correction_image"],
+            "id":[0,1,2,3]
+        },
+        "cpc":
+        {
+            "name":["cpc_12000","cpc_20000","cpc_24000","cpc_27000","cpc_32000","cpc_40000","cpc_50000"],
+            "id":[12000,20000,24000,27000,32000,40000,50000]
+        },
+        "ctm":
+        {
+            "name":["ctm_continuous","ctm_on_dement","ctm_on_low_level","ctm_on_high_level","ctm_on_falling_edge","ctm_on_rising_edge","hard_sync"],
+            "id":[0,1,2,3,4,5,-1]
+        },
+        "cts":
+        {
+            "name":["cts_unavailable","cts_dig_in_0","cts_dig_in_1","cts_RTCtrl"],
+            "id":[-1,0,1,2]
+        },
+        "cem":
+        {
+            "name":["cemStandard","cemOverlapped","cemNoShutter"],
+            "id":[0,1,2]
+        },
+        "cticmm":
+        {
+            "name":["cticmmUser","cticmmDeviceSpecific","cticmmBlueFOX_x00wC_WPPLS"],
+            "id":[69632,73728,268697601]
+        },
+        "ctr":
+        {
+            "row0":[1.0,0.0,0.0],
+            "row1":[0.0,1.0,0.0],
+            "row2":[0.0,0.0,1.0]
+        },
+        "ctocmm":
+        {
+            "name":["ctocmmUser","ctocmmXYZToAdobeRGB_D50","ctocmmXYZTosRGB_D50","ctocmmXYZToWideGamutRGB_D50","ctocmmXYZToAdobeRGB_D65","ctocmmXYZTosRGB_D65"],
+            "id":[0,1,2,3,4,5]
+        },
+        "lutmode":
+        {
+            "name":["LUTmInterpolated","LUTmGamma","LUTmDirect"],
+            "id":[0,1,2]
+        },
+        "lutimpl":
+        {
+            "name":["LUTiHardware","LUTiSoftware"],
+            "id":[0,1]
+        },
+        "lutmapping":
+        {
+            "name":["LUTm8To8","LUTm10To8","LUTm10To10","LUTm12To10","LUTm12To12","LUTm14To14","LUTm16To16"],
+            "id":[524296,655368,655370,786442,786444,917518,1048592]
+        },
+        "cfm":
+        {
+            "name":["cfmOff","cfmDigout0","cfmDigout1"],
+            "id":[0,1,2]
+        },
+        "cft":
+        {
+            "name":["cftStandard","cftRollingShutterFlash","cftVSync"],
+            "id":[0,1,2]
+        }
+    },
+    "left-camera":
+    {
+        "serial":"25002109",
+        "config":
+        {
+            "width": 752,
+            "height": 480,
+            "idpf": "ibpfBGR888Packed",
+            "idpf2": "ibpfMono16",
+            "cbm": "cbmOff",
+            "agc": false,
+            "gain_db": 0.0,
+            "aec": true,
+            "expose_us": 1000,
+            "acs": "acs_unavailable",
+            "des_gray_val": 85,
+            "wbp": "wbp_user1",
+            "wbp2": "wbp_unavailable",
+            "r_gain": 1.175,
+            "g_gain": 1.0,
+            "b_gain": 1.5,
+            "hdr": false,
+            "dcfm": "dcfm_off",
+            "cpc": "cpc_40000",
+            "ctm": "ctm_on_high_level",
+            "cts": "cts_RTCtrl",
+            "request": 1,
+            "cem": "cemOverlapped",
+            "cticme": true,
+            "cticmm": "cticmmBlueFOX_x00wC_WPPLS",
+            "cte":true,
+            "ctocme": true,
+            "ctocmm": "ctocmmXYZTosRGB_D50",
+            "lute": true,
+            "lutmode": "LUTmGamma",
+            "lutimpl": "LUTiSoftware",
+            "lutmapping": "LUTm8To8",
+            "cfm": "cfmDigout0",
+            "cft": "cftStandard"
+        }
+    },
+    "right-camera":
+    {
+        "serial":"25001931",
+        "config":
+        {
+            "width": 752,
+            "height": 480,
+            "idpf": "ibpfBGR888Packed", 
+            "cbm": "cbmOff",
+            "agc": false,
+            "gain_db": 0.0,
+            "aec": true,
+            "expose_us": 1000,
+            "acs": "acs_unavailable",
+            "des_gray_val": 85,
+            "wbp": "wbp_user1",
+            "r_gain": 1.175,
+            "g_gain": 1.0,
+            "b_gain": 1.5,
+            "hdr": false,
+            "dcfm": "dcfm_off",
+            "cpc": "cpc_40000",
+            "ctm": "ctm_on_high_level",
+            "cts": "cts_dig_in_0",
+            "request": 1,
+            "cem": "cemOverlapped",
+            "cticme": true,
+            "cticmm": "cticmmBlueFOX_x00wC_WPPLS",
+            "cte":true,
+            "ctocme": true,
+            "ctocmm": "ctocmmXYZTosRGB_D50",
+            "lute": true,
+            "lutmode": "LUTmGamma",
+            "lutimpl": "LUTiSoftware",
+            "lutmapping": "LUTm8To8",
+            "cfm": "cfmOff",
+            "cft": "cftStandard"
+        }
+    }    
+}

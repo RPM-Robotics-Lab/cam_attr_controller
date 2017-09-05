@@ -1,0 +1,7 @@
+macro (libhandler_mvimpact)
+  libhandler_find_library (mvIMPACT "Did you install mvIMPACT?")
+  if (mvIMPACT_FOUND)
+    include_directories (${mvIMPACT_INCLUDE_DIRS})
+    set (IRPLIB_MVIMPT ${mvIMPACT_LIBRARIES})
+  endif ()
+endmacro ()

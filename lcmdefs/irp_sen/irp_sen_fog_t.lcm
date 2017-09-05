@@ -1,0 +1,14 @@
+package irp_sen;
+
+/**
+ * IRAP sensor data: FOG (Fiber Optic Gyroscope)
+ * @brief FOG (Fiber Optic Gyroscope)
+ */
+
+struct fog_t
+{
+
+    int64_t utime;      //!< sensor timestamp in utime [usec]
+
+    double int_ang;     //!< intergrated angle [deg]
+}

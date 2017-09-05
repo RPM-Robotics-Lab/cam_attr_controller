@@ -1,0 +1,19 @@
+package irp_sen;
+
+/**
+ * IRAP sensor data: MTI xsens
+ * @brief IRAP sensor data: MTI xsens
+ */
+
+struct mti_t {
+
+    int64_t utime;      //!< sensor timestamp in utime [usec]
+
+	float acc[3];       //!< acceleration w.r.t sensor local coordinate [m/s^2]
+
+	float mag[3];       //!< magnetic field w.r.t sensor local coordinate [a.u.(arbitrary units) normalized to earth field strength]
+
+	float gyr[3];       //!< gyroscopes w.r.t sensor local coordinate [degree/s]
+   
+	float ori[3];       //!< roll, pitch, yaw w.r.t sensor local coordinate [degree]
+}

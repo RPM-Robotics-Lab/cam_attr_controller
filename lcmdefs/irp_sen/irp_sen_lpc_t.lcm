@@ -1,0 +1,17 @@
+package irp_sen;
+
+/**
+ * IRAP local point cloud
+ * @brief local point cloud
+ */
+
+struct lpc_t {
+    int64_t utime;       // timestamp
+
+    int32_t n;           // number of points
+
+    float x[n];          // points
+    float y[n];
+    float z[n];
+    int32_t intensity[n];  // intensity
+}

@@ -1,0 +1,14 @@
+package irp_sen;
+
+/**
+ * IRAP sensor data: GPS
+ * @brief GPS
+ */
+
+
+struct gps_raw_t
+{
+    int64_t utime;      //!< sensor timestamp in utime [usec]
+
+    string gps_raw;     //!< GPS raw data
+}

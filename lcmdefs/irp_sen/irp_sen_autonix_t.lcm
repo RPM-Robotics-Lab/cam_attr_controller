@@ -1,0 +1,18 @@
+package irp_sen;
+
+/**
+ * IRAP sensor data: autonix (external encoder)
+ * @brief autonix (external encoder)
+ */
+
+
+struct autonix_t 
+{
+    int64_t utime;      //!< sensor timestamp in utime [usec]
+
+    int16_t model_no;   //!< autonix model number (res. dep. model)
+    
+	int64_t left;       //!< pulse count of left side encoder [count]
+
+	int64_t	right;      //!< pulse count of left side encoder [count]
+}
