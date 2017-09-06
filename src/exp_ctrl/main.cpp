@@ -16,8 +16,8 @@ using namespace boost::filesystem;
 #include "lcmtypes++/bot_core/image_sync_t.hpp"
 
 #include "Parser.h"
-
 #include "bot_util/BotUtils.h"
+#include "irp_imgeval++/img_eval.h"
 
 using namespace std;
 using namespace mvIMPACT::acquire;
@@ -103,6 +103,8 @@ main(int argc, char *argv[])
 
     printf ("ExpCtrl\tStart to grab images.\n");
 
+    Img_eval eval;
+
     //while(1) {
     for (int i=0; i<10; i++) {
         // grab image
@@ -113,7 +115,9 @@ main(int argc, char *argv[])
         bot_util::botimage_to_cvMat(&test_img, img);
 
         // compute entropy + grad
-        // TODO
+        double ewg = eval.calc_img_ent_grad (img, false);
+
+        std::cout << "Computed entropy weighted gain = " << ewg << std::endl;
 
         // GP exp compute
         // TODO

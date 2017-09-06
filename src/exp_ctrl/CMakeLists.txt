@@ -15,6 +15,7 @@ libhandler_boost (COMPONENTS program_options system filesystem)
 add_executable (exp_ctrl ${SRC})
 target_link_libraries (exp_ctrl
   Bluefox2Driver
+  irp-imgeval++
   ${IRPLIB_BOOST}
   ${IRAP_LCMTYPES}
   ${IRPLIB_LCM}

@@ -4,7 +4,8 @@ cmake_minimum_required(VERSION 2.8)
 #========================================================================
 cmake_minimum_required (VERSION 2.8)
 cmake_policy (VERSION 2.8)
-cmake_policy (SET CMP0002 OLD) # allow duplicate target names (non-Makefile  generators, e.g., Xcode or VS, will bonk)
+cmake_policy (SET CMP0054 OLD)
+
 set (CMAKE_ALLOW_LOOSE_LOOP_CONSTRUCTS TRUE)
 set (FIND_LIBRARY_USE_LIB64_PATHS 1)
 if (NOT CMAKE_BUILD_TYPE)
@@ -74,6 +75,7 @@ set (EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 if (NOT IS_DIRECTORY ${EXECUTABLE_OUTPUT_PATH})
   file (MAKE_DIRECTORY ${EXECUTABLE_OUTPUT_PATH})
 endif ()
+
 
 # INCLUDE SRC
 #========================================================================
