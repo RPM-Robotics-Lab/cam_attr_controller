@@ -84,7 +84,7 @@ main(int argc, char *argv[])
 
     if (!is_directory(save_path)) {
         if(boost::filesystem::create_directory(save_path)) {
-            cerr << "[CalibDAQ]\t Make a directory" << endl;   
+            cerr << "[ExpCtrl]\t Make a directory" << endl;   
         }        
     }
 
@@ -92,7 +92,7 @@ main(int argc, char *argv[])
     path save_img_path(str_save_img_path);
     if (!is_directory(save_img_path)) {
         if(boost::filesystem::create_directory(save_img_path)) {
-            cerr << "[CalibDAQ]\t Make a directory" << endl;   
+            cerr << "[ExpCtrl]\t Make a directory" << endl;   
         }        
     }
 
@@ -101,49 +101,44 @@ main(int argc, char *argv[])
     outFile.open(str_times.c_str());
     
 
-    int num_data = 0;
+    printf ("ExpCtrl\tStart to grab images.\n");
 
-    for (int expose_us = 10; expose_us <= 10000; expose_us += 50) {
+    //while(1) {
+    for (int i=0; i<10; i++) {
+        // grab image
+        bot_core::image_t test_img;
+        cam_bluefox2.GrabImage (test_img);
 
-        for (int j=0; j<1; j++) {     // num capture img
-            cam_bluefox2.SetExposeUs(expose_us);
-            cam_bluefox2.set_timeout_ms(100);
-            // usleep(200000);
+        cv::Mat img;
+        bot_util::botimage_to_cvMat(&test_img, img);
 
-            cam_bluefox2.RequestSingle();
-            
-            bot_core::image_t test_img;
-            bot_core::image_sync_t test_img_sync_t;
-            cam_bluefox2.GrabImage(test_img);
-            test_img_sync_t.utime = test_img.utime;
+        // compute entropy + grad
+        // TODO
 
-            stringstream ss_num_data;
-            ss_num_data << setw(1) << setfill('0') << num_data++;
-            string str_num_data(ss_num_data.str());
+        // GP exp compute
+        // TODO
+        int next_exp = 500;
 
-            outFile << str_num_data << " " << test_img.utime << " " << cam_bluefox2.GetExposeUs()/1000.0 << setprecision(5) << endl;
-
-            cv::Mat img;
-            bot_util::botimage_to_cvMat(&test_img, img);
-
-            cv::Mat gray;
-            if(img.type() != CV_8UC1) {
-                cv::cvtColor(img,gray,cv::COLOR_BGR2GRAY);
-            }
-
-            vector<int> compression_params;
-            compression_params.push_back(CV_IMWRITE_PNG_COMPRESSION);
-            compression_params.push_back(0);
-
-            string save_img_name = str_save_img_path + "/" + str_num_data + ".png";
-            cv::imwrite(save_img_name, gray, compression_params);
-            
-            
+        for (int j=0; j<10; j++) {
+            next_exp += i * 200;
         }
-        
+
+        // assign the new exp time
+        cam_bluefox2.SetExposeUs(next_exp);
+        //cam_bluefox2.set_timeout_ms(100);
+        // usleep(200000);
+
+        cam_bluefox2.RequestSingle();
+        printf ("ExpCtrl\tSet to %d.\n", next_exp);
+
+        //vector<int> compression_params;
+        //compression_params.push_back(CV_IMWRITE_PNG_COMPRESSION);
+        //compression_params.push_back(0);
+
+        //string save_img_name = str_save_img_path + "/" + str_num_data + ".png";
+        //cv::imwrite(save_img_name, gray, compression_params);
     }
 
-    outFile.close();
 
     return 0;
 }
