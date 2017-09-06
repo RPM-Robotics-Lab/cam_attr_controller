@@ -17,7 +17,7 @@ int main(int argc, char** argv)
     Img_eval eval;
     // Load image
     // src = cv::imread(argv[1], 1);
-    img = cv::imread ("../../data/sample.png", 1);
+    img = cv::imread ("../../data/62.png", 1);
 	Mat resized;
 	cv::resize (img, img, cv::Size(320, 240));
     if (!img.data) {
@@ -40,7 +40,7 @@ int main(int argc, char** argv)
     eval.img_Gmean (grad, Gmean);
     eval.img_Emean (entropy, Emean);
 
-	printf("Gradient sss is %d %d \n",wcols, wrows) ;
+	printf("Gradient sss is %d %d \n", wcols, wrows) ;
  	
 	Mat gradW = grad > Emean * 0.3;
 	gradW *= 1;
@@ -48,13 +48,13 @@ int main(int argc, char** argv)
 	
 	Mat columnSum, mu;   
     eval.img_columnSum (entropy, columnSum, mu);
-	double Sval = -Gmean;  
-	Mat Smask = Sval*wmask;  //Smask == Sval, how to - value
-    Mat Gour = grad+Smask;
+	int Sval = Gmean;  
+	Mat Smask = Gmean * wmask;  //Smask == Sval, how to - value
+    Mat Gour = (grad+Smask) / (wmask.cols * wmask.rows);
 	Mat Gourstmp, Gours;
 	eval.img_Gours (Gour, Gourstmp, Gours);
 
-    std::cout << "Mean: " << mu.at<double>(0,0) << "   Sval: "<< Gours  << std::endl;
+    std::cout << "Mean: " << mu.at<double>(0,0) << "   Sval: "<< Gours << std::endl;
 
     /// Display results
 	cv::namedWindow("Original", cv::WINDOW_AUTOSIZE);

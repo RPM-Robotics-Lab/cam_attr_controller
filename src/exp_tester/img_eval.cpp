@@ -20,14 +20,22 @@ Img_eval::img_wmask (Mat &entropy, Mat &wmask)
 
 	Mat wmasktmp1(entropy.size(), CV_32F, 0.);
     Mat wmasktmp2(entropy.size(), CV_32F, 0.);
- 	wmasktmp1 = entropy>0;
-    Mat tmp1; 
+
+
+ 	wmasktmp1 = entropy > 0;
+    Mat tmp1; // 1 1 1 ...
     wmasktmp1.convertTo(tmp1, CV_32F, 1.0/255.0);
-	wmasktmp2 = entropy ==0; 
-	wmasktmp2 *= 0.0;
-	wmask = wmasktmp1 + wmasktmp2;
     wmask = tmp1;
+
+    wmasktmp2 = entropy ==0; 
+    Mat tmp2; 
+    wmasktmp2.convertTo(tmp2, CV_32F, 1.0/-255.0);
+    
+    wmask = tmp1+tmp2;
+     
+//    std::cout << "wmask: kkk " << wmask <<std::endl;
 }
+
 
 void
 Img_eval::img_grad (Mat &img, Mat &grad)
