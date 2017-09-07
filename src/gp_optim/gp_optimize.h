@@ -11,29 +11,15 @@
 using namespace std;
 using namespace Eigen;
 
-//MatrixXd gp_cov_k_SE (VectorXd x_i, VectorXd x_j, double l, double s_f) {
-//    int dim = x_i.size();
-//    cout << dim << endl;
-//    double inv_l = 1/(l*l);
-//    MatrixXd M = MatrixXd::Identity(dim, dim);
-//    M = inv_l * M;
-
-//    VectorXd x_diff = x_i - x_j;
-//    MatrixXd cov;
-//    cov = -0.5*x_diff.transpose()*M*x_diff;
-//    cov = (s_f*s_f)*cov.exp();
-
-//    return cov;
-
-//}
-
-
 class GPOptimize
 {
 public:
     GPOptimize();
     void initialize(double ls, double s_f, double s_n, vector<VectorXd> &x_pred);
     void initialize(double ls, double s_f, double s_n);
+    void initialize(Config &cfg);
+    void initialize();
+
     bool evaluate(double x_val, double y_val);
 
     void add_data(double x_val, double y_val);
@@ -62,19 +48,25 @@ protected:
 
 private:
     Config cfg_;
-
-
     bool is_optimal_;
-    double ls_;
-    double sigma_;
 
+    // training input
     vector<VectorXd> x_train_;
     vector<VectorXd> y_train_;
+
+    // inference input
     vector<VectorXd> x_pred_;
+
+    // kernel matrix
     MatrixXd K_;
 
+    // inference output
     VectorXd y_pred_;
     MatrixXd var_pred_;
+
+    // Param for acq by mi (TODO: move to acq class)
+    double psi_;
+    double alpha_;
 
     double query_exposure_;
     int query_index_;

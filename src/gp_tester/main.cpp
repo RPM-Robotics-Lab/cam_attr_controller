@@ -2,22 +2,12 @@
 #include <sstream>
 #include <fstream>
 #include <gp_optimize/gp_optimize.h>
+#include <gp_optimize/config.h>
 
-int main(int argc, char** argv)
-{
-    VectorXd x_i(2);
-    x_i << 2, 2;
-    VectorXd x_j(2);
-    x_j << 3, 3;
-    double ls = 100;
-    double s_f = 100;
-    double s_n = 11;
-
-    ifstream file_path("/home/yg/svn/docs/papers/conferences/icra2018-jwkim/trunk/matlab/dat/38datar.csv");
+void load_csv_from_file (ifstream& file_path, vector<double>& x_data, vector<double>& y_data) {
     string line;
-    vector<double> x_data;
-    vector<double> y_data;
 
+    // Load data
     while(getline(file_path, line))
     {
         int index = 0;
@@ -37,27 +27,81 @@ int main(int argc, char** argv)
         }
     }
 
+}
+
+int main(int argc, char** argv)
+{
+    VectorXd x_i(2);
+    x_i << 2, 2;
+    VectorXd x_j(2);
+    x_j << 3, 3;
+    double ls = 100;
+    double s_f = 100;
+    double s_n = 20;
+
+//    ifstream file_path("/home/yg/svn/docs/papers/conferences/icra2018-jwkim/trunk/matlab/dat/38datar.csv");
+    ifstream file_path("../../src/gp_tester/37datar.csv");
+    ifstream file_path2("../../src/gp_tester/38datar.csv");
+    string line;
+    vector<double> x_data, x_data2;
+    vector<double> y_data, y_data2;
+
+    // Load two sample data
+    load_csv_from_file(file_path, x_data, y_data);
+    load_csv_from_file(file_path2, x_data2, y_data2);
+
+    cout << "Data load done " << endl
+         << "\t Data1: " << x_data.size() << endl
+         << "\t Data2: " << x_data2.size() << endl;
+
+    // GPO initialize (set once, globally)
     GPOptimize gpo;
-    gpo.initialize(ls, s_f, s_n);
-    gpo.set_predict(x_data);
-    double x = x_data[0];
-    double y = y_data[0];
-    double best_exposure = x_data[0];
+    Config cfg(ls, s_f, s_n, AcqType::MAXMI, 5);
+    gpo.set_predict(x_data); // query exposure range
+
+    // For first frame
+    gpo.initialize(cfg);
+    double x = x_data[2]; // current exposure (minimum exposure not good for initialize)
+    double y = y_data[2]; // current metric
+    double best_exposure = x_data[2]; // for safety
 
     while (!gpo.is_optimal()) {
 //    for (int i = 0; i < 20; ++i) {
-
+        cout << "Current query exposure " << x << endl;
         if (gpo.evaluate(x, y)) {
             best_exposure = gpo.optimal_expose();
             break;
         }
         else {
             int next_index = gpo.query_index();
+            // double next_exposure = gpo.query_exposure(); // This should be used for real capture
             x = x_data[next_index];
             y = y_data[next_index];
         }
     }
+    cout << "DONE!! Best exposure for 37 is " << best_exposure << endl;
+
+    // For second frame
+    gpo.initialize(cfg);
+    x = x_data2[2]; // current exposure
+    y = y_data2[2]; // current metric
+    best_exposure = x_data2[2]; // for safety
+
+    while (!gpo.is_optimal()) {
+//    for (int i = 0; i < 20; ++i) {
+
+        cout << "Current query exposure " << x << endl;
+        if (gpo.evaluate(x, y)) {
+            best_exposure = gpo.optimal_expose();
+            break;
+        }
+        else {
+            int next_index = gpo.query_index();
+            x = x_data2[next_index];
+            y = y_data2[next_index];
+        }
+    }
+    cout << "DONE!! Best exposure for 38 is " << best_exposure << endl;
 
 
-    cout << "DONE!! Best exposure is " << best_exposure << endl;
 }

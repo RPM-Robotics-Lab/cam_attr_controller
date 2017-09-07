@@ -2,6 +2,7 @@
 set (SRC
     gp_optimize.h gp_optimize.cpp
     config.h
+    kernelfunction.h kernelfunction.cpp
 )
 
 libhandler_eigen3 ()
