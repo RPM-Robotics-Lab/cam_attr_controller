@@ -72,7 +72,7 @@ Img_eval::img_entropy (Mat &img, Mat &entropy)
     cv::normalize (dst, dst, 0, 1, cv::NORM_MINMAX);
     dst.convertTo (entropy, CV_32F, 1.0);
 //    std::cout << "Entropy:  " << entropy <<std::endl;
-	imshow("gradW", dst);
+	imshow("Entropy", entropy);
 }
 
 void 

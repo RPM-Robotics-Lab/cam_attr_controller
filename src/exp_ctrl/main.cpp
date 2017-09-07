@@ -113,7 +113,7 @@ main(int argc, char *argv[])
 
         cv::Mat img;
         bot_util::botimage_to_cvMat(&test_img, img);
-
+	    cv::resize (img, img, cv::Size(320, 240));
         // compute entropy + grad
         double ewg = eval.calc_img_ent_grad (img, false);
 
