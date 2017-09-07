@@ -29,7 +29,7 @@ private:
     void img_Gmean(Mat &grad, double &Gmean);
     void img_Emean(Mat &entropy, double &Emean);
     void img_columnSum (Mat &entropy, Mat &columnSum, Mat &mu);
-    void img_Gours (Mat &Gour, Mat &Gourstmp, Mat &Gours);
+    void img_Gours (Mat &Gour, Mat &Gourstmp1, Mat &Gourstmp2, double &Gours);
 	int sub_to_ind(int *coords, int *cumprod, int num_dims);
 	void ind_to_sub(int p, int num_dims, const int size[],
     int *cumprod, int *coords);

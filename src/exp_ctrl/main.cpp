@@ -106,7 +106,7 @@ main(int argc, char *argv[])
     Img_eval eval;
 
     //while(1) {
-    for (int i=0; i<10; i++) {
+    for (int i=0; i<50; i++) {
         // grab image
         bot_core::image_t test_img;
         cam_bluefox2.GrabImage (test_img);
@@ -121,10 +121,10 @@ main(int argc, char *argv[])
 
         // GP exp compute
         // TODO
-        int next_exp = 500;
+        int next_exp = 3500;
 
         for (int j=0; j<10; j++) {
-            next_exp += i * 200;
+            next_exp += i * 20;
         }
 
         // assign the new exp time
@@ -134,7 +134,6 @@ main(int argc, char *argv[])
 
         cam_bluefox2.RequestSingle();
         printf ("ExpCtrl\tSet to %d.\n", next_exp);
-
         //vector<int> compression_params;
         //compression_params.push_back(CV_IMWRITE_PNG_COMPRESSION);
         //compression_params.push_back(0);
@@ -142,6 +141,8 @@ main(int argc, char *argv[])
         //string save_img_name = str_save_img_path + "/" + str_num_data + ".png";
         //cv::imwrite(save_img_name, gray, compression_params);
     }
+
+
 
 
     return 0;
