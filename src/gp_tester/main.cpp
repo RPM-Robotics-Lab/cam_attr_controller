@@ -1,7 +1,7 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
-#include "gp_optimize.h"
+#include <gp_optimize/gp_optimize.h>
 
 int main(int argc, char** argv)
 {
@@ -9,8 +9,9 @@ int main(int argc, char** argv)
     x_i << 2, 2;
     VectorXd x_j(2);
     x_j << 3, 3;
-    double l = 100;
-    double s = 100;
+    double ls = 100;
+    double s_f = 100;
+    double s_n = 11;
 
     ifstream file_path("/home/yg/svn/docs/papers/conferences/icra2018-jwkim/trunk/matlab/dat/38datar.csv");
     string line;
@@ -36,26 +37,15 @@ int main(int argc, char** argv)
         }
     }
 
-//    for (auto x : x_data) {
-//        cout << "x = " << x << endl;
-//    }
-//    for (auto y : y_data) {
-//        cout << "y = " << y << endl;
-//    }
-
-
-//    cout << "XDATA" << x_data.size() << endl;
-//    cout << "YDATA" << y_data.size() << endl;
-
-    double best_exposure;
     GPOptimize gpo;
-    gpo.initialize(l, s);
+    gpo.initialize(ls, s_f, s_n);
     gpo.set_predict(x_data);
-//    gpo.add_data(x_data[0], y_data[0]);
     double x = x_data[0];
     double y = y_data[0];
-//    while (!gpo.is_optimal()) {
-    for (int i = 0; i < 20; ++i) {
+    double best_exposure = x_data[0];
+
+    while (!gpo.is_optimal()) {
+//    for (int i = 0; i < 20; ++i) {
 
         if (gpo.evaluate(x, y)) {
             best_exposure = gpo.optimal_expose();
@@ -70,29 +60,4 @@ int main(int argc, char** argv)
 
 
     cout << "DONE!! Best exposure is " << best_exposure << endl;
-
-
-//    vector<VectorXd> x_pred;
-//    double init = 30;
-//    for (int i = 0; i < 56; ++i) {
-//        VectorXd x(1);
-//        x <<init + i*10;
-
-//        x_pred.push_back(x);
-//    }
-
-//    GPOptimize gpo;
-//    gpo.initialize(l, s, x_pred);
-
-//    gpo.add_data(30, 15921);
-//    gpo.add_data(80, 22866);
-
-////    gpo.set_predict(x_pred);
-
-//    MatrixXd K = gpo.train();
-
-//    gpo.predict();
-
-//    gpo.find_query_point();
-
 }

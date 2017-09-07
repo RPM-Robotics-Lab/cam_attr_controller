@@ -1,19 +1,19 @@
-# EXTERNAL DEPS
+# SOURCE FILES
+set (SRC
+    gp_optimize.h gp_optimize.cpp
+    config.h
+)
+
 libhandler_eigen3 ()
 
-# BUILD EXE
-add_executable (gp_tester
-    main.cpp
-    gp_optimize.cpp gp_optimize.h
-    )
-target_link_libraries (gp_tester
-  ${IRPLIB_EIGEN3}
-)
-
 # BUIlD LIB
-add_library (gp_optimize
-    gp_optimize.cpp gp_optimize.h
-)
+add_library (gp_optimize ${SRC})
 target_link_libraries(gp_optimize
   ${IRPLIB_EIGEN3}
 )
+
+# then pod install
+pods_install_libraries (gp_optimize)
+
+file(GLOB HEADER *.h)
+pods_install_headers(${HEADER} DESTINATION gp_optimize)
