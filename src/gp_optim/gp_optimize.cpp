@@ -8,10 +8,14 @@ GPOptimize::GPOptimize()
 void GPOptimize::initialize(double ls, double s_f, double s_n, vector<VectorXd>& x_pred)
 {
     cfg_.set_cfg(ls, s_f, s_n);
-    ls_ = ls;
-    sigma_ = s_f;
+
+    // clear input data
+    x_train_.clear();
+    y_train_.clear();
 
     query_exposure_ = 0;
+    query_index_ = 0;
+    psi_ = 0;
     is_optimal_ = false;
 
     set_predict(x_pred);
@@ -20,9 +24,43 @@ void GPOptimize::initialize(double ls, double s_f, double s_n, vector<VectorXd>&
 void GPOptimize::initialize(double ls, double s_f, double s_n)
 {
     cfg_.set_cfg(ls, s_f, s_n);
-    ls_ = ls;
-    sigma_ = s_f;
+
+    // clear input data
+    x_train_.clear();
+    y_train_.clear();
+
     query_exposure_ = 0;
+    query_index_ = 0;
+    psi_ = 0;
+
+    is_optimal_ = false;
+}
+
+void GPOptimize::initialize(Config& cfg)
+{
+    cfg_ = cfg;
+
+    // clear input data
+    x_train_.clear();
+    y_train_.clear();
+
+    query_exposure_ = 0;
+    query_index_ = 0;
+    psi_ = 0;
+
+    is_optimal_ = false;
+}
+
+void GPOptimize::initialize()
+{
+    // clear input data
+    x_train_.clear();
+    y_train_.clear();
+
+    query_exposure_ = 0;
+    query_index_ = 0;
+    psi_ = 0;
+
     is_optimal_ = false;
 }
 
@@ -60,7 +98,7 @@ void GPOptimize::add_data(double x_val, double y_val)
     x_train_.push_back(x_vec);
     y_train_.push_back(y_vec);
 
-    cout << "train size "  << x_train_.size() << endl;
+//    cout << "train size "  << x_train_.size() << endl;
 }
 
 MatrixXd GPOptimize::train()
@@ -103,7 +141,7 @@ void GPOptimize::predict()
     }
 
     double s_n = cfg_.s_n();
-    MatrixXd N = (s_n*s_n)*MatrixXd::Identity(n_train, n_train);
+    MatrixXd N = (s_n)*MatrixXd::Identity(n_train, n_train);
     MatrixXd K = K_ + N;
     MatrixXd invK = K.inverse();
 
@@ -122,19 +160,43 @@ void GPOptimize::predict()
 
 void GPOptimize::find_query_point()
 {
-    ArrayXd var_diag = var_pred_.diagonal();
-    int index;
-    cost_ = var_diag.maxCoeff(&index);
+    // TODO: move each part as function
+    if (cfg_.acq_type() == AcqType::MAXVAR) {
+        VectorXd var_diag = var_pred_.diagonal();
+//        var_diag = var_diag.cwiseProduct(var_diag);
+        int index;
+        cost_ = var_diag.maxCoeff(&index);
 
-    query_exposure_ = x_pred_[index](0);
-    query_index_ = index;
+        query_exposure_ = x_pred_[index](0);
+        query_index_ = index;
+    }
+    else if (cfg_.acq_type() == AcqType::MAXMI) {
+        VectorXd var_diag = var_pred_.diagonal();
+        VectorXd tmp;
+        int n_pred = x_pred_.size();
+        VectorXd var_diag_sq = var_diag.cwiseProduct(var_diag);
+        tmp = psi_*VectorXd::Ones(n_pred);
+        var_diag_sq = var_diag_sq + tmp;
+        tmp = sqrt(psi_)*VectorXd::Ones(n_pred);
+        var_diag_sq = var_diag_sq.cwiseSqrt() - tmp;
+        var_diag_sq = sqrt(cfg_.alpha()) * var_diag_sq;
+        VectorXd acq_func = y_pred_ + var_diag_sq;
+
+        int index;
+        cost_ = acq_func.maxCoeff(&index);
+
+        psi_ = psi_ + var_diag(index);
+
+        query_exposure_ = x_pred_[index](0);
+        query_index_ = index;
+    }
 
     check_optimal();
-
 }
 
 MatrixXd GPOptimize::gp_cov_k_SE(VectorXd x_i, VectorXd x_j, double l, double s_f)
 {
+    // TODO: move to kernel function class
     int dim = x_i.size();
     double inv_l = 1/(l*l);
     MatrixXd M = MatrixXd::Identity(dim, dim);
@@ -146,15 +208,19 @@ MatrixXd GPOptimize::gp_cov_k_SE(VectorXd x_i, VectorXd x_j, double l, double s_
     cov = -0.5*x_diff.transpose()*M*x_diff;
     cov = (s_f*s_f)*cov.exp();
 
+    if (x_diff.norm() < 0.00001) {
+        cov = cov + MatrixXd::Constant(1, 1, cfg_.s_n()*cfg_.s_n());
+    }
+
     return cov;
 }
 
 void GPOptimize::check_optimal()
 {
     double last_query = x_train_.back()(0);
-    cout << " query_exposure_ " << query_exposure_;
-    cout << " last _query " << last_query;
-    if (abs(query_exposure_- last_query) < 15 || cost_ < 1000) {
+//    cout << " query_exposure_ " << query_exposure_ ;
+//    cout << " last _query " << last_query;
+    if (abs(query_exposure_- last_query) < 15 || cost_ < 1500) {
         set_optimal();
     }
 }
