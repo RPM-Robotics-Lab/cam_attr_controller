@@ -76,7 +76,7 @@ main(int argc, char *argv[])
     Img_eval eval;
 
     // init
-    int init_expose = 100;  // us
+    int init_expose = 300;  // us
     int frameRate_Hz = 10;  // fps
     int timeout_ms = 200;
 
@@ -94,9 +94,11 @@ main(int argc, char *argv[])
     // main process start
     printf ("[ExpCtrl]\tStart to grab images.\n");
 
-    for (int t=100; t<15001; t+=100) {
+    for (int t=500; t<10000; t+=50) {
 	double ewg = _grab_and_return_ewg (cam_bluefox2, eval, t);
-        printf ("%d, %g\n", t,ewg);
+//        std::cout << "[ExpCtrl]\t(t,v) = (" << t << ", "<< ewg << ")" << std::endl;
+        std::cout << t << " " << ewg  << std::endl;
+//        printf ("%d, %g\n", t,ewg);
     }
 
     //vector<int> compression_params;

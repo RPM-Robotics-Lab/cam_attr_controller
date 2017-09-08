@@ -27,8 +27,8 @@ Img_eval::calc_img_ent_grad (cv::Mat &img, bool visualize)
 	
 	Mat columnSum, mu;   
     img_columnSum (entropy, columnSum, mu);
-	Mat Smask = 1*Gmean * wmask;  //Smask == Sval, how to - value
-    Mat Gour = ((gradW.mul(grad))+Smask) ;
+	Mat Smask = 2* Gmean * wmask;  //Smask == Sval, how to - value
+    Mat Gour = ((gradW.mul(grad))+ Smask) ;
 	Mat Gourstmp1, Gourstmp2;
     double Gours;
     img_Gours (Gour, Gourstmp1, Gourstmp2, Gours);
