@@ -35,13 +35,13 @@ int main(int argc, char** argv)
     x_i << 2, 2;
     VectorXd x_j(2);
     x_j << 3, 3;
-    double ls = 100.0;
-    double s_f = 100.0;
-    double s_n = 20.0;
+    double ls = 1000.0;
+    double s_f = 1000.0;
+    double s_n = 100.0;
 
 //    ifstream file_path("/home/yg/svn/docs/papers/conferences/icra2018-jwkim/trunk/matlab/dat/38datar.csv");
-    ifstream file_path("../../src/gp_tester/37datar.csv");
-    ifstream file_path2("../../src/gp_tester/38datar.csv");
+    ifstream file_path("../../src/gp_tester/0908.csv");
+    ifstream file_path2("../../src/gp_tester/0908.csv");
     string line;
     vector<double> x_data, x_data2;
     vector<double> y_data, y_data2;

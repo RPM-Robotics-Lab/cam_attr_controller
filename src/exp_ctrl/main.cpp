@@ -50,7 +50,7 @@ _grab_and_return_ewg (bluefox2::Bluefox2 &cam_bluefox2, Img_eval &eval, int exp_
 {
     // grab image from the next_exp
     cam_bluefox2.SetExposeUs (exp_t);
-    cam_bluefox2.RequestSingle();
+    
 
     bot_core::image_t test_img;
     cam_bluefox2.GrabImage (test_img);
@@ -62,10 +62,11 @@ _grab_and_return_ewg (bluefox2::Bluefox2 &cam_bluefox2, Img_eval &eval, int exp_
     // compute entropy + grad
     double ewg = eval.calc_img_ent_grad (img, false);
 
+    cam_bluefox2.RequestSingle();
 
     cv::namedWindow("Current", cv::WINDOW_AUTOSIZE);
     cv::imshow("Current", img);
-//    cv::waitKey(0);
+    cv::waitKey(1);
 
     return ewg;
 }
@@ -83,9 +84,9 @@ main(int argc, char *argv[])
     int frameRate_Hz = 10;  // fps
     int timeout_ms = 200;
 
-    double ls = 100.0;
-    double s_f = 100.0;
-    double s_n = 20.0;
+    double ls = 1000.0;
+    double s_f = 1000.0;
+    double s_n = 100.0;
 
     // camera prepare
     bluefox2::Bluefox2 cam_bluefox2(parser.GetSerial());
@@ -133,9 +134,9 @@ main(int argc, char *argv[])
 
         //cout << "[ExpCtrl]\tOne loop done!! Next best exposure" << best_exposure << endl;
         next_exp = (int) best_exposure;
-        cam_bluefox2.RequestSingle();
 
         printf ("ExpCtrl\tSet to %d.\n", next_exp);
+        cv::waitKey(0);
 //    }
 
     //vector<int> compression_params;
