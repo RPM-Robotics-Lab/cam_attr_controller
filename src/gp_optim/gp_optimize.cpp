@@ -220,7 +220,7 @@ void GPOptimize::check_optimal()
     double last_query = x_train_.back()(0);
 //    cout << " query_exposure_ " << query_exposure_ ;
 //    cout << " last _query " << last_query;
-    if (abs(query_exposure_- last_query) < 15 || cost_ < 500) {
+    if (abs(query_exposure_- last_query) < 15 || cost_ < 200) {
         set_optimal();
     }
 }

@@ -40,8 +40,8 @@ int main(int argc, char** argv)
     double s_n = 10.0;
 
 //    ifstream file_path("/home/yg/svn/docs/papers/conferences/icra2018-jwkim/trunk/matlab/dat/38datar.csv");
-    ifstream file_path("../../data/090823e.csv");
-    ifstream file_path2("../../data/090823f.csv");
+    ifstream file_path("../../data/0908a.csv");
+    ifstream file_path2("../../data/0908.csv");
     string line;
     vector<double> x_data, x_data2;
     vector<double> y_data, y_data2;
@@ -57,10 +57,11 @@ int main(int argc, char** argv)
     // GPO initialize (set once, globally)
     GPOptimize gpo;
     Config cfg(ls, s_f, s_n, AcqType::MAXVAR, 5);
-    gpo.set_predict(x_data); // query exposure range
 
     // For first frame
     gpo.initialize(cfg);
+    gpo.set_predict(x_data); // query exposure range
+
     double x = x_data[2]; // current exposure (minimum exposure not good for initialize)
     double y = y_data[2]; // current metric
     double best_exposure = x_data[2]; // for safety
@@ -83,6 +84,8 @@ int main(int argc, char** argv)
 
     // For second frame
     gpo.initialize(cfg);
+    gpo.set_predict(x_data2); // query exposure range
+
     x = x_data2[2]; // current exposure
     y = y_data2[2]; // current metric
     best_exposure = x_data2[2]; // for safety
