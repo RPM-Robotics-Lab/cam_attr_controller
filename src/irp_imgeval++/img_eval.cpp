@@ -13,8 +13,6 @@ Img_eval::calc_img_ent_grad (cv::Mat &img, bool visualize)
     img_wmask (entropy, wmask);
     img_grad (img, grad);
 
-//	int wrows = entropy.rows;
-//	int wcols = entropy.cols; 
     double Gmean, Emean;
     img_Gmean (grad, Gmean);
     img_Emean (entropy, Emean);
@@ -32,17 +30,12 @@ Img_eval::calc_img_ent_grad (cv::Mat &img, bool visualize)
 	Mat Gourstmp1, Gourstmp2;
     double Gours;
     img_Gours (Gour, Gourstmp1, Gourstmp2, Gours);
-       std::cout << "Gmean=  " << Gmean << " Emean= " << Emean << " Gours= " << Gours <<std::endl;
-//    cv::waitKey(1);
-
-
-  
-//        std::cout << "   Sval: "<< Smask << std::endl;
+    
+    // std::cout << "Gmean=  " << Gmean << " Emean= " << Emean << " Gours= " << Gours <<std::endl;
+    // cv::waitKey(1);
+    // std::cout << "   Sval: "<< Smask << std::endl;
 
     if (visualize) {
-
-        /// Display resu
-
 	    cv::namedWindow("Original", cv::WINDOW_AUTOSIZE);
 	    cv::namedWindow("Entropy Mask", cv::WINDOW_AUTOSIZE);	
 	    cv::namedWindow("Entropy Filter", cv::WINDOW_AUTOSIZE);
@@ -51,17 +44,13 @@ Img_eval::calc_img_ent_grad (cv::Mat &img, bool visualize)
 	    cv::imshow("Entropy Mask", wmask);  //dst 
 	    cv::imshow("Entropy Filter", entropy);
 	    cv::imshow("Gradient Image",grad);
+
         /// Wait until user exits the program
         cv::waitKey(0);
-
-  
     }
 
-      return Gours;
-
-//    return cv::sum(Gour)[0];
+    return Gours;
 }
-
 
 
 void
@@ -69,23 +58,22 @@ Img_eval::img_entropy (Mat &img, Mat &entropy)
 {
     //Calculate Entropy Filter
     cv::Rect roi (0, 0, img.cols, img.rows);
-    cv::Mat dst (img.rows, img.cols, CV_32F);
+    //cv::Mat dst (img.rows, img.cols, CV_32F);
+    cv::Mat dst = Mat::zeros(img.rows, img.cols, CV_32F); // init with zero padded
 
     getLocalEntropyImage (img, roi, dst);
     cv::normalize (dst, dst, 0, 1, cv::NORM_MINMAX);
     dst.convertTo (entropy, CV_32F, 1.0);
-//    std::cout << "Entropy:  " << entropy <<std::endl;
-//	imshow("Entropy", entropy);
+    // std::cout << "Entropy:  " << entropy <<std::endl;
+    //imshow("Entropy", entropy);
 }
 
 void 
 Img_eval::img_wmask (Mat &entropy, Mat &wmask)
 {
-// Create Entropy binary mask, wmask == [rs, cs] 
-
+    // Create Entropy binary mask, wmask == [rs, cs] 
 	Mat wmasktmp1(entropy.size(), CV_32F, 0.);
     Mat wmasktmp2(entropy.size(), CV_32F, 0.);
-
 
  	wmasktmp1 = entropy > 0.15;
     Mat tmp1; // 1 1 1 ...
@@ -97,15 +85,14 @@ Img_eval::img_wmask (Mat &entropy, Mat &wmask)
     wmasktmp2.convertTo(tmp2, CV_32F, 1.0/-255.0);
     
     wmask = tmp2;
-     
-//    std::cout << "wmask: kkk " << wmask <<std::endl;
+    // std::cout << "wmask: kkk " << wmask <<std::endl;
 }
 
 
 void
 Img_eval::img_grad (Mat &img, Mat &grad)
 {
-// calculate Gradient (sobel)
+    // calculate Gradient (sobel)
   	cv::Mat Gx, Gy; double ksize= 1;
     Mat abs_grad_x, abs_grad_y;
     cv::Sobel(img, Gx, CV_8U, 1, 0, ksize);
@@ -115,19 +102,19 @@ Img_eval::img_grad (Mat &img, Mat &grad)
 	addWeighted( abs_grad_x, 1.49999, abs_grad_y, 1.49999, 0, grad );
 
     grad.convertTo(grad, CV_32F, 1.0/255.0);
-//    std::cout << "grad:  " << grad <<std::endl;
+    // std::cout << "grad:  " << grad <<std::endl;
 }
 
-void Img_eval::img_Gmean (Mat &grad, double &Gmean)
+void 
+Img_eval::img_Gmean (Mat &grad, double &Gmean)
 {
     int wrows = grad.rows;
 	int wcols = grad.cols; 
 	Gmean = sum(grad)[0]  / (wrows * wcols);  // mean(mean(Gmag))) 
 }
 
-
-
-void Img_eval::img_Emean (Mat &entropy, double &Emean)
+void 
+Img_eval::img_Emean (Mat &entropy, double &Emean)
 {
     int wrows = entropy.rows;
 	int wcols = entropy.cols; 
@@ -135,28 +122,33 @@ void Img_eval::img_Emean (Mat &entropy, double &Emean)
 }
 
 
-void Img_eval::img_columnSum (Mat &entropy, Mat &columnSum, Mat &mu)
+void 
+Img_eval::img_columnSum (Mat &entropy, Mat &columnSum, Mat &mu)
 {
-for (int i = 0; i<entropy.cols; i++)    
+    for (int i = 0; i<entropy.cols; i++)    
 		columnSum.push_back(cv::sum(entropy.col(i))[0]);    // K
-		mu.push_back(cv::sum(columnSum)[0] / entropy.cols);  // mu cols=320
-//	Mat sigma = pow((columnSum-mu),2)  / (entropy.cols); 
- 		Mat temp = columnSum-mu;
+
+	mu.push_back(cv::sum(columnSum)[0] / entropy.cols);  // mu cols=320
+    //	Mat sigma = pow((columnSum-mu),2)  / (entropy.cols); 
+	Mat temp = columnSum-mu;
 		
-		Scalar std;
-		meanStdDev(columnSum, mu, std);
-		vector <Mat> HSV;
-		split(columnSum, HSV);
+	Scalar std;
+	meanStdDev(columnSum, mu, std);
+	vector <Mat> HSV;
+	split(columnSum, HSV);
 }
 
-void Img_eval::img_Gours (Mat &Gour, Mat &Gourstmp1, Mat &Gourstmp2, double &Gours)
+void 
+Img_eval::img_Gours (Mat &Gour, Mat &Gourstmp1, Mat &Gourstmp2, double &Gours)
 {
 	for (int i=0; i<Gour.rows; i++)	{
-	Gourstmp1.push_back(cv::sum(Gour.row(i))[0]);
-	}	
+	    Gourstmp1.push_back(cv::sum(Gour.row(i))[0]);
+	}
+	
 	for (int j=0; j<Gourstmp1.cols; j++) {
-	Gourstmp2.push_back(cv::sum(Gourstmp1.col(j))[0]);
-		}
+    	Gourstmp2.push_back(cv::sum(Gourstmp1.col(j))[0]);
+	}
+
 	Gours = Gourstmp2.at<double>(0);
 }
 
@@ -170,9 +162,8 @@ void Img_eval::img_Gours (Mat &Gour, Mat &Gourstmp1, Mat &Gourstmp2, double &Gou
 //    return (ONE_OVER_SQRT_2PI/std)*exp(-0.5*squared((columnSum-mu)/std));
 //	}
 
-
-
-int Img_eval::sub_to_ind(int *coords, int *cumprod, int num_dims)
+int 
+Img_eval::sub_to_ind (int *coords, int *cumprod, int num_dims)
 {
     int index = 0;
     int k;
@@ -181,8 +172,7 @@ int Img_eval::sub_to_ind(int *coords, int *cumprod, int num_dims)
     assert(cumprod != NULL);
     assert(num_dims > 0);
 
-    for (k = 0; k < num_dims; k++)
-    {
+    for (k = 0; k < num_dims; k++) {
         index += coords[k] * cumprod[k];
     }
 
@@ -191,8 +181,9 @@ int Img_eval::sub_to_ind(int *coords, int *cumprod, int num_dims)
 
 
 
-void Img_eval::ind_to_sub(int p, int num_dims, const int size[],
-    int *cumprod, int *coords)
+void 
+Img_eval::ind_to_sub (int p, int num_dims, const int size[],
+                      int *cumprod, int *coords)
 {
     int j;
 
@@ -200,14 +191,14 @@ void Img_eval::ind_to_sub(int p, int num_dims, const int size[],
     assert(coords != NULL);
     assert(cumprod != NULL);
 
-    for (j = num_dims - 1; j >= 0; j--)
-    {
+    for (j = num_dims - 1; j >= 0; j--) {
         coords[j] = p / cumprod[j];
         p = p % cumprod[j];
     }
 }
 
-void Img_eval::getLocalEntropyImage(cv::Mat &gray, cv::Rect &roi, cv::Mat &entropy)
+void 
+Img_eval::getLocalEntropyImage (cv::Mat &gray, cv::Rect &roi, cv::Mat &entropy)
 {
     using namespace cv;
     clock_t func_begin, func_end;
@@ -275,8 +266,6 @@ void Img_eval::getLocalEntropyImage(cv::Mat &gray, cv::Rect &roi, cv::Mat &entro
         entroy_table[i] = frequency * (log(frequency) / log2);
     }
 
-
-
     int neighbood_index;
     //        int max_index=pad_src->cols*pad_src->rows;
     float e;
@@ -305,18 +294,15 @@ void Img_eval::getLocalEntropyImage(cv::Mat &gray, cv::Rect &roi, cv::Mat &entro
         }
     }
 
-
     free(neighbood_offset);
     free(image_cumprod);
     free(cumprod);
     free(neighbood_corrds_array);
 
     func_end = clock();
-    double func_time = (double)(func_end - func_begin) / CLOCKS_PER_SEC;
+    //double func_time = (double)(func_end - func_begin) / CLOCKS_PER_SEC;
     //std::cout << "func time  " << func_time << std::endl;
 }
-
-
 
 //void Img_eval::GammaCorrection(Mat& src, Mat& dst, float fGamma)
 //{
@@ -357,9 +343,3 @@ void Img_eval::getLocalEntropyImage(cv::Mat &gray, cv::Rect &roi, cv::Mat &entro
 //        }
 //    }
 //}
-
-
-
-
-
-
