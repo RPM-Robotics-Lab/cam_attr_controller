@@ -19,7 +19,7 @@ Img_eval::calc_img_ent_grad (cv::Mat &img, bool visualize)
     img_Gmean (grad, Gmean);
     img_Emean (entropy, Emean);
 
-	printf("Gradient sss is %d %d \n", wcols, wrows) ;
+	//printf("Gradient sss is %d %d \n", wcols, wrows) ;
  	
 	Mat gradW = grad > Gmean * 0.5;
 	gradW *= 1;
@@ -27,7 +27,7 @@ Img_eval::calc_img_ent_grad (cv::Mat &img, bool visualize)
 	
 	Mat columnSum, mu;   
     img_columnSum (entropy, columnSum, mu);
-	Mat Smask = 3*Gmean * wmask;  //Smask == Sval, how to - value
+	Mat Smask = 1*Gmean * wmask;  //Smask == Sval, how to - value
     Mat Gour = ((gradW.mul(grad))+Smask) ;
 	Mat Gourstmp1, Gourstmp2;
     double Gours;
@@ -72,7 +72,7 @@ Img_eval::img_entropy (Mat &img, Mat &entropy)
     cv::normalize (dst, dst, 0, 1, cv::NORM_MINMAX);
     dst.convertTo (entropy, CV_32F, 1.0);
 //    std::cout << "Entropy:  " << entropy <<std::endl;
-	imshow("Entropy", entropy);
+//	imshow("Entropy", entropy);
 }
 
 void 
@@ -310,7 +310,7 @@ void Img_eval::getLocalEntropyImage(cv::Mat &gray, cv::Rect &roi, cv::Mat &entro
 
     func_end = clock();
     double func_time = (double)(func_end - func_begin) / CLOCKS_PER_SEC;
-    std::cout << "func time  " << func_time << std::endl;
+    //std::cout << "func time  " << func_time << std::endl;
 }
 
 

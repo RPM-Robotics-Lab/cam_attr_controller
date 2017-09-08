@@ -35,9 +35,9 @@ int main(int argc, char** argv)
     x_i << 2, 2;
     VectorXd x_j(2);
     x_j << 3, 3;
-    double ls = 100;
-    double s_f = 100;
-    double s_n = 20;
+    double ls = 100.0;
+    double s_f = 100.0;
+    double s_n = 20.0;
 
 //    ifstream file_path("/home/yg/svn/docs/papers/conferences/icra2018-jwkim/trunk/matlab/dat/38datar.csv");
     ifstream file_path("../../src/gp_tester/37datar.csv");

@@ -4,8 +4,9 @@ cmake_minimum_required(VERSION 2.8)
 #========================================================================
 cmake_minimum_required (VERSION 2.8)
 cmake_policy (VERSION 2.8)
-#cmake_policy (SET CMP0054 OLD)
+cmake_policy (SET CMP0054 OLD)
 cmake_policy (SET CMP0002 OLD)
+
 set (CMAKE_ALLOW_LOOSE_LOOP_CONSTRUCTS TRUE)
 set (FIND_LIBRARY_USE_LIB64_PATHS 1)
 if (NOT CMAKE_BUILD_TYPE)

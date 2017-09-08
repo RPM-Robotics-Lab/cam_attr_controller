@@ -16,6 +16,7 @@ add_executable (exp_ctrl ${SRC})
 target_link_libraries (exp_ctrl
   Bluefox2Driver
   irp-imgeval++
+  gp_optimize
   ${IRPLIB_BOOST}
   ${IRAP_LCMTYPES}
   ${IRPLIB_LCM}
