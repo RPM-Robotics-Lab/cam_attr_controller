@@ -1,6 +1,6 @@
 #include "Parser.h"
 
-const string bluefox2cfg_path("../share/config/bluefox2-mono.json");
+const string bluefox2cfg_path("../share/config/master.json");
 
 Bluefox2Parser::Bluefox2Parser()
 {
