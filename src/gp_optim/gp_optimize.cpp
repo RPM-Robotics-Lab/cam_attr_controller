@@ -141,7 +141,7 @@ void GPOptimize::predict()
     }
 
     double s_n = cfg_.s_n();
-    MatrixXd N = (s_n)*MatrixXd::Identity(n_train, n_train);
+    MatrixXd N = (s_n*s_n)*MatrixXd::Identity(n_train, n_train);
     MatrixXd K = K_ + N;
     MatrixXd invK = K.inverse();
 
@@ -208,9 +208,9 @@ MatrixXd GPOptimize::gp_cov_k_SE(VectorXd x_i, VectorXd x_j, double l, double s_
     cov = -0.5*x_diff.transpose()*M*x_diff;
     cov = (s_f*s_f)*cov.exp();
 
-    if (x_diff.norm() < 0.00001) {
-        cov = cov + MatrixXd::Constant(1, 1, cfg_.s_n()*cfg_.s_n());
-    }
+//    if (x_diff.norm() < 0.00001) {
+//        cov = cov + MatrixXd::Constant(1, 1, cfg_.s_n()*cfg_.s_n());
+//    }
 
     return cov;
 }
@@ -220,7 +220,7 @@ void GPOptimize::check_optimal()
     double last_query = x_train_.back()(0);
 //    cout << " query_exposure_ " << query_exposure_ ;
 //    cout << " last _query " << last_query;
-    if (abs(query_exposure_- last_query) < 15 || cost_ < 1500) {
+    if (abs(query_exposure_- last_query) < 15 || cost_ < 500) {
         set_optimal();
     }
 }

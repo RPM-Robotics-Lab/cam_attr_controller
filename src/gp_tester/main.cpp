@@ -35,13 +35,13 @@ int main(int argc, char** argv)
     x_i << 2, 2;
     VectorXd x_j(2);
     x_j << 3, 3;
-    double ls = 1000.0;
-    double s_f = 1000.0;
-    double s_n = 100.0;
+    double ls = 3000.0;
+    double s_f = 35.0;
+    double s_n = 10.0;
 
 //    ifstream file_path("/home/yg/svn/docs/papers/conferences/icra2018-jwkim/trunk/matlab/dat/38datar.csv");
-    ifstream file_path("../../src/gp_tester/0908.csv");
-    ifstream file_path2("../../src/gp_tester/0908.csv");
+    ifstream file_path("../../data/090823e.csv");
+    ifstream file_path2("../../data/090823f.csv");
     string line;
     vector<double> x_data, x_data2;
     vector<double> y_data, y_data2;
@@ -56,7 +56,7 @@ int main(int argc, char** argv)
 
     // GPO initialize (set once, globally)
     GPOptimize gpo;
-    Config cfg(ls, s_f, s_n, AcqType::MAXMI, 5);
+    Config cfg(ls, s_f, s_n, AcqType::MAXVAR, 5);
     gpo.set_predict(x_data); // query exposure range
 
     // For first frame
