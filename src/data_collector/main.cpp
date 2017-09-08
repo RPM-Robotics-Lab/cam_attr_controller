@@ -4,8 +4,6 @@
 #include <boost/program_options/parsers.hpp>
 #include <boost/filesystem.hpp>
 
-#include <gp_optimize/gp_optimize.h>
-#include <gp_optimize/config.h>
 
 using namespace boost::program_options;
 using namespace boost::filesystem;
@@ -50,7 +48,7 @@ _grab_and_return_ewg (bluefox2::Bluefox2 &cam_bluefox2, Img_eval &eval, int exp_
 {
     // grab image from the next_exp
     cam_bluefox2.SetExposeUs (exp_t);
-    
+    cam_bluefox2.RequestSingle();
 
     bot_core::image_t test_img;
     cam_bluefox2.GrabImage (test_img);
@@ -60,13 +58,12 @@ _grab_and_return_ewg (bluefox2::Bluefox2 &cam_bluefox2, Img_eval &eval, int exp_
     cv::resize (img, img, cv::Size(320, 240));
 
     // compute entropy + grad
-    double ewg = eval.calc_img_ent_grad (img, true);
+    double ewg = eval.calc_img_ent_grad (img, false);
 
-    cam_bluefox2.RequestSingle();
 
     cv::namedWindow("Current", cv::WINDOW_AUTOSIZE);
     cv::imshow("Current", img);
-    cv::waitKey(1);
+//    cv::waitKey(0);
 
     return ewg;
 }
@@ -77,16 +74,11 @@ main(int argc, char *argv[])
 
     Bluefox2Parser parser;
     Img_eval eval;
-    GPOptimize gpo;
 
     // init
-    int init_expose = 500;  // us
+    int init_expose = 300;  // us
     int frameRate_Hz = 10;  // fps
     int timeout_ms = 200;
-
-    double ls = 1000.0;
-    double s_f = 1000.0;
-    double s_n = 100.0;
 
     // camera prepare
     bluefox2::Bluefox2 cam_bluefox2(parser.GetSerial());
@@ -102,42 +94,12 @@ main(int argc, char *argv[])
     // main process start
     printf ("[ExpCtrl]\tStart to grab images.\n");
 
-    // GP
-    // intialize time from 100us - 150000us (150 time indeces)
-    Config cfg(ls, s_f, s_n, AcqType::MAXMI, 5);
-    vector<double> x_data;
-    for (int t=100; t<10000; t+=100) x_data.push_back (t);
-    gpo.set_predict (x_data);   // query exposure range
-    gpo.initialize(cfg);
-
-    // exp value is int but GP use double in general
-    int next_exp = init_expose;
-    double best_exposure = 0.0;
-    double ewg = 0.0;
-
-    ewg = _grab_and_return_ewg (cam_bluefox2, eval, next_exp);
-    //while(1) {
-//    for (int i=0; i<10; i++) {
-//        std::cout << "[ExpCtrl]\t(t,v) = (" << next_exp << ", "<< ewg << ")" << std::endl;
-        while (!gpo.is_optimal()) {
-            std::cout << "[ExpCtrl]\tDuring GP (t,v) = (" << next_exp << ", "<< ewg << ")" << std::endl;
-            if (gpo.evaluate (next_exp, ewg)) {
-                best_exposure = gpo.optimal_expose();
-                break;
-            }
-            else {
-                int next_index = gpo.query_index();
-                next_exp = x_data[next_index];
-                ewg = _grab_and_return_ewg (cam_bluefox2, eval, next_exp);
-            }
-        }
-
-        //cout << "[ExpCtrl]\tOne loop done!! Next best exposure" << best_exposure << endl;
-        next_exp = (int) best_exposure;
-
-        printf ("ExpCtrl\tSet to %d.\n", next_exp);
-        cv::waitKey(0);
-//    }
+    for (int t=500; t<10000; t+=50) {
+	double ewg = _grab_and_return_ewg (cam_bluefox2, eval, t);
+//        std::cout << "[ExpCtrl]\t(t,v) = (" << t << ", "<< ewg << ")" << std::endl;
+        std::cout << t << "," << ewg  << std::endl;
+//        printf ("%d, %g\n", t,ewg);
+    }
 
     //vector<int> compression_params;
     //compression_params.push_back(CV_IMWRITE_PNG_COMPRESSION);
