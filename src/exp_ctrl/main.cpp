@@ -117,7 +117,7 @@ main(int argc, char *argv[])
     ewg = _grab_and_return_ewg (cam_bluefox2, eval, next_exp);
 
     //while(1) {
-//    for (int i=0; i<10; i++) {
+    for (int i=0; i<10; i++) {
 //        std::cout << "[ExpCtrl]\t(t,v) = (" << next_exp << ", "<< ewg << ")" << std::endl;
         while (!gpo.is_optimal()) {
             std::cout << "[ExpCtrl]\tDuring GP (t,v) = (" << next_exp << ", "<< ewg << ")" << std::endl;
@@ -139,7 +139,7 @@ main(int argc, char *argv[])
         cv::waitKey(0);
 
 
-//    }
+    }
 
     //vector<int> compression_params;
     //compression_params.push_back(CV_IMWRITE_PNG_COMPRESSION);
