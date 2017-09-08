@@ -62,6 +62,11 @@ _grab_and_return_ewg (bluefox2::Bluefox2 &cam_bluefox2, Img_eval &eval, int exp_
     // compute entropy + grad
     double ewg = eval.calc_img_ent_grad (img, false);
 
+
+    cv::namedWindow("Current", cv::WINDOW_AUTOSIZE);
+    cv::imshow("Current", img);
+    cv::waitKey(0);
+
     return ewg;
 }
 
@@ -109,17 +114,14 @@ main(int argc, char *argv[])
     double best_exposure = 0.0;
     double ewg = 0.0;
 
+    ewg = _grab_and_return_ewg (cam_bluefox2, eval, next_exp);
     //while(1) {
     for (int i=0; i<50; i++) {
-        ewg = _grab_and_return_ewg (cam_bluefox2, eval, next_exp);
-
-        std::cout << "[ExpCtrl]\tComputed entropy weighted gain = " << ewg << std::endl;
-
+        std::cout << "[ExpCtrl]\t(t,v) = (" << next_exp << ", "<< ewg << ")" << std::endl;
         while (!gpo.is_optimal()) {
-            cout << "[ExpCtrl]\tCurrent query exposure " << next_exp << endl;
+            std::cout << "[ExpCtrl]\tDuring GP (t,v) = (" << next_exp << ", "<< ewg << ")" << std::endl;
             if (gpo.evaluate (next_exp, ewg)) {
                 best_exposure = gpo.optimal_expose();
-                cout << "[ExpCtrl]\tOne loop done!! Next best exposure" << best_exposure << endl;
                 break;
             }
             else {
@@ -129,8 +131,10 @@ main(int argc, char *argv[])
             }
         }
 
+        //cout << "[ExpCtrl]\tOne loop done!! Next best exposure" << best_exposure << endl;
         next_exp = (int) best_exposure;
         cam_bluefox2.RequestSingle();
+
         printf ("ExpCtrl\tSet to %d.\n", next_exp);
     }
 

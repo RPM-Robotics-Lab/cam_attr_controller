@@ -12,10 +12,10 @@ void botimage_to_cvMat (bot_core::image_t *bot_img, cv::Mat& img)
         cv::cvtColor(img,img, cv::COLOR_RGB2BGR);
     }
 
-    cv::namedWindow("test",cv::WINDOW_NORMAL);
-    cv::imshow("test",img);
+    //cv::namedWindow("test",cv::WINDOW_NORMAL);
+    //cv::imshow("test",img);
 
-    cv::waitKey(1);
+    //cv::waitKey(1);
 }
 
 }
