@@ -1,8 +1,7 @@
 {
     "camera":
     {
-        //"serial":"25002109",
-        "serial":"25001931",
+        "serial":"25002109",
         "config":
         {
             "width": 752,

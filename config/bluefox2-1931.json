@@ -1,0 +1,49 @@
+{
+    "camera":
+    {
+        "serial":"25001931",
+        "config":
+        {
+            "width": 752,
+            "height": 480,
+            "idpf": "ibpfBGR888Packed",
+            "idpf2": "ibpfMono16",
+            "cbm": "cbmOff",
+            "agc": false,
+            "gain_db": 0.0,
+            "aec": true,
+            "expose_us": 1000,
+            "acs": "acs_unavailable",
+            "des_gray_val": 85,
+            "wbp": "wbp_user1",
+            "wbp2": "wbp_unavailable",
+            "r_gain": 1.175,
+            "g_gain": 1.0,
+            "b_gain": 1.5,
+            "hdr": false,
+            "dcfm": "dcfm_off",
+            "cpc": "cpc_40000",
+            "ctm": "ctm_on_high_level",
+            "cts": "cts_RTCtrl",
+            "request": 1,
+            "cem": "cemOverlapped",
+            "cticme": true,
+            "cticmm": "cticmmBlueFOX_x00wC_WPPLS",
+            "cte":true,
+            "ctocme": true,
+            "ctocmm": "ctocmmXYZTosRGB_D50",
+            "lute": true,
+            "lutmode": "LUTmGamma",
+            "lutimpl": "LUTiSoftware",
+            "lutmapping": "LUTm8To8",
+            "cfm": "cfmDigout0",
+            "cft": "cftStandard",
+            "ctr":
+            {
+                "row0":[1.0,0.0,0.0],
+                "row1":[0.0,1.0,0.0],
+                "row2":[0.0,0.0,1.0]
+            }
+        }
+    }
+}
