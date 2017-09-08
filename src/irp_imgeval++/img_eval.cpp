@@ -1,5 +1,5 @@
 #include "img_eval.h"
-
+#include <math.h>
 
 double
 Img_eval::calc_img_ent_grad (cv::Mat &img, bool visualize)
@@ -8,13 +8,13 @@ Img_eval::calc_img_ent_grad (cv::Mat &img, bool visualize)
     cvtColor(img, img, cv::COLOR_BGR2GRAY);
 
     cv::Mat entropy, grad ;
-	cv::Mat wmask(entropy.size(), CV_32F, 1.); // ones
+	cv::Mat wmask(entropy.size(), CV_32F, 1.0); // ones
     img_entropy (img, entropy);
     img_wmask (entropy, wmask);
     img_grad (img, grad);
 
-	int wrows = entropy.rows;
-	int wcols = entropy.cols; 
+//	int wrows = entropy.rows;
+//	int wcols = entropy.cols; 
     double Gmean, Emean;
     img_Gmean (grad, Gmean);
     img_Emean (entropy, Emean);
@@ -32,9 +32,12 @@ Img_eval::calc_img_ent_grad (cv::Mat &img, bool visualize)
 	Mat Gourstmp1, Gourstmp2;
     double Gours;
     img_Gours (Gour, Gourstmp1, Gourstmp2, Gours);
-   
+       std::cout << "Gmean=  " << Gmean << " Emean= " << Emean << " Gours= " << Gours <<std::endl;
+//    cv::waitKey(1);
 
-//        std::cout << "   Sval: "<< grad << std::endl;
+
+  
+//        std::cout << "   Sval: "<< Smask << std::endl;
 
     if (visualize) {
 
@@ -95,7 +98,7 @@ Img_eval::img_wmask (Mat &entropy, Mat &wmask)
     
     wmask = tmp2;
      
-//    std::cout << "wmask: kkk " << wmask.size() <<std::endl;
+//    std::cout << "wmask: kkk " << wmask <<std::endl;
 }
 
 
@@ -211,7 +214,7 @@ void Img_eval::getLocalEntropyImage(cv::Mat &gray, cv::Rect &roi, cv::Mat &entro
     func_begin = clock();
     //1.define nerghbood model,here it's 9*9
     int neighbood_dim = 2;
-    int neighbood_size[] = {7, 7};
+    int neighbood_size[] = {9, 9};
 
     //2.Pad gray_src
     Mat gray_src_mat(gray);
@@ -281,7 +284,7 @@ void Img_eval::getLocalEntropyImage(cv::Mat &gray, cv::Rect &roi, cv::Mat &entro
     int current_index_in_origin = 0;
     for (int y = roi.y; y < roi.height; y++){
         current_index = y * pad_src->cols;
-        current_index_in_origin = (y - 3) * gray.cols; //     neighbood_size[1] 
+        current_index_in_origin = (y - 4) * gray.cols; //     neighbood_size[1] 
         for (int x = roi.x; x < roi.width; x++, current_index++, current_index_in_origin++) {
             for (int j = 0; j<neighbood_num; j++) {
                 neighbood_index = current_index + neighbood_offset[j];
@@ -314,45 +317,46 @@ void Img_eval::getLocalEntropyImage(cv::Mat &gray, cv::Rect &roi, cv::Mat &entro
 }
 
 
-void Img_eval::GammaCorrection(Mat& src, Mat& dst, float fGamma)
-{
-    CV_Assert(src.data);
 
-    // accept only char type matrices
-    CV_Assert(src.depth() != sizeof(uchar));
+//void Img_eval::GammaCorrection(Mat& src, Mat& dst, float fGamma)
+//{
+//    CV_Assert(src.data);
 
-    // build look up table
-    unsigned char lut[256];
-    for (int i = 0; i < 256; i++)
-    {
-        lut[i] = saturate_cast<uchar>(pow((float)(i / 255.0 ), fGamma / 100) * 255.0f);
-    }
+//    // accept only char type matrices
+//    CV_Assert(src.depth() != sizeof(uchar));
 
-    dst = src.clone();
-    const int channels = dst.channels();
-    switch (channels)
-    {
-        case 2:
-        {
-            MatIterator_<uchar> it, end;
-            for (it = dst.begin<uchar>(), end = dst.end<uchar>(); it != end; it++)
-            //*it = pow((float)(((*it))/255.0), fGamma) * 255.0;
-            *it = lut[(*it)];
-            break;
-        }
-        case 3:
-        {
-            MatIterator_<Vec3b> it, end;
-            for (it = dst.begin<Vec3b>(), end = dst.end<Vec3b>(); it != end; it++)
-            {
-            (*it)[0] = lut[((*it)[0])];
-            (*it)[1] = lut[((*it)[1])];
-            (*it)[2] = lut[((*it)[2])];
-        }
-            break;
-        }
-    }
-}
+//    // build look up table
+//    unsigned char lut[256];
+//    for (int i = 0; i < 256; i++)
+//    {
+//        lut[i] = saturate_cast<uchar>(pow((float)(i / 255.0 ), fGamma / 100) * 255.0f);
+//    }
+
+//    dst = src.clone();
+//    const int channels = dst.channels();
+//    switch (channels)
+//    {
+//        case 2:
+//        {
+//            MatIterator_<uchar> it, end;
+//            for (it = dst.begin<uchar>(), end = dst.end<uchar>(); it != end; it++)
+//            //*it = pow((float)(((*it))/255.0), fGamma) * 255.0;
+//            *it = lut[(*it)];
+//            break;
+//        }
+//        case 3:
+//        {
+//            MatIterator_<Vec3b> it, end;
+//            for (it = dst.begin<Vec3b>(), end = dst.end<Vec3b>(); it != end; it++)
+//            {
+//            (*it)[0] = lut[((*it)[0])];
+//            (*it)[1] = lut[((*it)[1])];
+//            (*it)[2] = lut[((*it)[2])];
+//        }
+//            break;
+//        }
+//    }
+//}
 
 
 

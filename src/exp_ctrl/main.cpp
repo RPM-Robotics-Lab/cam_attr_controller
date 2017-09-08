@@ -18,7 +18,7 @@ using namespace boost::filesystem;
 #include "Parser.h"
 #include "bot_util/BotUtils.h"
 #include "irp_imgeval++/img_eval.h"
-
+#include <math.h>
 using namespace std;
 using namespace mvIMPACT::acquire;
 using namespace ipms_param;
@@ -66,7 +66,7 @@ _grab_and_return_ewg (bluefox2::Bluefox2 &cam_bluefox2, Img_eval &eval, int exp_
 
     cv::namedWindow("Current", cv::WINDOW_AUTOSIZE);
     cv::imshow("Current", img);
-    cv::waitKey(1);
+
 
     return ewg;
 }
@@ -114,8 +114,8 @@ main(int argc, char *argv[])
     int next_exp = init_expose;
     double best_exposure = 0.0;
     double ewg = 0.0;
-
     ewg = _grab_and_return_ewg (cam_bluefox2, eval, next_exp);
+
     //while(1) {
 //    for (int i=0; i<10; i++) {
 //        std::cout << "[ExpCtrl]\t(t,v) = (" << next_exp << ", "<< ewg << ")" << std::endl;
@@ -137,6 +137,8 @@ main(int argc, char *argv[])
 
         printf ("ExpCtrl\tSet to %d.\n", next_exp);
         cv::waitKey(0);
+
+
 //    }
 
     //vector<int> compression_params;
@@ -152,6 +154,6 @@ main(int argc, char *argv[])
     bot_core::image_t tmp_img;
     cam_bluefox2.GrabImage(tmp_img);*/
 
-
+  
     return 0;
 }
