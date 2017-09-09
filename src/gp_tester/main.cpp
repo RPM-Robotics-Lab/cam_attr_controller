@@ -40,8 +40,8 @@ int main(int argc, char** argv)
     double s_n = 10.0;
 
 //    ifstream file_path("/home/yg/svn/docs/papers/conferences/icra2018-jwkim/trunk/matlab/dat/38datar.csv");
-    ifstream file_path("../../data/0908a.csv");
-    ifstream file_path2("../../data/0908.csv");
+    ifstream file_path("../../data/090823a.csv");
+    ifstream file_path2("../../data/090823b.csv");
     string line;
     vector<double> x_data, x_data2;
     vector<double> y_data, y_data2;

@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 2.8)
 #========================================================================
 cmake_minimum_required (VERSION 2.8)
 cmake_policy (VERSION 2.8)
-cmake_policy (SET CMP0054 OLD)
+#cmake_policy (SET CMP0054 OLD)
 cmake_policy (SET CMP0002 OLD)
 
 set (CMAKE_ALLOW_LOOSE_LOOP_CONSTRUCTS TRUE)

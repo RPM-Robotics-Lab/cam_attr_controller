@@ -57,17 +57,19 @@ _grab_and_return_ewg (bluefox2::Bluefox2 &cam_bluefox2, Img_eval &eval, int exp_
 
     cv::Mat img;
     bot_util::botimage_to_cvMat(&test_img, img);
-    cv::resize (img, img, cv::Size(320, 240));
+
+
+//    cv::namedWindow("Previous", cv::WINDOW_AUTOSIZE);
+//    cv::imshow("Previous", img);
 
     // compute entropy + grad
     double ewg = eval.calc_img_ent_grad (img, true);
 
+
+
+    
+
     cam_bluefox2.RequestSingle();
-
-    cv::namedWindow("Current", cv::WINDOW_AUTOSIZE);
-    cv::imshow("Current", img);
-
-
     return ewg;
 }
 
@@ -106,7 +108,7 @@ main(int argc, char *argv[])
     // intialize time from 100us - 150000us (150 time indeces)
     Config cfg(ls, s_f, s_n, AcqType::MAXMI, 5);
     vector<double> x_data;
-    for (int t=100; t<10000; t+=100) x_data.push_back (t);
+    for (int t=500; t<20000; t+=100) x_data.push_back (t);
     gpo.set_predict (x_data);   // query exposure range
     gpo.initialize(cfg);
 
@@ -136,7 +138,7 @@ main(int argc, char *argv[])
         next_exp = (int) best_exposure;
 
         printf ("ExpCtrl\tSet to %d.\n", next_exp);
-        cv::waitKey(0);
+//        cv::waitKey(0);
 
 
     }

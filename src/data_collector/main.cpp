@@ -61,8 +61,8 @@ _grab_and_return_ewg (bluefox2::Bluefox2 &cam_bluefox2, Img_eval &eval, int exp_
     double ewg = eval.calc_img_ent_grad (img, false);
 
 
-    cv::namedWindow("Current", cv::WINDOW_AUTOSIZE);
-    cv::imshow("Current", img);
+    cv::namedWindow("Previous", cv::WINDOW_AUTOSIZE);
+    cv::imshow("Previous", img);
 //    cv::waitKey(0);
 
     return ewg;
