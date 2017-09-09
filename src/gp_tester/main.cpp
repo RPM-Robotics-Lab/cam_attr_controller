@@ -41,7 +41,7 @@ int main(int argc, char** argv)
 
 //    ifstream file_path("/home/yg/svn/docs/papers/conferences/icra2018-jwkim/trunk/matlab/dat/38datar.csv");
     ifstream file_path("../../data/090823a.csv");
-    ifstream file_path2("../../data/090823b.csv");
+    ifstream file_path2("../../data/0909.csv");
     string line;
     vector<double> x_data, x_data2;
     vector<double> y_data, y_data2;
@@ -68,7 +68,7 @@ int main(int argc, char** argv)
 
     while (!gpo.is_optimal()) {
 //    for (int i = 0; i < 20; ++i) {
-        cout << "Current query exposure " << x << endl;
+        cout << "Current query exposure " << x <<", " << y << endl;
         if (gpo.evaluate(x, y)) {
             best_exposure = gpo.optimal_expose();
             break;
@@ -93,7 +93,7 @@ int main(int argc, char** argv)
     while (!gpo.is_optimal()) {
 //    for (int i = 0; i < 20; ++i) {
 
-        cout << "Current query exposure " << x << endl;
+        cout << "Current query exposure " << x <<", " << y << endl;
         if (gpo.evaluate(x, y)) {
             best_exposure = gpo.optimal_expose();
             break;

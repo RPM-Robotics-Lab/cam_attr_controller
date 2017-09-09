@@ -46,7 +46,7 @@ Img_eval::calc_img_ent_grad (cv::Mat &img, bool visualize)
 	    cv::imshow("Gradient Image",grad);
 
         /// Wait until user exits the program
-        cv::waitKey(0);
+//        cv::waitKey(0);
     }
 
     return Gours;

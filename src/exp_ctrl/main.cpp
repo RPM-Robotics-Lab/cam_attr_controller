@@ -86,9 +86,9 @@ main(int argc, char *argv[])
     int frameRate_Hz = 10;  // fps
     int timeout_ms = 200;
 
-    double ls = 1000.0;
-    double s_f = 1000.0;
-    double s_n = 100.0;
+    double ls = 3000.0;
+    double s_f = 35.0;
+    double s_n = 10.0;
 
     // camera prepare
     bluefox2::Bluefox2 cam_bluefox2(parser.GetSerial());
