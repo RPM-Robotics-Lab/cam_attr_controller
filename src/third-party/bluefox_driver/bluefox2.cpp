@@ -131,7 +131,6 @@ bool Bluefox2::GrabImage(bot_core::image_t& img_t)
     
     // Release capture request
     fi_->imageRequestUnlock(request_nr);
-    return true;
 
     return true;
 }
@@ -170,6 +169,7 @@ bool Bluefox2::SetExpEnsure()
 
     // Release capture request
     fi_->imageRequestUnlock(request_nr);
+
     return true;
 }
 

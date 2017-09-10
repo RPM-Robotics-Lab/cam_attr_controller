@@ -25,7 +25,7 @@ Img_eval::calc_img_ent_grad (cv::Mat &img, bool visualize)
 	
 	Mat columnSum, mu;   
     img_columnSum (entropy, columnSum, mu);
-	Mat Smask = 2* Gmean * wmask;  //Smask == Sval, how to - value
+	Mat Smask = 2.5 * Gmean * wmask;  //Smask == Sval, how to - value
     Mat Gour = ((gradW.mul(grad))+ Smask) ;
 	Mat Gourstmp1, Gourstmp2;
     double Gours;
@@ -36,6 +36,7 @@ Img_eval::calc_img_ent_grad (cv::Mat &img, bool visualize)
     // std::cout << "   Sval: "<< Smask << std::endl;
 
     if (visualize) {
+//        cv::resize (img, img, cv::Size(752, 480));
 	    cv::namedWindow("Original", cv::WINDOW_AUTOSIZE);
 //	    cv::namedWindow("Entropy Mask", cv::WINDOW_AUTOSIZE);	
 //	    cv::namedWindow("Entropy Filter", cv::WINDOW_AUTOSIZE);
@@ -44,7 +45,7 @@ Img_eval::calc_img_ent_grad (cv::Mat &img, bool visualize)
 //	    cv::imshow("Entropy Mask", wmask);  //dst 
 //	    cv::imshow("Entropy Filter", entropy);
 //	    cv::imshow("Gradient Image",grad);
-
+    
         /// Wait until user exits the program
 //        cv::waitKey(0);
     }
