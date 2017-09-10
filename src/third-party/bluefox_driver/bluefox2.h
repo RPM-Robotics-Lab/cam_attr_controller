@@ -34,6 +34,7 @@ public:
 
     // bool GrabImage(sensor_msgs::Image &image_msg);
     bool GrabImage(bot_core::image_t& img_t);
+    bool SetExpEnsure();
 
     void SetMM(int mm) const;
     void SetMaster() const;

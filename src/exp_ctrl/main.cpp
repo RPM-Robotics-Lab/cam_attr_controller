@@ -50,32 +50,34 @@ _prepare_save_dir ()
 double
 _grab_and_return_ewg (bluefox2::Bluefox2 &cam_bluefox2, Img_eval &eval, int exp_t)
 {
-    bot_core::image_t test_img, test_img2;
+    bot_core::image_t test_img;
 
     // grab image from the next_exp
     cam_bluefox2.SetExposeUs (exp_t);
-    cam_bluefox2.RequestSingle();
-    cam_bluefox2.GrabImage (test_img);
+    bool ok = cam_bluefox2.SetExpEnsure ();
+
+    //cout << "ok? " << ok << endl;
+
+    cam_bluefox2.SetExposeUs (exp_t);
+    ok = cam_bluefox2.SetExpEnsure ();
+
+    //cout << "ok? " << ok << endl;
 
     cam_bluefox2.SetExposeUs (exp_t);
     cam_bluefox2.RequestSingle();
     cam_bluefox2.GrabImage (test_img);
 
-    cam_bluefox2.SetExposeUs (exp_t);
-    cam_bluefox2.RequestSingle();
-    cam_bluefox2.GrabImage (test_img2);
-
-    std::cout << "\n[ExpCtrl]\tgetexpose = " << cam_bluefox2.GetExposeUs() << "  Setexpose= " << exp_t<<  "" << std::endl;
+//    std::cout << "\n[ExpCtrl]\tgetexpose = " << cam_bluefox2.GetExposeUs() << "  Setexpose= " << exp_t<<  "" << std::endl;
 
     cv::Mat img;
-    bot_util::botimage_to_cvMat (&test_img2, img);
+    bot_util::botimage_to_cvMat (&test_img, img);
 
     // compute entropy + grad
     double ewg = eval.calc_img_ent_grad (img, true);
 
     // cam_bluefox2.RequestSingle();
-    std::cout << "[ExpCtrl]\t (t,v) = (" << exp_t << ", "<< ewg << ")" << std::endl;
-    cv::waitKey(0);
+//    std::cout << "[ExpCtrl]\t (t,v) = (" << exp_t << ", "<< ewg << ")" << std::endl;
+//    cv::waitKey(0);
 
     return ewg;
 
@@ -119,7 +121,8 @@ main(int argc, char *argv[])
     // intialize time from 100us - 150000us (150 time indeces)
     Config cfg(ls, s_f, s_n, AcqType::MAXMI, 5);
     vector<double> x_data;
-    for (int t=500; t<20000; t+=100) x_data.push_back (t);
+    while(true) {
+    for (int t=500; t<15000; t+=500) x_data.push_back (t);
     gpo.set_predict (x_data);   // query exposure range
     gpo.initialize(cfg);
 
@@ -134,9 +137,7 @@ main(int argc, char *argv[])
 
     cout << "dt = " << dt << endl;
 
-    //while(1) {
-    for (int i=0; i<10; i++) {
-//        std::cout << "[ExpCtrl]\t(t,v) = (" << next_exp << ", "<< ewg << ")" << std::endl;
+    
         while (!gpo.is_optimal()) {
 //            std::cout << "[ExpCtrl]\tDuring GP (t,v) = (" << next_exp << ", "<< ewg << ")" << std::endl;
             if (gpo.evaluate (next_exp, ewg)) {
@@ -154,10 +155,8 @@ main(int argc, char *argv[])
         next_exp = (int) best_exposure;
 
         printf ("ExpCtrl\tSet to %d.\n", next_exp);
-//        cv::waitKey(0);
 
-
-    }
+        cv::waitKey(0);
 
     //vector<int> compression_params;
     //compression_params.push_back(CV_IMWRITE_PNG_COMPRESSION);
@@ -171,7 +170,7 @@ main(int argc, char *argv[])
     cam_bluefox2.RequestSingle();
     bot_core::image_t tmp_img;
     cam_bluefox2.GrabImage(tmp_img);*/
-
+    }
   
     return 0;
 }

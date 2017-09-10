@@ -94,7 +94,7 @@ main(int argc, char *argv[])
     // main process start
     printf ("[ExpCtrl]\tStart to grab images.\n");
 
-    for (int t=500; t<20000; t+=100) {
+    for (int t=500; t<20000; t+=500) {
 	double ewg = _grab_and_return_ewg (cam_bluefox2, eval, t);
 //        std::cout << "[ExpCtrl]\t(t,v) = (" << t << ", "<< ewg << ")" << std::endl;
         std::cout << t << "," << ewg  << std::endl;
