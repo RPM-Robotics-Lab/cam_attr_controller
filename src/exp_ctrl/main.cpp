@@ -14,11 +14,13 @@ using namespace boost::filesystem;
 #include "Bluefox2Driver/Bluefox2Config.h"
 #include "param_util.h"
 #include "lcmtypes++/bot_core/image_sync_t.hpp"
+#include "irp-common/timestamp.h"
 
 #include "Parser.h"
 #include "bot_util/BotUtils.h"
 #include "irp_imgeval++/img_eval.h"
 #include <math.h>
+
 using namespace std;
 using namespace mvIMPACT::acquire;
 using namespace ipms_param;
@@ -125,7 +127,12 @@ main(int argc, char *argv[])
     int next_exp = init_expose;
     double best_exposure = 0.0;
     double ewg = 0.0;
+
+    int64_t t0 = timestamp_now ();
     ewg = _grab_and_return_ewg (cam_bluefox2, eval, next_exp);
+    int64_t dt = timestamp_now ()-t0;
+
+    cout << "dt = " << dt << endl;
 
     //while(1) {
     for (int i=0; i<10; i++) {
