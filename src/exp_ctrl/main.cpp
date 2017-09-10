@@ -1,5 +1,9 @@
 #include <unistd.h>
 #include <iostream>
+#include <iomanip>
+#include <ctime>
+#include <chrono>
+#include <string>
 
 #include <boost/program_options/parsers.hpp>
 #include <boost/filesystem.hpp>
@@ -47,21 +51,25 @@ _prepare_save_dir ()
     outFile.open(str_times.c_str());
 }
 
+
 double
 _grab_and_return_ewg (bluefox2::Bluefox2 &cam_bluefox2, Img_eval &eval, int exp_t)
 {
+
+    int64_t t0 = timestamp_now ();
+
     bot_core::image_t test_img;
 
     // grab image from the next_exp
     cam_bluefox2.SetExposeUs (exp_t);
+    cout << "set us dt= " << timestamp_now ()-t0 << endl;
+    
+    int64_t t1 = timestamp_now ();
     bool ok = cam_bluefox2.SetExpEnsure ();
-
-    //cout << "ok? " << ok << endl;
+    cout << "ensure dt = " << timestamp_now ()-t1 << endl;
 
     cam_bluefox2.SetExposeUs (exp_t);
     ok = cam_bluefox2.SetExpEnsure ();
-
-    //cout << "ok? " << ok << endl;
 
     cam_bluefox2.SetExposeUs (exp_t);
     cam_bluefox2.RequestSingle();
@@ -71,32 +79,52 @@ _grab_and_return_ewg (bluefox2::Bluefox2 &cam_bluefox2, Img_eval &eval, int exp_
 
     cv::Mat img;
     bot_util::botimage_to_cvMat (&test_img, img);
+    cv::Mat orignal_img = img;
 
+    t1 = timestamp_now ();
     // compute entropy + grad
     double ewg = eval.calc_img_ent_grad (img, true);
+    cout << "ewg dt= " << timestamp_now ()-t1 << endl;
 
     // cam_bluefox2.RequestSingle();
 //    std::cout << "[ExpCtrl]\t (t,v) = (" << exp_t << ", "<< ewg << ")" << std::endl;
 //    cv::waitKey(0);
 
-    return ewg;
+	    cv::namedWindow("Original", cv::WINDOW_AUTOSIZE);
+	    cv::imshow("Original", orignal_img);
 
-//    cv::namedWindow("Previous", cv::WINDOW_AUTOSIZE);
-//    cv::imshow("Previous", img);
+
+
+    string str_save_path("result_data");
+    path save_path (str_save_path);
+    if (!is_directory(save_path)) {
+        if(boost::filesystem::create_directory(save_path)) {
+            cerr << "[ExpCtrl]\t Make a directory" << endl;   
+        }        
+    }
+
+    string str_time = std::to_string(timestamp_now());
+    string fname = str_save_path + "/" + str_time + ".png";
+    cv::imwrite(fname, orignal_img);
+
+
+
+ 
+//    cout << "---all dt= " << timestamp_now ()-t0 << endl;
+    return ewg;
 
 }
 
 int
 main(int argc, char *argv[])
 {
-
     Bluefox2Parser parser;
     Img_eval eval;
     GPOptimize gpo;
 
     // init
     int init_expose = 500;  // us
-    int frameRate_Hz = 10;  // fps
+    int frameRate_Hz = 60;  // fps
     int timeout_ms = 200;
 
     double ls = 3000.0;
@@ -131,13 +159,8 @@ main(int argc, char *argv[])
     double best_exposure = 0.0;
     double ewg = 0.0;
 
-    int64_t t0 = timestamp_now ();
     ewg = _grab_and_return_ewg (cam_bluefox2, eval, next_exp);
-    int64_t dt = timestamp_now ()-t0;
 
-    cout << "dt = " << dt << endl;
-
-    
         while (!gpo.is_optimal()) {
 //            std::cout << "[ExpCtrl]\tDuring GP (t,v) = (" << next_exp << ", "<< ewg << ")" << std::endl;
             if (gpo.evaluate (next_exp, ewg)) {
@@ -156,7 +179,7 @@ main(int argc, char *argv[])
 
         printf ("ExpCtrl\tSet to %d.\n", next_exp);
 
-        cv::waitKey(0);
+//        cv::waitKey(0);
 
     //vector<int> compression_params;
     //compression_params.push_back(CV_IMWRITE_PNG_COMPRESSION);
