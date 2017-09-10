@@ -48,25 +48,27 @@ _prepare_save_dir ()
 double
 _grab_and_return_ewg (bluefox2::Bluefox2 &cam_bluefox2, Img_eval &eval, int exp_t)
 {
-    bot_core::image_t test_img, test_img2;
+    bot_core::image_t test_img;
 
     // grab image from the next_exp
     cam_bluefox2.SetExposeUs (exp_t);
-    cam_bluefox2.RequestSingle();
-    cam_bluefox2.GrabImage (test_img);
+    bool ok = cam_bluefox2.SetExpEnsure ();
+
+    //cout << "ok? " << ok << endl;
+
+    cam_bluefox2.SetExposeUs (exp_t);
+    ok = cam_bluefox2.SetExpEnsure ();
+
+    //cout << "ok? " << ok << endl;
 
     cam_bluefox2.SetExposeUs (exp_t);
     cam_bluefox2.RequestSingle();
     cam_bluefox2.GrabImage (test_img);
-
-    cam_bluefox2.SetExposeUs (exp_t);
-    cam_bluefox2.RequestSingle();
-    cam_bluefox2.GrabImage (test_img2);
 
     std::cout << "\n[ExpCtrl]\tgetexpose = " << cam_bluefox2.GetExposeUs() << "  Setexpose= " << exp_t<<  "" << std::endl;
 
     cv::Mat img;
-    bot_util::botimage_to_cvMat (&test_img2, img);
+    bot_util::botimage_to_cvMat (&test_img, img);
 
     // compute entropy + grad
     double ewg = eval.calc_img_ent_grad (img, true);

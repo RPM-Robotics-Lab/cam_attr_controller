@@ -136,6 +136,43 @@ bool Bluefox2::GrabImage(bot_core::image_t& img_t)
     return true;
 }
 
+bool Bluefox2::SetExpEnsure()
+{
+    // NOTE: A request object is locked for the driver whenever the corresponding
+    // wait function returns a valid request object.
+    // All requests returned by
+    // mvIMPACT::acquire::FunctionInterface::imageRequestWaitFor need to be
+    // unlocked no matter which result mvIMPACT::acquire::Request::requestResult
+    // contains.
+    // http://www.matrix-vision.com/manuals/SDK_CPP/ImageAcquisition_section_capture.html
+    
+    // request single
+    fi_->imageRequestSingle();
+
+    int request_nr = INVALID_ID;
+    request_nr = fi_->imageRequestWaitFor(timeout_ms_);
+
+    // Check if request is valid
+    if (!fi_->isRequestNrValid(request_nr)) {
+        // We do not need to unlock here because the request is not valid?
+        fi_->imageRequestUnlock(request_nr);
+        return false;
+    }
+
+    request_ = fi_->getRequest(request_nr);
+
+    // Check if request is ok
+    if (!request_->isOK()) {
+        // need to unlock here because the request is valid even if it is not ok
+        fi_->imageRequestUnlock(request_nr);
+        return false;
+    }
+
+    // Release capture request
+    fi_->imageRequestUnlock(request_nr);
+    return true;
+}
+
 void Bluefox2::Configure(Bluefox2Config &config) {
     fi_->imageRequestReset(0, 0);
 
