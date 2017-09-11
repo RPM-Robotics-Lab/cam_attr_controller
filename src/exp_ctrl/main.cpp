@@ -197,8 +197,21 @@ main(int argc, char *argv[])
      //write ** images 
     cv::Mat best_img = best ;
 
+    // show text 
+    CvFont font;
+    cvInitFont (&font, CV_FONT_HERSHEY_PLAIN, 2.0, 2.0, 0, 2, 8);
+    CvScalar red = CV_RGB (255, 0, 0);
+    CvPoint str_pos = cvPoint (50, 50);
+
+
+    char str[30];
+    snprintf (str, sizeof str, "exp = %d", next_exp);
+
+    cv::Mat result;
+    cv::cvtColor(best_img, result, cv::COLOR_GRAY2BGR);
     cv::namedWindow("best", cv::WINDOW_AUTOSIZE);
-    cv::imshow("best", best_img);
+    cv::putText(result, str, Point(100,50), CV_FONT_HERSHEY_SIMPLEX, 1, CV_RGB(255,0,0), 2, 8);
+    cv::imshow("best", result);
     
 //    cv::waitKey(0);
 

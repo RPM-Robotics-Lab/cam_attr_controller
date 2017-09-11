@@ -28,6 +28,18 @@ int main(int argc, char** argv)
 
     double ewg = eval.calc_img_ent_grad (img, true);
 
+    char str[30];
+    snprintf (str, sizeof str, "%d", 100);
+
+    cv::namedWindow("best", cv::WINDOW_AUTOSIZE);
+
+    cv::Mat result;
+    cv::cvtColor(img, result, cv::COLOR_GRAY2BGR);
+    cv::putText(result, str, Point(100,50), CV_FONT_HERSHEY_SIMPLEX, 1, CV_RGB(255,0,0), 2, 8);
+    cv::imshow("best", result);
+
+    cv::waitKey(0);
+
     std::cout << "Computed entropy weighted gain = " << ewg << std::endl;
 
     return 0;
