@@ -157,20 +157,26 @@ main(int argc, char *argv[])
     // intialize time from 100us - 150000us (150 time indeces)
     Config cfg(ls, s_f, s_n, AcqType::MAXVAR, 5);
     vector<double> x_data;
+
     while(true) {
-    for (int t=300; t<17000; t+=500) x_data.push_back (t);
-    gpo.set_predict (x_data);   // query exposure range
-    gpo.initialize(cfg);
+        for (int t=300; t<17000; t+=500) 
+            x_data.push_back (t);
 
-    // exp value is int but GP use double in general
-    int next_exp = init_expose;
-    double best_exposure = 0.0;
-    double ewg = 0.0;
+        gpo.set_predict (x_data);   // query exposure range
+        gpo.initialize(cfg);
 
-    ewg = _grab_and_return_ewg (cam_bluefox2, eval, next_exp);
+        // exp value is int but GP use double in general
+        int next_exp = init_expose;
+        double best_exposure = 0.0;
+        double ewg = 0.0;
 
+        ewg = _grab_and_return_ewg (cam_bluefox2, eval, next_exp);
+        cv::Mat control_img;
+        int64_t time1 = timestamp_now();
         while (!gpo.is_optimal()) {
-//            std::cout << "[ExpCtrl]\tDuring GP (t,v) = (" << next_exp << ", "<< ewg << ")" << std::endl;
+            cv::resize (ewg, control_img, cv::Size(320, 240));
+    //            std::cout << "[ExpCtrl]\tDuring GP (t,v) = (" << next_exp << ", "<< ewg << ")" << std::endl;
+
             if (gpo.evaluate (next_exp, ewg)) {
                 
                 best_exposure = gpo.optimal_expose();
@@ -179,7 +185,7 @@ main(int argc, char *argv[])
 //	            cv::imshow("best", best);
     
 //                cv::waitKey(0);
-
+                ewg = _grab_and_return_ewg (cam_bluefox2, eval, best_exposure);
                 break;
             }
             else {
@@ -188,50 +194,50 @@ main(int argc, char *argv[])
                 ewg = _grab_and_return_ewg (cam_bluefox2, eval, next_exp);
             }
         }
-
+        int64_t time2 = timestamp_now();
         //cout << "[ExpCtrl]\tOne loop done!! Next best exposure" << best_exposure << endl;
         next_exp = (int) best_exposure;
-
+        double diff = static_cast<double>(time2-time1) / 1e6;
+        printf ("ExpCtrl\tTime %f.\n", diff);
         printf ("ExpCtrl\tSet to %d.\n", next_exp);
 
-     //write ** images 
-    cv::Mat best_img = best ;
+         //write ** images 
+        cv::Mat best_img = best ;
 
-    // show text 
-    CvFont font;
-    cvInitFont (&font, CV_FONT_HERSHEY_PLAIN, 2.0, 2.0, 0, 2, 8);
-    CvScalar red = CV_RGB (255, 0, 0);
-    CvPoint str_pos = cvPoint (50, 50);
-
-
-    char str[30];
-    snprintf (str, sizeof str, "exp = %d", next_exp);
-
-    cv::Mat result;
-    cv::cvtColor(best_img, result, cv::COLOR_GRAY2BGR);
-    cv::namedWindow("best", cv::WINDOW_AUTOSIZE);
-    cv::putText(result, str, Point(100,50), CV_FONT_HERSHEY_SIMPLEX, 1, CV_RGB(255,0,0), 2, 8);
-    cv::imshow("best", result);
-    
-//    cv::waitKey(0);
-
-    string str_save_path("result_data");
-    path save_path (str_save_path);
-    if (!is_directory(save_path)) {
-        if(boost::filesystem::create_directory(save_path)) {
-            cerr << "[ExpCtrl]\t Make a directory" << endl;   
-        }        
-    }
-
-    string str_time = std::to_string(timestamp_now());
-    string fname = str_save_path + "/" + str_time + ".png";
-    cv::imwrite(fname, best_img);
+        // show text 
+        CvFont font;
+        cvInitFont (&font, CV_FONT_HERSHEY_PLAIN, 2.0, 2.0, 0, 2, 8);
+        CvScalar red = CV_RGB (255, 0, 0);
+        CvPoint str_pos = cvPoint (50, 50);
 
 
+        char str[30];
+        snprintf (str, sizeof str, "%d", next_exp);
 
+        cv::Mat result;
+        cv::cvtColor(best_img, result, cv::COLOR_GRAY2BGR);
+        cv::namedWindow("best", cv::WINDOW_AUTOSIZE);
+        cv::putText(result, str, Point(600,50), CV_FONT_HERSHEY_SIMPLEX, 1, CV_RGB(0,255,0), 2, 8);
+        cv::imshow("best", result);
+        
+    //    cv::waitKey(0);
 
+        string str_save_path("result_data");
+        path save_path (str_save_path);
+        if (!is_directory(save_path)) {
+            if(boost::filesystem::create_directory(save_path)) {
+                cerr << "[ExpCtrl]\t Make a directory" << endl;   
+            }        
+        }
 
-    }
+        string str_time = std::to_string(timestamp_now());
+        string fname1 = str_save_path + "/" + str_time + ".png";
+        string fname2 = str_save_path + "2/" + str_time + ".png";
+
+        cv::imwrite(fname1, best_img);
+        cv::imwrite(fname2, result);
+
+    } // main while
   
     return 0;
 }

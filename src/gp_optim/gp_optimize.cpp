@@ -218,7 +218,6 @@ MatrixXd GPOptimize::gp_cov_k_SE(VectorXd x_i, VectorXd x_j, double l, double s_
 void GPOptimize::check_optimal()
 {
     double last_query = x_train_.back()(0);
-//    cout << " query_exposure_ " << query_exposure_ ;
 //    cout << " last _query " << last_query;
     if (abs(query_exposure_- last_query) < 15 || cost_ < 200) {
         set_optimal();
@@ -230,5 +229,6 @@ void GPOptimize::set_optimal()
     int index;
     y_pred_.maxCoeff(&index);
     optimal_exposure_ = x_pred_[index](0);
+//    cout << " optimzal_exposure_ " << optimal_exposure_ << endl;
     is_optimal_ = true;
 }
