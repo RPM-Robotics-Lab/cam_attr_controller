@@ -6,7 +6,7 @@ Img_eval::calc_img_ent_grad (cv::Mat &img, bool visualize)
 {
     // Convert to grayscale
     cvtColor(img, img, cv::COLOR_BGR2GRAY);
-    cv::resize (img, img, cv::Size(160, 120));
+    cv::resize (img, img, cv::Size(320, 240));
     cv::Mat entropy, grad ;
 	cv::Mat wmask(entropy.size(), CV_32F, 1.0); // ones
     img_entropy (img, entropy);
@@ -25,7 +25,7 @@ Img_eval::calc_img_ent_grad (cv::Mat &img, bool visualize)
 	
 	Mat columnSum, mu;   
     img_columnSum (entropy, columnSum, mu);
-	Mat Smask = 10 * Gmean * wmask;  //Smask == Sval, how to - value
+	Mat Smask = 7 * Gmean * wmask;  //Smask == Sval, how to - value
     Mat Gour = ((gradW.mul(grad))+ Smask) ;
 	Mat Gourstmp1, Gourstmp2;
     double Gours;
@@ -36,7 +36,7 @@ Img_eval::calc_img_ent_grad (cv::Mat &img, bool visualize)
     // std::cout << "   Sval: "<< Smask << std::endl;
 
     if (visualize) {
-//        cv::resize (img, img, cv::Size(752, 480));
+//        cv::resize (img, img, cv::Size(320, 240));
 //	    cv::namedWindow("Original", cv::WINDOW_AUTOSIZE);
 //	    cv::namedWindow("Entropy Mask", cv::WINDOW_AUTOSIZE);	
 //	    cv::namedWindow("Entropy Filter", cv::WINDOW_AUTOSIZE);
@@ -47,7 +47,8 @@ Img_eval::calc_img_ent_grad (cv::Mat &img, bool visualize)
 //	    cv::imshow("Gradient Image",grad);
     
         /// Wait until user exits the program
-//        cv::waitKey(0);
+        cv::waitKey(10);
+
     }
 
     return Gours;

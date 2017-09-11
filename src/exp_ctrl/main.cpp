@@ -29,6 +29,9 @@ using namespace std;
 using namespace mvIMPACT::acquire;
 using namespace ipms_param;
 
+
+cv::Mat best;
+
 void
 _prepare_save_dir ()
 {
@@ -62,11 +65,11 @@ _grab_and_return_ewg (bluefox2::Bluefox2 &cam_bluefox2, Img_eval &eval, int exp_
 
     // grab image from the next_exp
     cam_bluefox2.SetExposeUs (exp_t);
-    cout << "set us dt= " << timestamp_now ()-t0 << endl;
+//    cout << "set us dt= " << timestamp_now ()-t0 << endl;
     
     int64_t t1 = timestamp_now ();
     bool ok = cam_bluefox2.SetExpEnsure ();
-    cout << "ensure dt = " << timestamp_now ()-t1 << endl;
+//    cout << "ensure dt = " << timestamp_now ()-t1 << endl;
 
     cam_bluefox2.SetExposeUs (exp_t);
     ok = cam_bluefox2.SetExpEnsure ();
@@ -79,33 +82,38 @@ _grab_and_return_ewg (bluefox2::Bluefox2 &cam_bluefox2, Img_eval &eval, int exp_
 
     cv::Mat img;
     bot_util::botimage_to_cvMat (&test_img, img);
-    cv::Mat orignal_img = img;
-
-    t1 = timestamp_now ();
+//    t1 = timestamp_now ();
     // compute entropy + grad
     double ewg = eval.calc_img_ent_grad (img, true);
-    cout << "ewg dt= " << timestamp_now ()-t1 << endl;
+
+
+
+    cv::Mat orignal_img = img;
+    best=img;
+
+
+//    cout << "ewg dt= " << timestamp_now ()-t1 << endl;
 
     // cam_bluefox2.RequestSingle();
 //    std::cout << "[ExpCtrl]\t (t,v) = (" << exp_t << ", "<< ewg << ")" << std::endl;
 //    cv::waitKey(0);
 
-	    cv::namedWindow("Original", cv::WINDOW_AUTOSIZE);
-	    cv::imshow("Original", orignal_img);
+//	    cv::namedWindow("Original", cv::WINDOW_AUTOSIZE);
+//	    cv::imshow("Original", orignal_img);
+//    
+////    cv::waitKey(0);
 
+//    string str_save_path("result_data");
+//    path save_path (str_save_path);
+//    if (!is_directory(save_path)) {
+//        if(boost::filesystem::create_directory(save_path)) {
+//            cerr << "[ExpCtrl]\t Make a directory" << endl;   
+//        }        
+//    }
 
-
-    string str_save_path("result_data");
-    path save_path (str_save_path);
-    if (!is_directory(save_path)) {
-        if(boost::filesystem::create_directory(save_path)) {
-            cerr << "[ExpCtrl]\t Make a directory" << endl;   
-        }        
-    }
-
-    string str_time = std::to_string(timestamp_now());
-    string fname = str_save_path + "/" + str_time + ".png";
-    cv::imwrite(fname, orignal_img);
+//    string str_time = std::to_string(timestamp_now());
+//    string fname = str_save_path + "/" + str_time + ".png";
+//    cv::imwrite(fname, orignal_img);
 
 
 
@@ -123,7 +131,7 @@ main(int argc, char *argv[])
     GPOptimize gpo;
 
     // init
-    int init_expose = 500;  // us
+    int init_expose = 300;  // us
     int frameRate_Hz = 60;  // fps
     int timeout_ms = 200;
 
@@ -147,10 +155,10 @@ main(int argc, char *argv[])
 
     // GP
     // intialize time from 100us - 150000us (150 time indeces)
-    Config cfg(ls, s_f, s_n, AcqType::MAXMI, 5);
+    Config cfg(ls, s_f, s_n, AcqType::MAXVAR, 5);
     vector<double> x_data;
     while(true) {
-    for (int t=500; t<15000; t+=500) x_data.push_back (t);
+    for (int t=300; t<17000; t+=500) x_data.push_back (t);
     gpo.set_predict (x_data);   // query exposure range
     gpo.initialize(cfg);
 
@@ -164,7 +172,14 @@ main(int argc, char *argv[])
         while (!gpo.is_optimal()) {
 //            std::cout << "[ExpCtrl]\tDuring GP (t,v) = (" << next_exp << ", "<< ewg << ")" << std::endl;
             if (gpo.evaluate (next_exp, ewg)) {
+                
                 best_exposure = gpo.optimal_expose();
+
+//        	    cv::namedWindow("best", cv::WINDOW_AUTOSIZE);
+//	            cv::imshow("best", best);
+    
+//                cv::waitKey(0);
+
                 break;
             }
             else {
@@ -179,20 +194,30 @@ main(int argc, char *argv[])
 
         printf ("ExpCtrl\tSet to %d.\n", next_exp);
 
-//        cv::waitKey(0);
+     //write ** images 
+    cv::Mat best_img = best ;
 
-    //vector<int> compression_params;
-    //compression_params.push_back(CV_IMWRITE_PNG_COMPRESSION);
-    //compression_params.push_back(0);
+    cv::namedWindow("best", cv::WINDOW_AUTOSIZE);
+    cv::imshow("best", best_img);
+    
+//    cv::waitKey(0);
 
-    //string save_img_name = str_save_img_path + "/" + str_num_data + ".png";
-    //cv::imwrite(save_img_name, gray, compression_params);
+    string str_save_path("result_data");
+    path save_path (str_save_path);
+    if (!is_directory(save_path)) {
+        if(boost::filesystem::create_directory(save_path)) {
+            cerr << "[ExpCtrl]\t Make a directory" << endl;   
+        }        
+    }
 
-    /*cam_bluefox2.SetExposeUs(init_expose);
-    cam_bluefox2.set_timeout_ms(200);    
-    cam_bluefox2.RequestSingle();
-    bot_core::image_t tmp_img;
-    cam_bluefox2.GrabImage(tmp_img);*/
+    string str_time = std::to_string(timestamp_now());
+    string fname = str_save_path + "/" + str_time + ".png";
+    cv::imwrite(fname, best_img);
+
+
+
+
+
     }
   
     return 0;
