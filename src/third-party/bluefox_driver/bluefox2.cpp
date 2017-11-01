@@ -101,6 +101,7 @@ bool Bluefox2::GrabImage(bot_core::image_t& img_t)
     // Check if request is valid
     if (!fi_->isRequestNrValid(request_nr)) {
         // We do not need to unlock here because the request is not valid?
+        cerr << "image request unlock" << endl;
         fi_->imageRequestUnlock(request_nr);
         return false;
     }
@@ -110,6 +111,7 @@ bool Bluefox2::GrabImage(bot_core::image_t& img_t)
     // Check if request is ok
     if (!request_->isOK()) {
         // need to unlock here because the request is valid even if it is not ok
+        cerr << "request is not ok" << endl;
         fi_->imageRequestUnlock(request_nr);
         return false;
     }

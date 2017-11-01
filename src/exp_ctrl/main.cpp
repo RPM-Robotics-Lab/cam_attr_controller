@@ -64,19 +64,36 @@ _grab_and_return_ewg (bluefox2::Bluefox2 &cam_bluefox2, Img_eval &eval, int exp_
     bot_core::image_t test_img;
 
     // grab image from the next_exp
-    cam_bluefox2.SetExposeUs (exp_t);
-//    cout << "set us dt= " << timestamp_now ()-t0 << endl;
+    int exp_time = exp_t;
+    int tmp;
+
+    int64_t tt0 = timestamp_now();
+    while(1) {
+        
+        cam_bluefox2.SetExposeUs (exp_time);
+        tmp = cam_bluefox2.GetExposeUs();
+        cam_bluefox2.set_timeout_ms (50);
+        cam_bluefox2.RequestSingle();
+        cam_bluefox2.GrabImage (test_img);
+//        cerr << exp_time << "!=" << tmp << endl;
+        if (exp_time == tmp)    break;
+    }
+//    cerr << timestamp_now() - tt0 << endl;
+    //bool ok = cam_bluefox2.SetExpEnsure ();
+    //ok = cam_bluefox2.SetExpEnsure ();
+
     
-    int64_t t1 = timestamp_now ();
-    bool ok = cam_bluefox2.SetExpEnsure ();
+//    int64_t t1 = timestamp_now ();
+
 //    cout << "ensure dt = " << timestamp_now ()-t1 << endl;
 
-    cam_bluefox2.SetExposeUs (exp_t);
-    ok = cam_bluefox2.SetExpEnsure ();
 
-    cam_bluefox2.SetExposeUs (exp_t);
-    cam_bluefox2.RequestSingle();
-    cam_bluefox2.GrabImage (test_img);
+//    ok = cam_bluefox2.SetExpEnsure ();
+    
+
+
+//    cout << "ensure dt= " << timestamp_now ()-t0 << endl;
+
 
 //    std::cout << "\n[ExpCtrl]\tgetexpose = " << cam_bluefox2.GetExposeUs() << "  Setexpose= " << exp_t<<  "" << std::endl;
 
@@ -90,6 +107,18 @@ _grab_and_return_ewg (bluefox2::Bluefox2 &cam_bluefox2, Img_eval &eval, int exp_
 
     cv::Mat orignal_img = img;
     best=img;
+
+    
+    char str[30];
+    snprintf (str, sizeof str, "%d", tmp);
+
+    cv::Mat result;
+    cv::cvtColor(img, result, cv::COLOR_GRAY2BGR);
+    cv::namedWindow("best", cv::WINDOW_AUTOSIZE);
+    cv::putText(result, str, Point(600,50), CV_FONT_HERSHEY_SIMPLEX, 1, CV_RGB(0,255,0), 2, 8);
+
+    cv::namedWindow("current", cv::WINDOW_AUTOSIZE);
+    cv::imshow("current", result);
 
 
 //    cout << "ewg dt= " << timestamp_now ()-t1 << endl;
@@ -115,8 +144,6 @@ _grab_and_return_ewg (bluefox2::Bluefox2 &cam_bluefox2, Img_eval &eval, int exp_
 //    string fname = str_save_path + "/" + str_time + ".png";
 //    cv::imwrite(fname, orignal_img);
 
-
-
  
 //    cout << "---all dt= " << timestamp_now ()-t0 << endl;
     return ewg;
@@ -131,8 +158,8 @@ main(int argc, char *argv[])
     GPOptimize gpo;
 
     // init
-    int init_expose = 300;  // us
-    int frameRate_Hz = 60;  // fps
+    int init_expose = 2000;  // us
+    int frameRate_Hz = 20;  // fps
     int timeout_ms = 200;
 
     double ls = 3000.0;
@@ -145,7 +172,19 @@ main(int argc, char *argv[])
 
     cam_bluefox2.Configure (config);
     cam_bluefox2.set_timeout_ms (timeout_ms);
-    cam_bluefox2.SetFPSandExposeTime (frameRate_Hz, init_expose);
+
+    int tmp_exposure=10;
+    cam_bluefox2.SetFPSandExposeTime (frameRate_Hz, 10);
+
+    cam_bluefox2.Configure (config);
+    cam_bluefox2.set_timeout_ms (timeout_ms);
+
+    
+    cam_bluefox2.SetExposeUs(init_expose);
+    cam_bluefox2.set_timeout_ms(200);    
+    cam_bluefox2.RequestSingle();
+    bot_core::image_t tmp_img;
+    cam_bluefox2.GrabImage(tmp_img);
 
     // to save images
     _prepare_save_dir ();
@@ -159,7 +198,7 @@ main(int argc, char *argv[])
     vector<double> x_data;
 
     while(true) {
-        for (int t=300; t<17000; t+=500) 
+        for (int t=2000; t<10500; t+=500) 
             x_data.push_back (t);
 
         gpo.set_predict (x_data);   // query exposure range
@@ -174,7 +213,7 @@ main(int argc, char *argv[])
         cv::Mat control_img;
         int64_t time1 = timestamp_now();
         while (!gpo.is_optimal()) {
-            cv::resize (ewg, control_img, cv::Size(320, 240));
+            cv::resize (ewg, control_img, cv::Size(160, 120));
     //            std::cout << "[ExpCtrl]\tDuring GP (t,v) = (" << next_exp << ", "<< ewg << ")" << std::endl;
 
             if (gpo.evaluate (next_exp, ewg)) {
