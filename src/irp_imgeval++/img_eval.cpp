@@ -207,12 +207,12 @@ Img_eval::getLocalEntropyImage (cv::Mat &gray, cv::Rect &roi, cv::Mat &entropy)
     func_begin = clock();
     //1.define nerghbood model,here it's 9*9
     int neighbood_dim = 2;
-    int neighbood_size[] = {9, 9};
+    int neighbood_size[] = {3, 3};
 
     //2.Pad gray_src
     Mat gray_src_mat(gray);
     Mat pad_mat;
-    int left = (neighbood_size[0] - 1) / 2;
+    int left = (neighbood_size[0] - 1) / 2;  // 9 = > 4 , 5 => 2 ,  3 => 1
     int right = left;
     int top = (neighbood_size[1] - 1) / 2;
     int bottom = top;
@@ -259,12 +259,12 @@ Img_eval::getLocalEntropyImage (cv::Mat &gray, cv::Rect &roi, cv::Mat &entropy)
     //4.calculate entropy for pixel
     uchar *array = (uchar *)pad_src->data;
     //here,use entroy_table to avoid frequency log function which cost losts of time
-    float entroy_table[82];
+    float entroy_table[10];  // 9 = > 82 , 5 => 26, 3 => 10 
     const float log2 = log(2.0f);
     entroy_table[0] = 0.0;
     float frequency = 0;
-    for (int i = 1; i < 82; i++){
-        frequency = (float)i / 81;
+    for (int i = 1; i < 10; i++){
+        frequency = (float)i / 3;  // 9, 8, 5, 3 
         entroy_table[i] = frequency * (log(frequency) / log2);
     }
 
@@ -275,7 +275,8 @@ Img_eval::getLocalEntropyImage (cv::Mat &gray, cv::Rect &roi, cv::Mat &entropy)
     int current_index_in_origin = 0;
     for (int y = roi.y; y < roi.height; y++){
         current_index = y * pad_src->cols;
-        current_index_in_origin = (y - 4) * gray.cols; //     neighbood_size[1] 
+        current_index_in_origin = (y - 1) * gray.cols; //     neighbood_size[1] 
+//cerr << "yy = " << y  << "gray = " << (y - 4) * gray.cols << endl;
         for (int x = roi.x; x < roi.width; x++, current_index++, current_index_in_origin++) {
             for (int j = 0; j<neighbood_num; j++) {
                 neighbood_index = current_index + neighbood_offset[j];

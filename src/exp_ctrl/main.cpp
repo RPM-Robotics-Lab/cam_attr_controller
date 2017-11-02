@@ -117,8 +117,8 @@ _grab_and_return_ewg (bluefox2::Bluefox2 &cam_bluefox2, Img_eval &eval, int exp_
     cv::namedWindow("best", cv::WINDOW_AUTOSIZE);
     cv::putText(result, str, Point(600,50), CV_FONT_HERSHEY_SIMPLEX, 1, CV_RGB(0,255,0), 2, 8);
 
-    cv::namedWindow("current", cv::WINDOW_AUTOSIZE);
-    cv::imshow("current", result);
+//    cv::namedWindow("current", cv::WINDOW_AUTOSIZE);
+//    cv::imshow("current", result);
 
 
 //    cout << "ewg dt= " << timestamp_now ()-t1 << endl;
@@ -198,7 +198,7 @@ main(int argc, char *argv[])
     vector<double> x_data;
 
     while(true) {
-        for (int t=2000; t<10500; t+=500) 
+        for (int t=1000; t<9500; t+=440) 
             x_data.push_back (t);
 
         gpo.set_predict (x_data);   // query exposure range
@@ -213,7 +213,7 @@ main(int argc, char *argv[])
         cv::Mat control_img;
         int64_t time1 = timestamp_now();
         while (!gpo.is_optimal()) {
-            cv::resize (ewg, control_img, cv::Size(160, 120));
+            cv::resize (ewg, control_img, cv::Size(320, 240));
     //            std::cout << "[ExpCtrl]\tDuring GP (t,v) = (" << next_exp << ", "<< ewg << ")" << std::endl;
 
             if (gpo.evaluate (next_exp, ewg)) {
