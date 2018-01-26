@@ -159,8 +159,8 @@ main(int argc, char *argv[])
 
     // init
     int init_expose = 2000;  // us
-    int frameRate_Hz = 20;  // fps
-    int timeout_ms = 200;
+    int frameRate_Hz = 50;  // fps
+    int timeout_ms = 50;
 
     double ls = 3000.0;
     double s_f = 35.0;
@@ -174,14 +174,14 @@ main(int argc, char *argv[])
     cam_bluefox2.set_timeout_ms (timeout_ms);
 
     int tmp_exposure=10;
-    cam_bluefox2.SetFPSandExposeTime (frameRate_Hz, 10);
+    cam_bluefox2.SetFPSandExposeTime (frameRate_Hz, init_expose);
 
     cam_bluefox2.Configure (config);
     cam_bluefox2.set_timeout_ms (timeout_ms);
 
     
     cam_bluefox2.SetExposeUs(init_expose);
-    cam_bluefox2.set_timeout_ms(200);    
+    cam_bluefox2.set_timeout_ms(50);    
     cam_bluefox2.RequestSingle();
     bot_core::image_t tmp_img;
     cam_bluefox2.GrabImage(tmp_img);
@@ -198,7 +198,7 @@ main(int argc, char *argv[])
     vector<double> x_data;
 
     while(true) {
-        for (int t=1000; t<9500; t+=440) 
+        for (int t=3000; t<10500; t+=814) 
             x_data.push_back (t);
 
         gpo.set_predict (x_data);   // query exposure range
