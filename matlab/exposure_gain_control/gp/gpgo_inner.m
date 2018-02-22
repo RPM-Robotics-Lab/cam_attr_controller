@@ -42,9 +42,10 @@ title_fontsize = 16;
 fidx = length(exp_arr(:));
 % next_in(1) = round(fidx*.05);
 next_in(1) = 1;
+next_in = [1:10:fidx];
 % next_in(1) = 1;
 psi = 0;
-for i = 1:20
+for i = 1:10
     i
 %     idx = [next_in,  round(fidx*0.95)] % 38,50,26,8
 %     idx = [next_in,  next_in(1)+5] % 38,50,26,8
@@ -52,24 +53,17 @@ for i = 1:20
     t_train = [exp_arr(idx_train), gain_arr(idx_train)]';
     y_train = metric_arr(idx_train);
 
-    tic;
-    cfg = gp_cov_init ();
-    K = gp_train (t_train, y_train, cfg);
-
-    %% predict
-%     idx = next_in(1):1:round(fidx*0.95);
     idx_pred = next_in(1):1:fidx;
     t_pred = [exp_arr(idx_pred), gain_arr(idx_pred)]';
-%     y_true = metric_arr(idx);
 
-    [y_pred, var_pred] = gp_predict (t_pred, t_train, K, y_train, cfg);
-    [vals, optimal_id] = max(y_pred);
-    toc;
+    gpm = fitrgp(t_train', y_train');
+    [y_pred, var_pred] = gpm.predict(t_pred');
 
 %     selection by GPMI
     alpha = 0.5;
-    max_var = max(diag(var_pred));
-    [next_in(i+1), psi, acq_func] = gpmi_optim(y_pred, var_pred, alpha, psi);
+    max_var = max(var_pred);
+    [next_in(i+1), psi, acq_func] = gpmi_optim(y_pred', var_pred', alpha, psi);
+    [vals, optimal_id] = max(y_pred);
 
 
 %     % selection by var max
