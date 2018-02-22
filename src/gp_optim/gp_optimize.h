@@ -39,7 +39,10 @@ public:
     double query_exposure() { return query_exposure_; }
     int query_index() { return query_index_; }
 
-    double optimal_expose() {return optimal_exposure_; }
+    double optimal_expose() { return optimal_exposure_; }
+    double optimal_gain() { return optimal_gain_; }
+
+    VectorXd optimal_attr() { return optimal_attr_; }
 
 protected:
     MatrixXd gp_cov_k_SE (VectorXd x_i, VectorXd x_j, double l, double s_f);
@@ -72,6 +75,8 @@ private:
     int query_index_;
 
     double optimal_exposure_;
+    double optimal_gain_;
+    VectorXd optimal_attr_;
 
     double cost_;
 

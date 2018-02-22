@@ -5,7 +5,7 @@ clear all;  close all;
 
 % data = csvread('../dat/090823f.csv');
 % data = csvread('../dat/37datar.csv');
-data = csvread('../data/redata_d1.csv');
+data = csvread('../data/redata_d2.csv');
 
 % exposure = data(:,1);   % ms
 % metric = data(:,2); % sum of w grad

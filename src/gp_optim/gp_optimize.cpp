@@ -229,6 +229,8 @@ void GPOptimize::set_optimal()
     int index;
     y_pred_.maxCoeff(&index);
     optimal_exposure_ = x_pred_[index](0);
+    optimal_gain_ = x_pred_[index](1);
+    optimal_attr_ = x_pred_[index];
 //    cout << " optimzal_exposure_ " << optimal_exposure_ << endl;
     is_optimal_ = true;
 }
