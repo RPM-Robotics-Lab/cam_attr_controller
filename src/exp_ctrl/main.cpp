@@ -198,7 +198,7 @@ main(int argc, char *argv[])
     vector<double> x_data;
 
     while(true) {
-        for (int t=3000; t<10500; t+=814) 
+        for (int t=1000; t<10500; t+=814) 
             x_data.push_back (t);
 
         gpo.set_predict (x_data);   // query exposure range

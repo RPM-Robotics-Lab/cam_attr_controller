@@ -35,5 +35,5 @@ private:
     int *cumprod, int *coords);
 	void getLocalEntropyImage(cv::Mat &gray, cv::Rect &roi, cv::Mat &entropy);
 	void GammaCorrection(Mat& src, Mat& dst, float fGamma);
-
+    double getPSNR(const cv::Mat& I1, const cv::Mat& I2);
 };
