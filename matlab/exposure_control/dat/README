@@ -1,0 +1,9 @@
+Explanation for each dataset
+------------------------------------------------
+
+37data.csv: images are in folder 37
+38data.csv: 38folder
+            expose time is from 0 to 10,000us with 50us interval
+            40   :   50 us   :   3400 us , total 68 datas
+
+            example) 20.png = 20 column = 1000 us
