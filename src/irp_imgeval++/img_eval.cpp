@@ -1,6 +1,7 @@
 #include "img_eval.h"
 #include <math.h>
-
+#include <iostream>
+#include<fstream>
 //TODO get synthtic imgs  
 
 //void 
@@ -8,11 +9,77 @@
 //{
 
 //}
-double 
-Img_eval::getPSNR(const cv::Mat& I1, const cv::Mat& I2)
+void 
+Img_eval::CreatErf(vector<vector<double> > &res1)
 {
+	ifstream infile("/home/irap-dron/git/cam_attr_contoller/src/exp_tester/erf.txt");
+	string line;
+	while (getline(infile,line)) // Read a line
+	{
+		res1.push_back(vector<double>()); // Add a new row to the matrix
+		vector<double>& row = res1.back();
+		cout << res1.size() << endl;
+		istringstream iss(line);
+		double evalue;
+		while (iss >> evalue) // Read columns
+			row.push_back(evalue); // Add a column to the current row
+			cout << row.size() << endl;
+	}
+	infile.close();
+}
+
+void 
+Img_eval::PrintErf(const vector<vector<double> > &res1) {
+	for (auto row : res1) {
+		for (auto evalue : row)
+			cout <<  evalue  << "\t";
+		cout << endl;
+	}
+}
+
+void 
+Img_eval::CreatGrf(vector<vector<double> > &res2)
+{
+	ifstream infile("/home/irap-dron/git/cam_attr_contoller/src/exp_tester/grf.txt");
+	string line;
+	while (getline(infile,line)) // Read a line
+	{
+		res2.push_back(vector<double>()); // Add a new row to the matrix
+		vector<double>& row = res2.back();
+		istringstream iss(line);
+		double gvalue;
+		while (iss >> gvalue) // Read columns
+			row.push_back(gvalue); // Add a column to the current row
+	}
+	infile.close();
+}
+
+void 
+Img_eval::PrintGrf(const vector<vector<double> > &res2) {
+	for (auto row : res2) {
+		for (auto gvalue : row)
+			cout << 20 * (gvalue/20) +1 << "\t";
+    cout  << endl;
+	}
+}
+
+
+
+double 
+Img_eval::getPSNR(cv::Mat &img, cv::Mat &gimg)
+{
+    // imGray is the grayscale of the input image
+    cv::Mat noise = Mat(img.size(),CV_32F);
+    normalize(img, gimg, 0.0, 1.0, CV_MINMAX, CV_32F);
+    cv::randn(noise, 0, 0.009);
+    gimg = gimg + noise;
+    normalize(gimg, gimg, 0.0, 1.0, CV_MINMAX, CV_32F);
+
+    
+
     Mat s1;
-    absdiff(I1, I2, s1);       // |I1 - I2|
+    absdiff(img, gimg, s1);       // |I1 - I2|
+
     s1.convertTo(s1, CV_32F);  // cannot make a square on 8 bits
     s1 = s1.mul(s1);           // |I1 - I2|^2
 
@@ -24,7 +91,7 @@ Img_eval::getPSNR(const cv::Mat& I1, const cv::Mat& I2)
         return 0;
     else
     {
-        double  mse =sse /(double)(I1.channels() * I1.total());
+        double  mse =sse /(double)(img.channels() * img.total());
         double psnr = 10.0*log10((255*255)/mse);
         return psnr;
     }
@@ -48,32 +115,33 @@ Img_eval::calc_img_ent_grad (cv::Mat &img, bool visualize)
 
 	//printf("Gradient sss is %d %d \n", wcols, wrows) ;
  	
-	Mat gradW = grad > Gmean * 0.5;
+	Mat gradW = grad > Gmean * 0.3;
 	gradW *= 1;
     gradW.convertTo (gradW, CV_32F, 1.0 / 255.0);
 	
+    double satparam = -3.5;
 	Mat columnSum, mu;   
     img_columnSum (entropy, columnSum, mu);
-	Mat Smask = 5.44 * Gmean * wmask;  //Smask == Sval, how to - value
+	Mat Smask = satparam * Gmean * wmask;  //Smask == Sval, how to - value
     Mat Gour = ((gradW.mul(grad))+ Smask) ;
 	Mat Gourstmp1, Gourstmp2;
     double Gours;
     img_Gours (Gour, Gourstmp1, Gourstmp2, Gours);
     
-    // std::cout << "Gmean=  " << Gmean << " Emean= " << Emean << " Gours= " << Gours <<std::endl;
+//     std::cout << "Gmean=  " << Gmean << " Emean= " << Emean << " Gours= " << Gours <<std::endl;
     // cv::waitKey(1);
     // std::cout << "   Sval: "<< Smask << std::endl;
 
     if (visualize) {
-//        cv::resize (img, img, cv::Size(320, 240));
-//	    cv::namedWindow("Original", cv::WINDOW_AUTOSIZE);
-//	    cv::namedWindow("Entropy Mask", cv::WINDOW_AUTOSIZE);	
-//	    cv::namedWindow("Entropy Filter", cv::WINDOW_AUTOSIZE);
-//	    cv::namedWindow("Gradient Image", cv::WINDOW_AUTOSIZE);
-//	    cv::imshow("Original", img);
-//	    cv::imshow("Entropy Mask", wmask);  //dst 
-//	    cv::imshow("Entropy Filter", entropy);
-//	    cv::imshow("Gradient Image",grad);
+        cv::resize (img, img, cv::Size(640, 480));
+	    cv::namedWindow("Original", cv::WINDOW_AUTOSIZE);
+	    cv::namedWindow("Entropy Mask", cv::WINDOW_AUTOSIZE);	
+	    cv::namedWindow("Entropy Filter", cv::WINDOW_AUTOSIZE);
+	    cv::namedWindow("Gradient Image", cv::WINDOW_AUTOSIZE);
+	    cv::imshow("Original", img);
+	    cv::imshow("Entropy Mask", wmask);  //dst 
+	    cv::imshow("Entropy Filter", entropy);
+	    cv::imshow("Gradient Image",grad);
     
         /// Wait until user exits the program
         cv::waitKey(5);
@@ -108,15 +176,14 @@ Img_eval::img_wmask (Mat &entropy, Mat &wmask)
 
  	wmasktmp1 = entropy > 0.15;
     Mat tmp1; // 1 1 1 ...
-    wmasktmp1.convertTo(tmp1, CV_32F, 1.0/-255.0);
+    wmasktmp1.convertTo(tmp1, CV_32F, 0.0/-255.0);
     wmask = tmp1;
-
-    wmasktmp2 = entropy <=0.15; 
+    wmasktmp2 = entropy <=  0.001; 
     Mat tmp2; 
-    wmasktmp2.convertTo(tmp2, CV_32F, 1.0/-255.0);
+    wmasktmp2.convertTo(tmp2, CV_32F, 1.0/255.0);
     
     wmask = tmp2;
-    // std::cout << "wmask: kkk " << wmask <<std::endl;
+//     std::cout << "wmask: kkk " << wmask <<std::endl;
 }
 
 

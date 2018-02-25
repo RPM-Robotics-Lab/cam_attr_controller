@@ -4,6 +4,8 @@
 #include <ctime>
 #include <chrono>
 #include <string>
+#include<stdio.h> 
+#include<stdlib.h>
 
 #include <boost/program_options/parsers.hpp>
 #include <boost/filesystem.hpp>
@@ -97,18 +99,21 @@ _grab_and_return_ewg (bluefox2::Bluefox2 &cam_bluefox2, Img_eval &eval, int exp_
 
 //    std::cout << "\n[ExpCtrl]\tgetexpose = " << cam_bluefox2.GetExposeUs() << "  Setexpose= " << exp_t<<  "" << std::endl;
 
-    cv::Mat img;
+    cv::Mat img, gimg;
     bot_util::botimage_to_cvMat (&test_img, img);
+
 //    t1 = timestamp_now ();
     // compute entropy + grad
+
     double ewg = eval.calc_img_ent_grad (img, true);
-
-
-
     cv::Mat orignal_img = img;
     best=img;
 
-    
+    double snr = eval.getPSNR (img, img); 
+    Mat noise_img = img; 
+    snr = eval.getPSNR (img, noise_img); 
+    cv::imshow("Noisy", noise_img);
+        std::cout << "psnr=  " << snr  <<std::endl;
     char str[30];
     snprintf (str, sizeof str, "%d", tmp);
 
@@ -150,9 +155,41 @@ _grab_and_return_ewg (bluefox2::Bluefox2 &cam_bluefox2, Img_eval &eval, int exp_
 
 }
 
+
+
+
 int
 main(int argc, char *argv[])
 {
+
+
+ int i, j;
+ char et[256][1],  gain[256][1];;
+
+
+FILE* fp = fopen("/home/irap-dron/git/cam_attr_contoller/src/exp_ctrl/erf.txt", "r");
+FILE* fo = fopen("/home/irap-dron/git/cam_attr_contoller/src/exp_ctrl/grf.txt", "w" );
+ /* initial */
+memset(et, '\0', 256 * 1 );
+memset(gain, '\0', 256 * 1 );
+
+        
+
+for ( i = 0; i<256; i++)  {
+    fgets(et[i],256, fp);  
+//  fscanf(fp,"%s %s",&m[i].et, &m[i].gain);
+//  fprintf(foc,"%s %s",m[i].et, m[i].gain);
+    printf("%s", et[i]);
+
+    for ( j = 0; j<256; j++)  {
+        fgets(gain[j],256, fo);  
+        printf("%s", gain[j]);
+      }
+}
+  fclose(fp);
+  fclose(fo);
+
+
     Bluefox2Parser parser;
     Img_eval eval;
     GPOptimize gpo;
