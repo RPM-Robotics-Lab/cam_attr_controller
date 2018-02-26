@@ -88,13 +88,31 @@ bool GPOptimize::evaluate(double x_val, double y_val)
     return is_optimal();
 }
 
+bool GPOptimize::evaluate(VectorXd& x_val, double y_val)
+{
+    add_data(x_val, y_val);
+    train();
+    predict();
+    find_query_point();
+    return is_optimal();
+}
+
+void GPOptimize::add_data(VectorXd& x_vec, double y_val)
+{
+    VectorXd y_vec(1);
+    y_vec << y_val;
+
+    x_train_.push_back(x_vec);
+    y_train_.push_back(y_vec);
+}
+
 void GPOptimize::add_data(double x_val, double y_val)
 {
     VectorXd x_vec(1);
     x_vec << x_val;
-
     VectorXd y_vec(1);
     y_vec << y_val;
+
     x_train_.push_back(x_vec);
     y_train_.push_back(y_vec);
 
@@ -219,7 +237,7 @@ void GPOptimize::check_optimal()
 {
     double last_query = x_train_.back()(0);
 //    cout << " last _query " << last_query;
-    if (abs(query_exposure_- last_query) < 15 || cost_ < 200) {
+    if (abs(query_exposure_- last_query) < 30 || cost_ < 500) {
         set_optimal();
     }
 }

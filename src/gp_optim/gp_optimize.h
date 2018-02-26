@@ -21,8 +21,10 @@ public:
     void initialize();
 
     bool evaluate(double x_val, double y_val);
+    bool evaluate(VectorXd &x_val, double y_val);
 
     void add_data(double x_val, double y_val);
+    void add_data(VectorXd &x_vec, double y_val);
 
     MatrixXd train();
     MatrixXd train(vector<VectorXd> x_train, vector<VectorXd> y_train);

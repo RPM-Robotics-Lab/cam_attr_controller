@@ -91,55 +91,59 @@ int main(int argc, char** argv)
 
     // GPO initialize (set once, globally)
     GPOptimize gpo;
-    Config cfg(ls, s_f, s_n, AcqType::MAXVAR, 5);
+    Config cfg(ls, s_f, s_n, AcqType::MAXMI, 5);
 
     // For first frame
     gpo.initialize(cfg);
     gpo.set_predict(x_data); // query exposure range
 
-    double x = x_data[2](0); // current exposure (minimum exposure not good for initialize)
+    VectorXd x = x_data[2]; // current exposure (minimum exposure not good for initialize)
     double y = y_data[2]; // current metric
     double best_exposure = x_data[2](0); // for safety
+    double best_gain = x_data[2](1);
 
     while (!gpo.is_optimal()) {
 //    for (int i = 0; i < 20; ++i) {
-        cout << "Current query exposure " << x <<", " << y << endl;
+        cout << "Current query exposure / gain / metric:\t" << x(0) << " / " << x(1) <<" / " << y << endl;
         if (gpo.evaluate(x, y)) {
             best_exposure = gpo.optimal_expose();
+            best_gain = gpo.optimal_gain();
             break;
         }
         else {
             int next_index = gpo.query_index();
             // double next_exposure = gpo.query_exposure(); // This should be used for real capture
-            x = x_data[next_index](0);
+            x = x_data[next_index];
             y = y_data[next_index];
         }
     }
-    cout << "DONE!! Best exposure for 37 is " << best_exposure << endl;
+    cout << "DONE!! Best exposure / gain for data 1:\t" << best_exposure << " / " << best_gain << endl;
 
     // For second frame
     gpo.initialize(cfg);
     gpo.set_predict(x_data2); // query exposure range
 
-    x = x_data2[2](0); // current exposure
+    x = x_data2[2]; // current exposure
     y = y_data2[2]; // current metric
     best_exposure = x_data2[2](0); // for safety
+    best_gain = x_data[2](1);
 
     while (!gpo.is_optimal()) {
 //    for (int i = 0; i < 20; ++i) {
 
-        cout << "Current query exposure " << x <<", " << y << endl;
+        cout << "Current query exposure / gain / metric:\t" << x(0) << " / " << x(1) <<" / " << y << endl;
         if (gpo.evaluate(x, y)) {
             best_exposure = gpo.optimal_expose();
+            best_gain = gpo.optimal_gain();
             break;
         }
         else {
             int next_index = gpo.query_index();
-            x = x_data2[next_index](0);
+            x = x_data2[next_index];
             y = y_data2[next_index];
         }
     }
-    cout << "DONE!! Best exposure for 38 is " << best_exposure << endl;
+    cout << "DONE!! Best exposure / gain for data 2:\t" << best_exposure << " / " << best_gain << endl;
 
 
 }
