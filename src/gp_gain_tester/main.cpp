@@ -70,9 +70,10 @@ int main(int argc, char** argv)
     x_i << 2, 2;
     VectorXd x_j(2);
     x_j << 3, 3;
-    double ls = 7.0;
+    double ls = 5.5;
     double s_f = 15.0;
     double s_n = 5.0;
+    int num_iter = 20;
 
 //    ifstream file_path("/home/yg/svn/docs/papers/conferences/icra2018-jwkim/trunk/matlab/dat/38datar.csv");
     ifstream file_path("../../data/exp_gain.csv");
@@ -91,7 +92,7 @@ int main(int argc, char** argv)
 
     // GPO initialize (set once, globally)
     GPOptimize gpo;
-    Config cfg(ls, s_f, s_n, AcqType::MAXMI, 5);
+    Config cfg(ls, s_f, s_n, AcqType::MAXMI, 0.5, num_iter);
 
     // For first frame
     gpo.initialize(cfg);
@@ -101,13 +102,14 @@ int main(int argc, char** argv)
     double y = y_data[2]; // current metric
     double best_exposure = x_data[2](0); // for safety
     double best_gain = x_data[2](1);
-
+    double best_metric = y_data[2];
     while (!gpo.is_optimal()) {
 //    for (int i = 0; i < 20; ++i) {
         cout << "Current query exposure / gain / metric:\t" << x(0) << " / " << x(1) <<" / " << y << endl;
         if (gpo.evaluate(x, y)) {
             best_exposure = gpo.optimal_expose();
             best_gain = gpo.optimal_gain();
+            best_metric = y_data[gpo.optimal_index()];
             break;
         }
         else {
@@ -117,7 +119,7 @@ int main(int argc, char** argv)
             y = y_data[next_index];
         }
     }
-    cout << "DONE!! Best exposure / gain for data 1:\t" << best_exposure << " / " << best_gain << endl;
+    cout << "DONE!! Best exposure / gain for data 1:\t" << best_exposure << " / " << best_gain << " / " << best_metric << endl << endl;
 
     // For second frame
     gpo.initialize(cfg);
@@ -126,7 +128,8 @@ int main(int argc, char** argv)
     x = x_data2[2]; // current exposure
     y = y_data2[2]; // current metric
     best_exposure = x_data2[2](0); // for safety
-    best_gain = x_data[2](1);
+    best_gain = x_data2[2](1);
+    best_metric = y_data2[2];
 
     while (!gpo.is_optimal()) {
 //    for (int i = 0; i < 20; ++i) {
@@ -135,6 +138,7 @@ int main(int argc, char** argv)
         if (gpo.evaluate(x, y)) {
             best_exposure = gpo.optimal_expose();
             best_gain = gpo.optimal_gain();
+            best_metric = y_data[gpo.optimal_index()];
             break;
         }
         else {
@@ -143,7 +147,7 @@ int main(int argc, char** argv)
             y = y_data2[next_index];
         }
     }
-    cout << "DONE!! Best exposure / gain for data 2:\t" << best_exposure << " / " << best_gain << endl;
+    cout << "DONE!! Best exposure / gain for data 2:\t" << best_exposure << " / " << best_gain << " / " << best_metric << endl;
 
 
 }

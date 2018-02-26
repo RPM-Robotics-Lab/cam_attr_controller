@@ -14,7 +14,15 @@ public:
     Config(double ls, double s_f, double s_n, AcqType acq_type, double alpha)
     { ls_ = ls; s_f_ = s_f; s_n_ = s_n;
       acq_type_ = acq_type;
-      alpha_ = alpha; }
+      alpha_ = alpha;
+      num_iter_ = 10; }
+
+    Config(double ls, double s_f, double s_n, AcqType acq_type, double alpha, int num_iter)
+    { ls_ = ls; s_f_ = s_f; s_n_ = s_n;
+      acq_type_ = acq_type;
+      alpha_ = alpha;
+      num_iter_ = num_iter; }
+
 
     void set_cfg(double ls, double s_f, double s_n)
     { ls_ = ls; s_f_ = s_f; s_n_ = s_n;
@@ -28,6 +36,7 @@ public:
     double ls() { return ls_; }
     double s_f() { return s_f_; }
     double s_n() { return s_n_; }
+    int num_iter() { return num_iter_; }
 
     void ls(double ls) { ls_ = ls; }
     void s_f(double s_f) { s_f_ = s_f; }
@@ -44,6 +53,9 @@ private:
     double ls_;
     double s_f_;
     double s_n_;
+
+    // Iteration number
+    int num_iter_;
 
     // Parameters for GPMI
     double alpha_;

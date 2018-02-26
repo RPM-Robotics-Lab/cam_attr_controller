@@ -43,6 +43,7 @@ public:
 
     double optimal_expose() { return optimal_exposure_; }
     double optimal_gain() { return optimal_gain_; }
+    int optimal_index() { return optimal_index_; }
 
     VectorXd optimal_attr() { return optimal_attr_; }
 
@@ -54,6 +55,7 @@ protected:
 private:
     Config cfg_;
     bool is_optimal_;
+    int iter_count_;
 
     // training input
     vector<VectorXd> x_train_;
@@ -78,6 +80,7 @@ private:
 
     double optimal_exposure_;
     double optimal_gain_;
+    int optimal_index_;
     VectorXd optimal_attr_;
 
     double cost_;

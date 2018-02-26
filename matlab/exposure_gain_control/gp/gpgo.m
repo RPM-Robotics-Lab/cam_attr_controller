@@ -4,8 +4,8 @@ clear all;  close all;
 %data = csvread(sprintf('../dat/d%d_Ours.csv',datanum));
 
 % data = csvread('../dat/090823f.csv');
-% data = csvread('../dat/37datar.csv');
-data = csvread('../data/redata_d2.csv');
+% data = csvread('../dat/37datar.csv');1
+data = csvread('../data/redata_d1.csv');
 
 % exposure = data(:,1);   % ms
 % metric = data(:,2); % sum of w grad
@@ -45,12 +45,12 @@ next_in(1) = 1;
 % next_in(1) = 1;
 psi = 0;
 for i = 1:20
-    i
 %     idx = [next_in,  round(fidx*0.95)] % 38,50,26,8
-%     idx = [next_in,  next_in(1)+5] % 38,50,26,8
+%     idx = [next_in,  next_in(1)+5] % 38,50,26,8 
     idx_train = [next_in];
     t_train = [exp_arr(idx_train), gain_arr(idx_train)]';
     y_train = metric_arr(idx_train);
+    disp([num2str(i) ' train vals: ' num2str(exp_arr(idx_train(end))) ' / ' num2str(gain_arr(idx_train(end)))]);
 
     tic;
     cfg = gp_cov_init ();

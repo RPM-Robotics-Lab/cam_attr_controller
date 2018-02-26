@@ -1,4 +1,4 @@
-function cfg = gp_cov_init (cfg)
+    function cfg = gp_cov_init (cfg)
 % function cfg = gp_cov_init
 %
 %-----------------------------------------------------------------

@@ -16,6 +16,7 @@ void GPOptimize::initialize(double ls, double s_f, double s_n, vector<VectorXd>&
     query_exposure_ = 0;
     query_index_ = 0;
     psi_ = 0;
+    iter_count_ = 0;
     is_optimal_ = false;
 
     set_predict(x_pred);
@@ -32,6 +33,7 @@ void GPOptimize::initialize(double ls, double s_f, double s_n)
     query_exposure_ = 0;
     query_index_ = 0;
     psi_ = 0;
+    iter_count_ = 0;
 
     is_optimal_ = false;
 }
@@ -47,6 +49,7 @@ void GPOptimize::initialize(Config& cfg)
     query_exposure_ = 0;
     query_index_ = 0;
     psi_ = 0;
+    iter_count_ = 0;
 
     is_optimal_ = false;
 }
@@ -237,15 +240,23 @@ void GPOptimize::check_optimal()
 {
     double last_query = x_train_.back()(0);
 //    cout << " last _query " << last_query;
-    if (abs(query_exposure_- last_query) < 30 || cost_ < 500) {
+//    if (abs(query_exposure_- last_query) < 1 || cost_ < 5 || iter_count_ > cfg_.num_iter()) {
+    if (cost_ < 50 || iter_count_ > cfg_.num_iter()) {
+
+        cout << "Now find optimal by "<< query_exposure_- last_query << " / " << cost_ << " / " << iter_count_ << endl;
         set_optimal();
     }
+    else
+        iter_count_++;
 }
 
 void GPOptimize::set_optimal()
 {
     int index;
+    // cout << "y prediction " << endl << y_pred_ << endl;
     y_pred_.maxCoeff(&index);
+
+    optimal_index_ = index;
     optimal_exposure_ = x_pred_[index](0);
     optimal_gain_ = x_pred_[index](1);
     optimal_attr_ = x_pred_[index];
