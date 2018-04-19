@@ -71,7 +71,7 @@ Img_eval::getPSNR(cv::Mat &img, cv::Mat &gimg)
     // imGray is the grayscale of the input image
     cv::Mat noise = Mat(img.size(),CV_32F);
     normalize(img, gimg, 0.0, 1.0, CV_MINMAX, CV_32F);
-    cv::randn(noise, 0, 0.009);
+    cv::randn(noise, 0, 0.0001);
     gimg = gimg + noise;
     normalize(gimg, gimg, 0.0, 1.0, CV_MINMAX, CV_32F);
 
@@ -102,7 +102,7 @@ Img_eval::calc_img_ent_grad (cv::Mat &img, bool visualize)
 {
     // Convert to grayscale
     cvtColor(img, img, cv::COLOR_BGR2GRAY);
-//    cv::resize (img, img, cv::Size(320, 240));
+    cv::resize (img, img, cv::Size(320, 240));
     cv::Mat entropy, grad ;
 	cv::Mat wmask(entropy.size(), CV_32F, 1.0); // ones
     img_entropy (img, entropy);
@@ -119,7 +119,7 @@ Img_eval::calc_img_ent_grad (cv::Mat &img, bool visualize)
 	gradW *= 1;
     gradW.convertTo (gradW, CV_32F, 1.0 / 255.0);
 	
-    double satparam = -3.5;
+    double satparam = -5.0;
 	Mat columnSum, mu;   
     img_columnSum (entropy, columnSum, mu);
 	Mat Smask = satparam * Gmean * wmask;  //Smask == Sval, how to - value
@@ -133,7 +133,7 @@ Img_eval::calc_img_ent_grad (cv::Mat &img, bool visualize)
     // std::cout << "   Sval: "<< Smask << std::endl;
 
     if (visualize) {
-        cv::resize (img, img, cv::Size(640, 480));
+        cv::resize (img, img, cv::Size(752, 480));
 	    cv::namedWindow("Original", cv::WINDOW_AUTOSIZE);
 	    cv::namedWindow("Entropy Mask", cv::WINDOW_AUTOSIZE);	
 	    cv::namedWindow("Entropy Filter", cv::WINDOW_AUTOSIZE);
