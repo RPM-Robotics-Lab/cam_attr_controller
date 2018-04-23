@@ -138,7 +138,7 @@ Img_eval::calc_img_ent_grad (cv::Mat &img, bool visualize)
 	    cv::namedWindow("Entropy Mask", cv::WINDOW_AUTOSIZE);	
 	    cv::namedWindow("Entropy Filter", cv::WINDOW_AUTOSIZE);
 	    cv::namedWindow("Gradient Image", cv::WINDOW_AUTOSIZE);
-	    cv::imshow("Original", img);
+//	    cv::imshow("Original", img);
 	    cv::imshow("Entropy Mask", wmask);  //dst 
 	    cv::imshow("Entropy Filter", entropy);
 	    cv::imshow("Gradient Image",grad);

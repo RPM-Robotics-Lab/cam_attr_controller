@@ -167,27 +167,27 @@ main(int argc, char *argv[])
  char et[256][1],  gain[256][1];;
 
 
-FILE* fp = fopen("/home/irap-dron/git/cam_attr_contoller/src/exp_ctrl/erf.txt", "r");
-FILE* fo = fopen("/home/irap-dron/git/cam_attr_contoller/src/exp_ctrl/grf.txt", "w" );
- /* initial */
-memset(et, '\0', 256 * 1 );
-memset(gain, '\0', 256 * 1 );
+//FILE* fp = fopen("/home/irap-dron/git/cam_attr_contoller/src/exp_ctrl/erf.txt", "r");
+//FILE* fo = fopen("/home/irap-dron/git/cam_attr_contoller/src/exp_ctrl/grf.txt", "w" );
+// /* initial */
+//memset(et, '\0', 256 * 1 );
+//memset(gain, '\0', 256 * 1 );
 
-        
+//        
 
-for ( i = 0; i<256; i++)  {
-    fgets(et[i],256, fp);  
-//  fscanf(fp,"%s %s",&m[i].et, &m[i].gain);
-//  fprintf(foc,"%s %s",m[i].et, m[i].gain);
-    printf("%s", et[i]);
+//for ( i = 0; i<256; i++)  {
+//    fgets(et[i],256, fp);  
+////  fscanf(fp,"%s %s",&m[i].et, &m[i].gain);
+////  fprintf(foc,"%s %s",m[i].et, m[i].gain);
+//    printf("%s", et[i]);
 
-    for ( j = 0; j<256; j++)  {
-        fgets(gain[j],256, fo);  
-        printf("%s", gain[j]);
-      }
-}
-  fclose(fp);
-  fclose(fo);
+//    for ( j = 0; j<256; j++)  {
+//        fgets(gain[j],256, fo);  
+//        printf("%s", gain[j]);
+//      }
+//}
+//  fclose(fp);
+//  fclose(fo);
 
 
     Bluefox2Parser parser;
