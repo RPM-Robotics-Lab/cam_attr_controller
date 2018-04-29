@@ -67,6 +67,22 @@ void Bluefox2::SetExposeUs(int &expose_us) {
     WriteAndReadProperty(cam_set_->expose_us, expose_us);
 }
 
+//int Bluefox2::GetGainDB() const {
+//    if (request_ && request_->isOK()) {
+//        return request_->infoExposeTime_us.read();
+//    } 
+//    else {
+//        return 0;
+//    }
+//}
+
+void Bluefox2::SetGainDB(double &gain_db)  {
+    bool auto_gain_off = false;
+    WriteAndReadProperty(cam_set_->autoGainControl, auto_gain_off);
+    WriteAndReadProperty(cam_set_->gain_dB, gain_db);
+}
+
+
 void Bluefox2::RequestSingle() const {
     int result = DMR_NO_ERROR;
     result = fi_->imageRequestSingle();

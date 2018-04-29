@@ -50,8 +50,10 @@ int main(int argc, char** argv)
             A = j;
             break;
             }
+        exptime = 1000 + (i-1)*500;
+        std::cout << "initial exposure time is " << exptime <<" us" <<  std::endl;
         }
-        std::cout << "initial exposure time is " << A << ","  << et[A]  <<  std::endl;
+
         
         double n_exp = init_irr + log(i);
         
@@ -82,10 +84,10 @@ int main(int argc, char** argv)
             double etewg = eval.calc_img_ent_grad (etimg, true);
             std::cout << "Computed entropy weighted gain = " << etewg << std::endl;
             break;
-            double snr = eval.getPSNR (img, img); 
-            Mat noise_img = img; 
-            snr = eval.getPSNR (img, noise_img); 
-            cv::imshow("Noisy", noise_img);
+//            double snr = eval.getPSNR (img, img); 
+//            Mat noise_img = img; 
+//            snr = eval.getPSNR (img, noise_img); 
+//            cv::imshow("Noisy", noise_img);
 
             char str[30];
             snprintf (str, sizeof str, "%d", 100);

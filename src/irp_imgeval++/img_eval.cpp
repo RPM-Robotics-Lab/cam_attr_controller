@@ -4,11 +4,9 @@
 #include<fstream>
 //TODO get synthtic imgs  
 
-//void 
-//Img_eval::getSynth( )
-//{
 
-//}
+
+
 void 
 Img_eval::CreatErf(vector<vector<double> > &res1)
 {
@@ -37,33 +35,6 @@ Img_eval::PrintErf(const vector<vector<double> > &res1) {
 	}
 }
 
-void 
-Img_eval::CreatGrf(vector<vector<double> > &res2)
-{
-	ifstream infile("/home/irap-dron/git/cam_attr_contoller/src/exp_tester/grf.txt");
-	string line;
-	while (getline(infile,line)) // Read a line
-	{
-		res2.push_back(vector<double>()); // Add a new row to the matrix
-		vector<double>& row = res2.back();
-		istringstream iss(line);
-		double gvalue;
-		while (iss >> gvalue) // Read columns
-			row.push_back(gvalue); // Add a column to the current row
-	}
-	infile.close();
-}
-
-void 
-Img_eval::PrintGrf(const vector<vector<double> > &res2) {
-	for (auto row : res2) {
-		for (auto gvalue : row)
-			cout << 20 * (gvalue/20) +1 << "\t";
-    cout  << endl;
-	}
-}
-
-
 
 double 
 Img_eval::getPSNR(cv::Mat &img, cv::Mat &gimg)
@@ -74,8 +45,6 @@ Img_eval::getPSNR(cv::Mat &img, cv::Mat &gimg)
     cv::randn(noise, 0, 0.0001);
     gimg = gimg + noise;
     normalize(gimg, gimg, 0.0, 1.0, CV_MINMAX, CV_32F);
-
-    
 
     Mat s1;
     absdiff(img, gimg, s1);       // |I1 - I2|
@@ -108,7 +77,7 @@ Img_eval::calc_img_ent_grad (cv::Mat &img, bool visualize)
     img_entropy (img, entropy);
     img_wmask (entropy, wmask);
     img_grad (img, grad);
-
+    
     double Gmean, Emean;
     img_Gmean (grad, Gmean);
     img_Emean (entropy, Emean);
@@ -119,7 +88,7 @@ Img_eval::calc_img_ent_grad (cv::Mat &img, bool visualize)
 	gradW *= 1;
     gradW.convertTo (gradW, CV_32F, 1.0 / 255.0);
 	
-    double satparam = -5.0;
+    double satparam = -2.0;
 	Mat columnSum, mu;   
     img_columnSum (entropy, columnSum, mu);
 	Mat Smask = satparam * Gmean * wmask;  //Smask == Sval, how to - value
@@ -127,7 +96,6 @@ Img_eval::calc_img_ent_grad (cv::Mat &img, bool visualize)
 	Mat Gourstmp1, Gourstmp2;
     double Gours;
     img_Gours (Gour, Gourstmp1, Gourstmp2, Gours);
-    
 //     std::cout << "Gmean=  " << Gmean << " Emean= " << Emean << " Gours= " << Gours <<std::endl;
     // cv::waitKey(1);
     // std::cout << "   Sval: "<< Smask << std::endl;
@@ -138,7 +106,7 @@ Img_eval::calc_img_ent_grad (cv::Mat &img, bool visualize)
 	    cv::namedWindow("Entropy Mask", cv::WINDOW_AUTOSIZE);	
 	    cv::namedWindow("Entropy Filter", cv::WINDOW_AUTOSIZE);
 	    cv::namedWindow("Gradient Image", cv::WINDOW_AUTOSIZE);
-//	    cv::imshow("Original", img);
+	    cv::imshow("Original", img);
 	    cv::imshow("Entropy Mask", wmask);  //dst 
 	    cv::imshow("Entropy Filter", entropy);
 	    cv::imshow("Gradient Image",grad);

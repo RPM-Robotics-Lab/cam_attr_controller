@@ -25,7 +25,7 @@ public:
 
     int GetExposeUs() const;
     void SetExposeUs(int &expose_us);
-
+    void SetGainDB(double &gain_db);
     void OpenDevice();
     void RequestSingle() const;
 
