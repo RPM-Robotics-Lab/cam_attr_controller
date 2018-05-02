@@ -244,12 +244,12 @@ main(int argc, char *argv[])
     cam_bluefox2.set_timeout_ms (timeout_ms);
 
     
-    cam_bluefox2.SetExposeUs(init_expose);
-//    cam_bluefox2.SetGainDB(init_expose);  // gain 
-    cam_bluefox2.set_timeout_ms(50);    
-    cam_bluefox2.RequestSingle();
-    bot_core::image_t tmp_img;
-    cam_bluefox2.GrabImage(tmp_img);
+//    cam_bluefox2.SetExposeUs(init_expose);
+////    cam_bluefox2.SetGainDB(init_expose);  // gain 
+//    cam_bluefox2.set_timeout_ms(50);    
+//    cam_bluefox2.RequestSingle();
+//    bot_core::image_t tmp_img;
+//    cam_bluefox2.GrabImage(tmp_img);
 
 
     // to save images
@@ -271,9 +271,9 @@ main(int argc, char *argv[])
         gpo.initialize(cfg);
 
         // exp value is int but GP use double in general
-        double next_exp = init_expose;
+        int next_exp = init_expose;
         double next_gain = init_gain;
-        double best_exposure = 0.0;
+        int best_exposure = 0;
         double best_gain = 0.0;
         double ewg = 0.0;
         double next_synth_index = 0.0;
@@ -322,16 +322,24 @@ std::cout<< "exp time of query ewg  " << next_exp<< endl;
         }
         int64_t time2 = timestamp_now();
         //cout << "[ExpCtrl]\tOne loop done!! Next best exposure" << best_exposure << endl;
-        next_exp = (int) best_exposure;
+        next_exp =  best_exposure;
         next_gain = (int) best_gain;
         double diff = static_cast<double>(time2-time1) / 1e6;
         printf ("ExpCtrl\tTime %f.\n", diff);
         printf ("ExpCtrl\tSet to %d.\n", (int)next_exp);
 
          //write ** images 
-        cv::Mat best_img = best ;
+        cv::Mat best_img ;
+        bot_core::image_t best_img_t;
 
-
+        cam_bluefox2.SetExposeUs(next_exp);
+        cam_bluefox2.GetExposeUs();
+        cam_bluefox2.SetGainDB(next_gain);  // gain (-1db ~ 12 db )
+        cam_bluefox2.set_timeout_ms (50);
+        cam_bluefox2.RequestSingle();
+        cam_bluefox2.GrabImage(best_img_t);
+        bot_util::botimage_to_cvMat(&best_img_t, best_img);
+        cvtColor(best_img, best_img, cv::COLOR_BGR2GRAY);
         // show text 
         CvFont font;
         cvInitFont (&font, CV_FONT_HERSHEY_PLAIN, 2.0, 2.0, 0, 2, 8);
@@ -345,7 +353,7 @@ std::cout<< "exp time of query ewg  " << next_exp<< endl;
         cv::putText(result, str, Point(600,50), CV_FONT_HERSHEY_SIMPLEX, 1, CV_RGB(0,255,0), 2, 8);
         cv::imshow("best", result);
         
-    //    cv::waitKey(0);
+        cv::waitKey(0);
 
         string str_save_path("result_data");
         path save_path (str_save_path);
