@@ -88,7 +88,7 @@ Img_eval::calc_img_ent_grad (cv::Mat &img, bool visualize)
 	gradW *= 1;
     gradW.convertTo (gradW, CV_32F, 1.0 / 255.0);
 	
-    double satparam = -2.0;
+    double satparam = -1.5;
 	Mat columnSum, mu;   
     img_columnSum (entropy, columnSum, mu);
 	Mat Smask = satparam * Gmean * wmask;  //Smask == Sval, how to - value
@@ -112,7 +112,7 @@ Img_eval::calc_img_ent_grad (cv::Mat &img, bool visualize)
 	    cv::imshow("Gradient Image",grad);
     
         /// Wait until user exits the program
-        cv::waitKey(5);
+        cv::waitKey(10);
 
     }
 

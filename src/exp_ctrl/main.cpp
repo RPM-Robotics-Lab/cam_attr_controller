@@ -59,21 +59,17 @@ _prepare_save_dir ()
 
 
 double
-_grab_and_return_ewg (bluefox2::Bluefox2 &cam_bluefox2, Img_eval &eval, double exp_t, double gain_t)
+real_grab_and_return_ewg (bluefox2::Bluefox2 &cam_bluefox2, Img_eval &eval, double exp_t, double gain_t)
 {
-
 //    int64_t t0 = timestamp_now ();
-
     bot_core::image_t test_img;
-
     // grab image from the next_exp
     int exp_time = exp_t;
     double gain_db = gain_t;
     int tmp;
 
 //    int64_t tt0 = timestamp_now();
-    while(1) {
-        
+//    while(1) {
         cam_bluefox2.SetExposeUs (exp_time);
         tmp = cam_bluefox2.GetExposeUs();
         cam_bluefox2.SetGainDB(gain_db);  // gain (-1db ~ 12 db )
@@ -81,10 +77,8 @@ _grab_and_return_ewg (bluefox2::Bluefox2 &cam_bluefox2, Img_eval &eval, double e
         cam_bluefox2.RequestSingle();
         cam_bluefox2.GrabImage (test_img);
 //        cerr << exp_time << "!=" << tmp << endl;
-        if (exp_time == tmp)    break;
-    }
-
-
+//        if (exp_time == tmp)    break;
+//    }
     cv::Mat img;
     bot_util::botimage_to_cvMat (&test_img, img);
 
@@ -92,17 +86,24 @@ _grab_and_return_ewg (bluefox2::Bluefox2 &cam_bluefox2, Img_eval &eval, double e
     // compute entropy + grad
 
     double ewg = eval.calc_img_ent_grad (img, true);
-    
+
     cv::Mat orignal_img = img;
     best=img;
+//    double snr = eval.getPSNR (img, img); 
+//    Mat noise_img = img; 
+//    snr = eval.getPSNR (img, noise_img); 
+    return ewg;
+}
 
-    double snr = eval.getPSNR (img, img); 
-    Mat noise_img = img; 
-    snr = eval.getPSNR (img, noise_img); 
+double
+syn_grab_and_return_ewg (cv::Mat &synth_img_t, Img_eval &eval, double exp_t, double gain_t)
+{
+    double ewg = eval.calc_img_ent_grad (synth_img_t, true);
 
     return ewg;
-
 }
+
+
 
 
 double 
@@ -111,29 +112,37 @@ _synth_img_t(bluefox2::Bluefox2 &cam_bluefox2, double &next_exp, cv::Mat &synth_
 
 {
        // CRF from txt file TOBE delete 
-    cv::Mat img;
-    bot_core::image_t test_img;
+    cv::Mat init_img;
+    bot_core::image_t syn_test_img;
 
     // grab image from the next_exp
     int init_time = 1000;
     double init_db = 0.0;
     int tmp;
 
-    while(1) {
+//    while(1) {
+
         cam_bluefox2.SetExposeUs (init_time);
         tmp = cam_bluefox2.GetExposeUs();
         cam_bluefox2.SetGainDB(init_db);  // gain (-1db ~ 12 db )
         cam_bluefox2.set_timeout_ms (50);
         cam_bluefox2.RequestSingle();
-        cam_bluefox2.GrabImage (test_img);
-        if (init_time == tmp)    break;
-    }
-    bot_util::botimage_to_cvMat (&test_img, img);
-    cvtColor(img, img, cv::COLOR_BGR2GRAY);
+int64_t tt1 = timestamp_now();
+        cam_bluefox2.GrabImage (syn_test_img);
+int64_t tt2 = timestamp_now();
+        //cout << "[ExpCtrl]\tOne loop done!! Next best exposure" << best_exposure << endl;
+        double diff = static_cast<double>(tt2-tt1) / 1e6;
+        printf ("Grab\tTime %f.\n", diff);
+
+
+//        if (init_time == tmp)    break;
+//    }
+    bot_util::botimage_to_cvMat (&syn_test_img, init_img);
+    cvtColor(init_img, init_img, cv::COLOR_BGR2GRAY);
 //    cv::resize (img, img, cv::Size(320, 240));
 //    next_exp = 1000.0; //from gpo
-    int E = 50; 
-    double init_irr = log( E * (0.0009));  // initial et = 1ms
+    int E = 20; 
+    double init_irr = log( E * (0.00081));  // initial et = 1ms
     double intensity_ratio = 1.0;
     int A;
     for(int i = 0; i < 255; i++){
@@ -145,7 +154,7 @@ _synth_img_t(bluefox2::Bluefox2 &cam_bluefox2, double &next_exp, cv::Mat &synth_
     int exp_step;
     int exp_itv = 500;  // exposure interval 
     exp_step = ((int)next_exp - (int)init_time) / exp_itv + 1; //exptime = 1000 + (i-1)*500;
-    std::cout<< "next exp_step for synth_t_img is  " << exp_step << std::endl;
+    std::cout<< "next exp_step for synth_t_img is  " << next_exp  << std::endl;
 
     double syn_n_exp = init_irr + log(exp_step);
 
@@ -153,7 +162,7 @@ _synth_img_t(bluefox2::Bluefox2 &cam_bluefox2, double &next_exp, cv::Mat &synth_
         if(et[k] > syn_n_exp){ 
             int B = k;  // 6~~
             intensity_ratio = (double)B / (double)A;
-            synth_img_t = img * intensity_ratio;   // Synth img along exposure time
+            synth_img_t = init_img * intensity_ratio;   // Synth img along exposure time
             std::cout<< "next intensity_ratio for synth_t_img is  " << intensity_ratio << std::endl;
             if (visualize) {
                     // show text 
@@ -162,13 +171,15 @@ _synth_img_t(bluefox2::Bluefox2 &cam_bluefox2, double &next_exp, cv::Mat &synth_
                 CvScalar red = CV_RGB (255, 0, 0);
                 CvPoint str_pos = cvPoint (50, 50);
                 char str[30];
-                snprintf (str, sizeof str, "syn_t%d", 1000+ exp_step*500 );
+                snprintf (str, sizeof str, "s_t%d", 1000+ exp_step*500 );
                 cv::Mat result;
                 cv::cvtColor(synth_img_t, result, cv::COLOR_GRAY2BGR);
+                cv::resize (result, result, cv::Size(320, 240));
                 cv::namedWindow("synth_img_t", cv::WINDOW_AUTOSIZE);
                 cv::putText(result, str, Point(600,50), CV_FONT_HERSHEY_SIMPLEX, 1, CV_RGB(0,255,0), 2, 8);
                 cv::imshow("synth_img_t", result);
-            //            cv::waitKey(10);
+                cv::imshow("init img", init_img);
+                        cv::waitKey(10);
 
             }           
         break;
@@ -193,6 +204,7 @@ _synth_img_g(cv::Mat &synth_img_t, double &next_gain, cv::Mat &synth_img_g, bool
         snprintf (str, sizeof str, "syn_gain%d", (int)init_db );
         cv::Mat result;
         cv::cvtColor(synth_img_g, result, cv::COLOR_GRAY2BGR);
+        cv::resize (result, result, cv::Size(320, 240));
         cv::namedWindow("synth_img_g", cv::WINDOW_AUTOSIZE);
         cv::putText(result, str, Point(600,50), CV_FONT_HERSHEY_SIMPLEX, 1, CV_RGB(0,255,0), 2, 8);
         cv::imshow("synth_img_g", result);
@@ -225,7 +237,7 @@ main(int argc, char *argv[])
     cam_bluefox2.Configure (config);
     cam_bluefox2.set_timeout_ms (timeout_ms);
 
-    int tmp_exposure=10;
+//    int tmp_exposure=10;
     cam_bluefox2.SetFPSandExposeTime (frameRate_Hz, init_expose);
 
     cam_bluefox2.Configure (config);
@@ -252,7 +264,7 @@ main(int argc, char *argv[])
     vector<double> x_data;
 
     while(true) {
-        for (int t=1000; t<10500; t+=814) 
+        for (int t=1000; t<10500; t+=500) 
             x_data.push_back (t);
 
         gpo.set_predict (x_data);   // query exposure range
@@ -265,15 +277,17 @@ main(int argc, char *argv[])
         double best_gain = 0.0;
         double ewg = 0.0;
         double next_synth_index = 0.0;
-        ewg = _grab_and_return_ewg (cam_bluefox2, eval, next_exp, next_gain);
+        ewg = real_grab_and_return_ewg (cam_bluefox2, eval, next_exp, next_gain);
         cv::Mat control_img;
+        cv::Mat synth_img_t, synth_img_g;
         int64_t time1 = timestamp_now();
         while (!gpo.is_optimal()) {
             cv::resize (ewg, control_img, cv::Size(320, 240));
     //            std::cout << "[ExpCtrl]\tDuring GP (t,v) = (" << next_exp << ", "<< ewg << ")" << std::endl;
 
+
             if (gpo.evaluate (next_exp, ewg)) {
-                
+
                 best_exposure = gpo.optimal_expose();
                 best_gain = gpo.optimal_gain();
 
@@ -281,20 +295,28 @@ main(int argc, char *argv[])
 //	            cv::imshow("best", best);
     
 //                cv::waitKey(0);
-                ewg = _grab_and_return_ewg (cam_bluefox2, eval, best_exposure, best_gain);
+std::cout<< "exp time of optimal ewg  " << next_exp<< endl;
+cvtColor(synth_img_t, synth_img_t, cv::COLOR_GRAY2BGR);
+                ewg = syn_grab_and_return_ewg (synth_img_t, eval, best_exposure, best_gain);
+
                 break;
             }
             else {
                 int next_index = gpo.query_index();
                 next_exp = x_data[next_index];
                 next_synth_index = (double)next_exp;
-cv::Mat synth_img_t, synth_img_g;
+int64_t stime1 = timestamp_now();
 _synth_img_t(cam_bluefox2 , next_synth_index, synth_img_t, true);
 _synth_img_g(synth_img_t, next_gain, synth_img_g,  true);
-                ewg = _grab_and_return_ewg (cam_bluefox2, eval, next_exp, next_gain);
-                
+int64_t stime2 = timestamp_now();
+double diff = static_cast<double>(stime2-stime1) / 1e6;
+printf ("synthetic\tTime %f.\n", diff);
+cvtColor(synth_img_t, synth_img_t, cv::COLOR_GRAY2BGR);
+//cv::resize (synth_img_t, synth_img_t, cv::Size(320, 240));
+std::cout<< "exp time of query ewg  " << next_exp<< endl;
+                ewg = syn_grab_and_return_ewg (synth_img_t, eval, next_exp, next_gain);
 
-//cout << "next_synth_index  :  " << next_synth_index << "" << synth_img_t << endl;
+
 
             }
         }
