@@ -12,7 +12,7 @@
             "agc": false,
             "gain_db": 0.0,
             "aec": false,
-            "expose_us": 500,
+            "expose_us": 700,
             "acs": "acs_unavailable",
             "des_gray_val": 85,
             "wbp": "wbp_user1",

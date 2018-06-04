@@ -88,7 +88,7 @@ Img_eval::calc_img_ent_grad (cv::Mat &img, bool visualize)
 	gradW *= 1;
     gradW.convertTo (gradW, CV_32F, 1.0 / 255.0);
 	
-    double satparam = -1.5;
+    double satparam = -3.5;
 	Mat columnSum, mu;   
     img_columnSum (entropy, columnSum, mu);
 	Mat Smask = satparam * Gmean * wmask;  //Smask == Sval, how to - value
@@ -102,11 +102,11 @@ Img_eval::calc_img_ent_grad (cv::Mat &img, bool visualize)
 
     if (visualize) {
         cv::resize (img, img, cv::Size(752, 480));
-	    cv::namedWindow("Original", cv::WINDOW_AUTOSIZE);
+//	    cv::namedWindow("Original", cv::WINDOW_AUTOSIZE);
 	    cv::namedWindow("Entropy Mask", cv::WINDOW_AUTOSIZE);	
 	    cv::namedWindow("Entropy Filter", cv::WINDOW_AUTOSIZE);
 	    cv::namedWindow("Gradient Image", cv::WINDOW_AUTOSIZE);
-	    cv::imshow("Original", img);
+//	    cv::imshow("Original", img);
 	    cv::imshow("Entropy Mask", wmask);  //dst 
 	    cv::imshow("Entropy Filter", entropy);
 	    cv::imshow("Gradient Image",grad);
