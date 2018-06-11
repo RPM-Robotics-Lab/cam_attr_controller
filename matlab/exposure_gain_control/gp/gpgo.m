@@ -65,6 +65,8 @@ for i = 1:20
     [y_pred, var_pred] = gp_predict (t_pred, t_train, K, y_train, cfg);
     [vals, optimal_id] = max(y_pred);
     toc;
+    t_pred
+    pause;
 
 %     selection by GPMI
     alpha = 0.5;

@@ -243,7 +243,7 @@ void GPOptimize::check_optimal()
 //    if (abs(query_exposure_- last_query) < 1 || cost_ < 5 || iter_count_ > cfg_.num_iter()) {
     if (cost_ < 50 || iter_count_ > cfg_.num_iter()) {
 
-        cout << "Now find optimal by "<< query_exposure_- last_query << " / " << cost_ << " / " << iter_count_ << endl;
+        cout << "Now find optimal by "<< abs(query_exposure_ - last_query) << " / " << cost_ << " / " << iter_count_ << endl;
         set_optimal();
     }
     else

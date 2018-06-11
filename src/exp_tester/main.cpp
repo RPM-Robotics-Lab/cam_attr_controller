@@ -66,16 +66,16 @@ int main(int argc, char** argv)
             Mat etimg = img * k_int; 
     
             for (int k = 0; k<12; k++)   {
-            double g_factor, gain_step;
-            gain_step = (double)k/20; 
-            g_factor = pow(7.01, gain_step); //factor = 7^((ii_g-1)/20); 
-            Mat gainimg = etimg * g_factor; 
+                double g_factor, gain_step;
+                gain_step = (double)k/20; 
+                g_factor = pow(7.01, gain_step); //factor = 7^((ii_g-1)/20); 
+                Mat gainimg = etimg * g_factor; 
 
-            cvtColor(gainimg, gainimg, cv::COLOR_GRAY2BGR);
-            cv::imshow("gain img", gainimg);
-            cv::waitKey(10);
-            double gainewg = eval.calc_img_ent_grad (gainimg, true);
-            std::cout << "Computed Gain ewg = " << gainewg << ",  " << k << std::endl;  
+                cvtColor(gainimg, gainimg, cv::COLOR_GRAY2BGR);
+                cv::imshow("gain img", gainimg);
+                cv::waitKey(10);
+                double gainewg = eval.calc_img_ent_grad (gainimg, true);
+                std::cout << "Computed Gain ewg = " << gainewg << ",  " << k << std::endl;  
             }
 
             cv::imshow("etimg", etimg);

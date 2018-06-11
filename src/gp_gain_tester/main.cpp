@@ -85,11 +85,9 @@ int main(int argc, char** argv)
     // Load two sample data
     load_csv_from_file(file_path, x_data, y_data);
     load_csv_from_file(file_path2, x_data2, y_data2);
-
     cout << "Data load done " << endl
          << "\t Data1: " << x_data.size() << endl
          << "\t Data2: " << x_data2.size() << endl;
-
     // GPO initialize (set once, globally)
     GPOptimize gpo;
     Config cfg(ls, s_f, s_n, AcqType::MAXMI, 0.5, num_iter);
@@ -103,6 +101,7 @@ int main(int argc, char** argv)
     double best_exposure = x_data[2](0); // for safety
     double best_gain = x_data[2](1);
     double best_metric = y_data[2];
+
     while (!gpo.is_optimal()) {
 //    for (int i = 0; i < 20; ++i) {
         cout << "Current query exposure / gain / metric:\t" << x(0) << " / " << x(1) <<" / " << y << endl;
