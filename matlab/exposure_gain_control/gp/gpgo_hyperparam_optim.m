@@ -11,13 +11,13 @@ for i = 1:length(datalist)
     data = data - mean(data(:));
     metric = data;
 
-    exp_arr = exposure(:);
-    gain_arr = gain(:);
-    metric_arr = metric(:);
+    exp_arr = exposure(:) ./ 39;
+    gain_arr = gain(:) ./ 13;
+    metric_arr = metric(:) ./ max(metric(:));
 
     fidx = length(exp_arr(:));
     % next_in(1) = round(fidx*.05);
-    idx_train = [1:50:fidx];
+    idx_train = [1:10:fidx];
     
     t_train = [exp_arr(idx_train), gain_arr(idx_train)]';
     y_train = metric_arr(idx_train);
@@ -26,8 +26,8 @@ for i = 1:length(datalist)
     t_pred = [exp_arr(idx_pred), gain_arr(idx_pred)]';
 
     gpm = fitrgp(t_train', y_train','KernelFunction','squaredexponential',...
-                'OptimizeHyperparameters','auto');%,'HyperparameterOptimizationOptions',...
-                %struct('AcquisitionFunctionName','expected-improvement-plus'));
+                'OptimizeHyperparameters','auto','HyperparameterOptimizationOptions',...
+                struct('AcquisitionFunctionName','expected-improvement-plus'));
     % [y_pred, var_pred] = gpm.predict(t_pred');
     
     hyperparam_list(i,:) = gpm.KernelInformation.KernelParameters';
@@ -35,4 +35,4 @@ for i = 1:length(datalist)
     
 
 end
-save('optimized_hyperparam_50.mat', 'hyperparam_list');
+save('optimized_hyperparam_10_ei.mat', 'hyperparam_list');
