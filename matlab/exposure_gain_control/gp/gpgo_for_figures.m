@@ -155,13 +155,15 @@ legend_h = legend('GT' , 'Training Points','GP-Mean', 'GP-Cov', 'Optimal-GT', 'O
 
 
 fig_true = figure(111);
-surf(data); xlabel('exposure'); ylabel('gain'); colormap(jet); hold on;
-plot3(exp_arr(topt_idx), gain_arr(topt_idx), metric_arr(topt_idx), 'go', 'LineWidth', 3)
+s1 = surf(data, 'FaceAlpha',0.85); xlabel('exposure'); ylabel('gain'); zlabel('EWG'); hold on;
+s1.EdgeColor = 'none';
+plot3(exp_arr(topt_idx), gain_arr(topt_idx), metric_arr(topt_idx), 'bo', 'LineWidth', 4)
 
 fig_estim = figure(222);
-surf(reshape(y_pred, size(metric))); xlabel('exposure'); ylabel('gain'); hold on;
-plot3(t_selected(1), t_selected(2), y_selected, 'go', 'LineWidth', 3); colormap(jet)
-plot3(t_train(1,:), t_train(2,:), y_train, 'rx', 'LineWidth', 2);
+s2 = surf(reshape(y_pred, size(metric)), 'FaceAlpha',0.85); xlabel('exposure'); ylabel('gain'); zlabel('EWG'); hold on;
+s2.EdgeColor = 'none';
+plot3(t_selected(1), t_selected(2), y_selected, 'bo', 'LineWidth', 4); 
+plot3(t_train(1,:), t_train(2,:), y_train, 'rx', 'LineWidth', 3);
 
 
 %% Save figure
