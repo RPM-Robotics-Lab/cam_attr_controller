@@ -170,20 +170,20 @@ plot3(t_train(1,:), t_train(2,:), y_train, 'rx', 'LineWidth', 3);
 figure(fig_true);
 % font setup
 set(gca, 'FontName', 'Arial')  
-set(gca, 'FontSize', 10);
+set(gca, 'FontSize', 13);
 % paper setup
 set(fig_true, 'PaperUnits', 'centimeters');
-set(fig_true, 'PaperSize', [15 10]);
+set(fig_true, 'PaperSize', [12 8]);
 pause(0.4);
 print('-fillpage',['True'],'-dpdf');
 
 figure(fig_estim);
 % font setup
 set(gca, 'FontName', 'Arial')  
-set(gca, 'FontSize', 10);
+set(gca, 'FontSize', 13);
 % paper setup
 set(fig_estim, 'PaperUnits', 'centimeters');
-set(fig_estim, 'PaperSize', [15 10]);
+set(fig_estim, 'PaperSize', [12 8]);
 pause(0.4);
 print('-fillpage',['Estim'],'-dpdf');
 
