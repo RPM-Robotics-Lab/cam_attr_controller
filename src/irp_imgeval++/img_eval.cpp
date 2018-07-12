@@ -71,7 +71,7 @@ Img_eval::calc_img_ent_grad (cv::Mat &img, bool visualize)
 {
     // Convert to grayscale
     cvtColor(img, img, cv::COLOR_BGR2GRAY);
-    cv::resize (img, img, cv::Size(320, 240));
+    cv::resize (img, img, cv::Size(160, 120));
     cv::Mat entropy, grad ;
 	cv::Mat wmask(entropy.size(), CV_32F, 1.0); // ones
     img_entropy (img, entropy);
@@ -84,15 +84,15 @@ Img_eval::calc_img_ent_grad (cv::Mat &img, bool visualize)
 
 	//printf("Gradient sss is %d %d \n", wcols, wrows) ;
  	
-	Mat gradW = grad > Gmean * 0.25;
+	Mat gradW = grad > Gmean * 0.15;
 	gradW *= 1;
     gradW.convertTo (gradW, CV_32F, 1.0 / 255.0);
 	
-    double satparam = -4.5;
+    double satparam = -5.5;
 	Mat columnSum, mu;   
     img_columnSum (entropy, columnSum, mu);
 	Mat Smask = satparam * Gmean * wmask;  //Smask == Sval, how to - value
-    Mat Gour = ((gradW.mul(grad*3))+ Smask) ;
+    Mat Gour = ((gradW.mul(grad*1.5))+ Smask) ;
 	Mat Gourstmp1, Gourstmp2;
     double Gours;
     img_Gours (Gour, Gourstmp1, Gourstmp2, Gours);
@@ -271,7 +271,7 @@ Img_eval::getLocalEntropyImage (cv::Mat &gray, cv::Rect &roi, cv::Mat &entropy)
     func_begin = clock();
     //1.define nerghbood model,here it's 9*9
     int neighbood_dim = 2;
-    int neighbood_size[] = {5, 5};
+    int neighbood_size[] = {3, 3};
 
     //2.Pad gray_src
     Mat gray_src_mat(gray);
@@ -339,7 +339,7 @@ Img_eval::getLocalEntropyImage (cv::Mat &gray, cv::Rect &roi, cv::Mat &entropy)
     int current_index_in_origin = 0;
     for (int y = roi.y; y < roi.height; y++){
         current_index = y * pad_src->cols;
-        current_index_in_origin = (y - 2) * gray.cols; //     neighbood_size[1]  9->4, 7->3, 5->2
+        current_index_in_origin = (y - 1) * gray.cols; //     neighbood_size[1]  9->4, 7->3, 5->2 3 -> 1
 //cerr << "yy = " << y  << "gray = " << (y - 4) * gray.cols << endl;
         for (int x = roi.x; x < roi.width; x++, current_index++, current_index_in_origin++) {
             for (int j = 0; j<neighbood_num; j++) {
