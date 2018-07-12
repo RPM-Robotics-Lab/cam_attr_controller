@@ -67,19 +67,19 @@ for i = 1:10
     toc;
     t_pred
 
-%     selection by GPMI
-    alpha = 0.5;
-    max_var = max(diag(var_pred));
-    [next_in(i+1), psi, acq_func] = gpmi_optim(y_pred, var_pred, alpha, psi);
-
-
-%     % selection by var max
-%     acq_func = diag(var_pred);
+% %     selection by GPMI
+%     alpha = 0.5;
 %     max_var = max(diag(var_pred));
-%     [va, in] = max(acq_func);
-%     in(i) = in;
-%     next_in(i+1) = in(i);
-%     t_pred(next_in(i+1));
+%     [next_in(i+1), psi, acq_func] = gpmi_optim(y_pred, var_pred, alpha, psi);
+
+
+    % selection by var max
+    acq_func = diag(var_pred);
+    max_var = max(diag(var_pred));
+    [va, in] = max(acq_func);
+    in(i) = in;
+    next_in(i+1) = in(i);
+    t_pred(next_in(i+1));
 
     
     % plot graph    
@@ -144,6 +144,7 @@ for i = 1:10
 
 end
 
+%%
 figure(2); 
 t_selected = t_pred(:, optimal_id);
 y_selected = y_pred(optimal_id);
@@ -153,15 +154,39 @@ plot3(t_selected(1), t_selected(2), y_selected, 'go', 'LineWidth', 3);
 legend_h = legend('GT' , 'Training Points','GP-Mean', 'GP-Cov', 'Optimal-GT', 'Optimal-Pred',  'Location','southwest');
 
 
+fig_true = figure(111);
+s1 = surf(data, 'FaceAlpha',0.85); xlabel('exposure'); ylabel('gain'); zlabel('EWG'); hold on;
+s1.EdgeColor = 'none';
+plot3(exp_arr(topt_idx), gain_arr(topt_idx), metric_arr(topt_idx), 'bo', 'LineWidth', 4)
+
+fig_estim = figure(222);
+s2 = surf(reshape(y_pred, size(metric)), 'FaceAlpha',0.85); xlabel('exposure'); ylabel('gain'); zlabel('EWG'); hold on;
+s2.EdgeColor = 'none';
+plot3(t_selected(1), t_selected(2), y_selected, 'bo', 'LineWidth', 4); 
+plot3(t_train(1,:), t_train(2,:), y_train, 'rx', 'LineWidth', 3);
+
+
 %% Save figure
+figure(fig_true);
 % font setup
 set(gca, 'FontName', 'Arial')  
-set(gca, 'FontSize', 10);
+set(gca, 'FontSize', 13);
 % paper setup
-set(fig, 'PaperUnits', 'centimeters');
-set(fig, 'PaperSize', [15 10]);
+set(fig_true, 'PaperUnits', 'centimeters');
+set(fig_true, 'PaperSize', [12 8]);
 pause(0.4);
-% print('-fillpage',['GPGO' num2str(i+1)],'-dpdf');
+print('-fillpage',['True'],'-dpdf');
+
+figure(fig_estim);
+% font setup
+set(gca, 'FontName', 'Arial')  
+set(gca, 'FontSize', 13);
+% paper setup
+set(fig_estim, 'PaperUnits', 'centimeters');
+set(fig_estim, 'PaperSize', [12 8]);
+pause(0.4);
+print('-fillpage',['Estim'],'-dpdf');
+
 
 
 %% Change file save option
