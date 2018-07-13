@@ -1,6 +1,6 @@
-irap_add_folder (irp_imgeval++ "Build image evaluator library?" OFF)
+irap_add_folder (irp_imgeval++ "Build image evaluator library?" ON)
 irap_add_folder (exp_tester "Build exp tester?" OFF)
-irap_add_folder (exp_ctrl "Build exp controller?" OFF)
+irap_add_folder (exp_ctrl "Build exp controller?" ON)
 irap_add_folder (gp_optim "Build gp optimizer?" ON)
 irap_add_folder (gp_tester "Build gp tester?" ON)
 irap_add_folder (gp_gain_tester "Build gp tester?" ON)

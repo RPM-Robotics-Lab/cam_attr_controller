@@ -1,9 +1,20 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
+#include <chrono>
+#include <cstdint>
 #include <gp_optimize/gp_optimize.h>
 #include <gp_optimize/config.h>
+
 using namespace Eigen;
+
+
+//inline uint64_t CurrentTime_microseconds()
+//{
+//    return std::chrono::duration_cast<std::chrono::microseconds>
+//              (std::chrono::high_resolution_clock::now().time_since_epoch()).count();
+//}
+
 
 void load_csv_from_file (ifstream& file_path, vector<double>& x_data, vector<double>& y_data) {
     string line;
@@ -64,6 +75,7 @@ void load_csv_from_file (ifstream& file_path, vector<VectorXd>& x_data, vector<d
     }
 }
 
+
 int main(int argc, char** argv)
 {
     VectorXd x_i(2);
@@ -90,18 +102,19 @@ int main(int argc, char** argv)
          << "\t Data2: " << x_data2.size() << endl;
     // GPO initialize (set once, globally)
     GPOptimize gpo;
-    Config cfg(ls, s_f, s_n, AcqType::MAXMI, 0.5, num_iter);
+    Config cfg(ls, s_f, s_n, AcqType::MAXVAR, 0.5, num_iter);
 
     // For first frame
     gpo.initialize(cfg);
-    gpo.set_predict(x_data); // query exposure range
+    gpo.set_autopredict();
+//    gpo.set_predict(x_data); // query exposure range
 
     VectorXd x = x_data[2]; // current exposure (minimum exposure not good for initialize)
     double y = y_data[2]; // current metric
     double best_exposure = x_data[2](0); // for safety
     double best_gain = x_data[2](1);
     double best_metric = y_data[2];
-
+    int64_t fr1_t = CurrentTime_microseconds();
     while (!gpo.is_optimal()) {
 //    for (int i = 0; i < 20; ++i) {
         cout << "Current query exposure / gain / metric:\t" << x(0) << " / " << x(1) <<" / " << y << endl;
@@ -119,6 +132,8 @@ int main(int argc, char** argv)
         }
     }
     cout << "DONE!! Best exposure / gain for data 1:\t" << best_exposure << " / " << best_gain << " / " << best_metric << endl << endl;
+    int64_t fr2_t = CurrentTime_microseconds();
+    cout<< "TIME\t" << static_cast<double>(fr2_t-fr1_t)/1e6 << endl;
 
     // For second frame
     gpo.initialize(cfg);

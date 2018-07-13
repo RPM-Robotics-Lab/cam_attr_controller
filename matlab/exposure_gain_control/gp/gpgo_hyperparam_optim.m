@@ -11,8 +11,8 @@ for i = 1:length(datalist)
     data = data - mean(data(:));
     metric = data;
 
-    exp_arr = exposure(:) ./ 39;
-    gain_arr = gain(:) ./ 13;
+    exp_arr = exposure(:);% ./ 39;
+    gain_arr = gain(:);% ./ 13;
     metric_arr = metric(:) ./ max(metric(:));
 
     fidx = length(exp_arr(:));

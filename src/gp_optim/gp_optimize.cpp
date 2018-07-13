@@ -82,6 +82,20 @@ void GPOptimize::set_predict(vector<VectorXd>& x_pred)
     x_pred_ = x_pred;
 }
 
+void GPOptimize::set_autopredict()
+{
+    for (int e = 1; e < 40; ++e) {
+        for (int g = 1; g < 14; ++g) {
+            VectorXd single_set(2);
+            single_set << e, g;
+            x_pred_.push_back(single_set);
+        }
+
+    }
+}
+
+
+
 bool GPOptimize::evaluate(double x_val, double y_val)
 {
     add_data(x_val, y_val);
@@ -241,9 +255,9 @@ void GPOptimize::check_optimal()
     double last_query = x_train_.back()(0);
 //    cout << " last _query " << last_query;
 //    if (abs(query_exposure_- last_query) < 1 || cost_ < 5 || iter_count_ > cfg_.num_iter()) {
-    if (cost_ < 50 || iter_count_ > cfg_.num_iter()) {
+    if (cost_ < 100 || iter_count_ > cfg_.num_iter()) {
 
-        cout << "Now find optimal by "<< (query_exposure_ - last_query) << " / " << cost_ << " / " << iter_count_ << endl;
+        cout << "Now find optimal by "<< abs(query_exposure_ - last_query) << " / " << cost_ << " / " << iter_count_ << endl;
         cout << "q_exp =" << query_exposure_ << ", last_exp =" << last_query << endl;
         set_optimal();
     }

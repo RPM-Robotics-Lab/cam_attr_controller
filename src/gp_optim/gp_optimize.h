@@ -4,12 +4,21 @@
 #include <iostream>
 #include <vector>
 #include <eigen3/Eigen/Core>
+#include <chrono>
+#include <cstdint>
 #include <unsupported/Eigen/MatrixFunctions>
 
 #include "config.h"
 
 using namespace std;
 using namespace Eigen;
+
+
+inline uint64_t CurrentTime_microseconds()
+{
+    return std::chrono::duration_cast<std::chrono::microseconds>
+              (std::chrono::high_resolution_clock::now().time_since_epoch()).count();
+}
 
 class GPOptimize
 {
@@ -31,6 +40,7 @@ public:
 
     void set_predict(vector<double> &x_pred);
     void set_predict(vector<VectorXd> &x_pred);
+    void set_autopredict();
 
     void predict();
 
