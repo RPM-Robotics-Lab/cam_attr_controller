@@ -145,14 +145,15 @@ _synth_img_t (bluefox2::Bluefox2 &cam_bluefox2, double &next_exp, cv::Mat &synth
 }
 
 double 
-_synth_img_g(cv::Mat &synth_img_t, double &next_gain, cv::Mat &synth_img_g, bool visualize)
+_synth_img_g (cv::Mat &synth_img_t, double &next_gain, cv::Mat &synth_img_g, bool visualize)
 {
     double init_db = next_gain;
     double g_factor, gain_step;
     gain_step = init_db/20; 
     g_factor = pow(7.01, gain_step); //factor = 7^((ii_g-1)/20); 
-//std::cout << "The gain step is " << gain_step << std::endl;
+    //std::cout << "The gain step is " << gain_step << std::endl;
     synth_img_g = synth_img_t * g_factor; // Synth img along gain
+
     if (visualize) {
         CvFont font;
         cvInitFont (&font, CV_FONT_HERSHEY_PLAIN, 2.0, 2.0, 0, 2, 8);
@@ -279,9 +280,11 @@ main(int argc, char *argv[])
     int best_exposure = x_data[0](0); // for safety
     double best_gain = x_data[0](1);
 
+    // set predict once before while
+    gpo.set_predict (x_data);   // query exposure range
+            
     while(true) {
             gpo.initialize(cfg);
-            gpo.set_predict (x_data);   // query exposure range
             double ewg ;
             double next_synth_index_t = 0.0;  // 0 ~ 20000 us
             double next_synth_index_g = 0.0;  // 0 ~ 12 db
