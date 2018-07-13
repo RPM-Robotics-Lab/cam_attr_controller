@@ -255,7 +255,7 @@ void GPOptimize::check_optimal()
     double last_query = x_train_.back()(0);
 //    cout << " last _query " << last_query;
 //    if (abs(query_exposure_- last_query) < 1 || cost_ < 5 || iter_count_ > cfg_.num_iter()) {
-    if (cost_ < 100 || iter_count_ > cfg_.num_iter()) {
+    if (cost_ < 100 || x_train_.size() > cfg_.num_iter()) {
 
         cout << "Now find optimal by "<< abs(query_exposure_ - last_query) << " / " << cost_ << " / " << iter_count_ << endl;
         cout << "q_exp =" << query_exposure_ << ", last_exp =" << last_query << endl;

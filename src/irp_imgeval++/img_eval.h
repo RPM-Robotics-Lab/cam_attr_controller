@@ -19,12 +19,13 @@ public:
 
     //Img_eval::Img_eval ();
     //Img_eval::~Img_eval ();
-void CreatErf(vector<vector<double> > &res1);
-void PrintErf(const vector<vector<double> > &res1); 
-void CreatGrf(vector<vector<double> > &res2);
-void PrintGrf(const vector<vector<double> > &res2); 
+    void CreatErf(vector<vector<double> > &res1);
+    void PrintErf(const vector<vector<double> > &res1); 
+    void CreatGrf(vector<vector<double> > &res2);
+    void PrintGrf(const vector<vector<double> > &res2); 
     double calc_img_ent_grad (cv::Mat &img, bool visualize = false);
     double getPSNR(cv::Mat &img, cv::Mat &gimg);
+
 private:
     void img_entropy (Mat &img, Mat &entropy);
     void img_wmask (Mat &entropy, Mat &wmask);

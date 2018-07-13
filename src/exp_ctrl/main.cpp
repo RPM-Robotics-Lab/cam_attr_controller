@@ -271,13 +271,13 @@ main(int argc, char *argv[])
     double ls = 5.5; //5.5;
     double s_f = 15.0; //15.0
     double s_n = 5.0; //5.0
-    int num_iter = 20; //50
+    int num_iter = 7; //50
 
     int t0 = 1000;      // 1000 = initial time
     double g0 = 0.0;    // 0.0 = initial gain
 
     // post processing for report
-    bool vis_and_imwrite_best = false;
+    bool vis_and_imwrite_best = true;
 
     // camera prepare
     // --------------------------------------------//
@@ -315,11 +315,14 @@ main(int argc, char *argv[])
 
     // set predict once before while
     gpo.set_predict (x_data);   // query exposure range
-            
+    int exp_init[8] = {1,31,3,27,17,3,12,25}; // exposure idx
+    int gain_init[8] = {1,10,13,1,13,1,1,13}; // gain idx
+    double ewg = 0.f;
     while(true) {
         gpo.initialize(cfg);
             
-        double ewg ;
+
+
         double next_synth_index_t = 0.0;  // 0 ~ 20000 us
         double next_synth_index_g = 0.0;  // 0 ~ 12 db
         cv::Mat control_img;
@@ -339,6 +342,31 @@ main(int argc, char *argv[])
         bot_util::botimage_to_cvMat (&syn_test_img, init_img);
         cvtColor(init_img, init_img, cv::COLOR_BGR2GRAY);
         // cv::resize (img, img, cv::Size(320, 240));
+        int64_t time1 = timestamp_now();
+
+//        for (int i =0; i<num_iter; ++i) {
+//            next_exp = exp_init[i]*500;
+//            next_gain = gain_init[i]-1;
+//            next_synth_index_t = double(next_exp);
+//            next_synth_index_g = double(next_gain);
+
+
+//            // Calculate ewg            
+//            _synth_img_t (init_img, next_synth_index_t, synth_img_t, false);
+//            _synth_img_g (synth_img_t, next_synth_index_g, synth_img_g,  false);
+//            cvtColor(synth_img_g, synth_img_g, cv::COLOR_GRAY2BGR);
+//            ewg = syn_grab_and_return_ewg (synth_img_g, eval, next_exp, next_gain);
+//            std::cout << "@@@@@@@@@@@@@@@@@@@@@@EWG" << ewg << std::endl;
+//            VectorXd init_input(2);
+//            init_input << exp_init[i], gain_init[i];
+//            x = init_input;
+//            
+//            if (i < num_iter) 
+//                gpo.add_data(init_input, ewg);
+
+//        }
+
+        std::cout << "---------------------EWG" << ewg << std::endl;
 
         while (!gpo.is_optimal()) { // GPO WHILE
             // cv::resize (ewg, control_img, cv::Size(320, 240));
@@ -347,13 +375,14 @@ main(int argc, char *argv[])
                 // Optimal attribute found. Break while loop.
                 best_exposure = gpo.optimal_expose() * 500 ;
                 best_gain = gpo.optimal_gain()-1;            
-                std::cout<< "======== exp time of optimal ewg ========  " << best_exposure << ", " << best_gain << ", " << (int)ewg << endl;
+                std::cout<< "======== exp time of optimal ewg ========  " << best_exposure << ", " << best_gain << ", " << (int)ewg << " dt : "<<timestamp_now() - time1 <<endl;
 
                 cvtColor(synth_img_g, synth_img_g, cv::COLOR_GRAY2BGR);
                 ewg = syn_grab_and_return_ewg (synth_img_g, eval, best_exposure, best_gain);
                 break;
             }
             else {
+
                 int next_index = gpo.query_index();
                 x = x_data[next_index];
                 next_exp = x_data[next_index](0) * 500;
@@ -362,8 +391,8 @@ main(int argc, char *argv[])
                 next_synth_index_g = (double)next_gain;
 
                 // synthetic image for exposure time and gain
-                _synth_img_t (init_img, next_synth_index_t, synth_img_t, true);
-                _synth_img_g (synth_img_t, next_synth_index_g, synth_img_g,  true);
+                _synth_img_t (init_img, next_synth_index_t, synth_img_t, false);
+                _synth_img_g (synth_img_t, next_synth_index_g, synth_img_g,  false);
 
                 cvtColor(synth_img_g, synth_img_g, cv::COLOR_GRAY2BGR);
                 ewg = syn_grab_and_return_ewg (synth_img_g, eval, next_exp, next_gain);
