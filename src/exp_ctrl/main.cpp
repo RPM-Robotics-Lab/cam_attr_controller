@@ -276,6 +276,9 @@ main(int argc, char *argv[])
     double s_n = 5.0; //5.0
     int num_iter = 20; //50
 
+    int t0 = 1000;      // 1000 = initial time
+    double g0 = 0.0;    // 0.0 = initial gain
+
     // camera prepare
     // --------------------------------------------//
     bluefox2::Bluefox2 cam_bluefox2(parser.GetSerial());
@@ -322,6 +325,21 @@ main(int argc, char *argv[])
         cv::Mat control_img;
         cv::Mat synth_img_t, synth_img_g;
 
+        // camera grab for t0
+        bot_core::image_t syn_test_img;
+        cam_bluefox2.SetExposeUs(t0);
+        cam_bluefox2.GetExposeUs();     // get is needed to confirm setexposure()
+        cam_bluefox2.SetGainDB(g0);     // gain (-1db ~ 12 db )
+        // cam_bluefox2.set_timeout_ms (50);
+        cam_bluefox2.RequestSingle();
+        cam_bluefox2.GrabImage (syn_test_img);
+
+        // image preparation
+        cv::Mat init_img;
+        bot_util::botimage_to_cvMat (&syn_test_img, init_img);
+        cvtColor(init_img, init_img, cv::COLOR_BGR2GRAY);
+        // cv::resize (img, img, cv::Size(320, 240));
+
         while (!gpo.is_optimal()) { // GPO WHILE
             // cv::resize (ewg, control_img, cv::Size(320, 240));
        
@@ -344,7 +362,7 @@ main(int argc, char *argv[])
                 next_synth_index_g = (double)next_gain;
 
                 // synthetic image for exposure time and gain
-                _synth_img_t_with_grab (cam_bluefox2, next_synth_index_t, synth_img_t, false);
+                _synth_img_t (init_img, next_synth_index_t, synth_img_t, false);
                 _synth_img_g (synth_img_t, next_synth_index_g, synth_img_g,  false);
 
                 cvtColor(synth_img_g, synth_img_g, cv::COLOR_GRAY2BGR);
