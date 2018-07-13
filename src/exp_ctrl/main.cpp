@@ -362,27 +362,27 @@ main(int argc, char *argv[])
                 next_synth_index_g = (double)next_gain;
 
                 // synthetic image for exposure time and gain
-                _synth_img_t (init_img, next_synth_index_t, synth_img_t, false);
-                _synth_img_g (synth_img_t, next_synth_index_g, synth_img_g,  false);
+                _synth_img_t (init_img, next_synth_index_t, synth_img_t, true);
+                _synth_img_g (synth_img_t, next_synth_index_g, synth_img_g,  true);
 
                 cvtColor(synth_img_g, synth_img_g, cv::COLOR_GRAY2BGR);
                 ewg = syn_grab_and_return_ewg (synth_img_g, eval, next_exp, next_gain);
             }
 
-            cv::Mat best_img;
-            int best_exposure2 = best_exposure + 500  ;
-            cam_bluefox2.SetExposeUs(best_exposure2);
-            cam_bluefox2.GetExposeUs();
+//            cv::Mat best_img;
+//            int best_exposure2 = best_exposure + 500  ;
+//            cam_bluefox2.SetExposeUs(best_exposure2);
+//            cam_bluefox2.GetExposeUs();
 //            cout << "get exp - " << cam_bluefox2.GetExposeUs() << endl;
-            cam_bluefox2.SetGainDB(best_gain);  // gain (-1db ~ 12 db )
+//            cam_bluefox2.SetGainDB(best_gain);  // gain (-1db ~ 12 db )
 //            cam_bluefox2.set_timeout_ms (50);
-            cam_bluefox2.RequestSingle();
-            bot_core::image_t best_img_t;
+//            cam_bluefox2.RequestSingle();
+//            bot_core::image_t best_img_t;
 //            printf ("[ExpCtrl]\tStart to grab best images.\n");
-            cam_bluefox2.GrabImage(best_img_t);
+//            cam_bluefox2.GrabImage(best_img_t);
 //            bot_util::botimage_to_cvMat(&best_img_t, best_img);
 //            cvtColor(best_img, best_img, cv::COLOR_BGR2GRAY);
-//            // show text 
+            // show text 
 //            CvFont font;
 //            cvInitFont (&font, CV_FONT_HERSHEY_PLAIN, 2.0, 2.0, 0, 2, 8);
 //            CvScalar red = CV_RGB (255, 0, 0);
