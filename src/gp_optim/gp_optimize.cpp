@@ -246,19 +246,17 @@ MatrixXd GPOptimize::gp_cov_k_SE(VectorXd x_i, VectorXd x_j, double l, double s_
 //    if (x_diff.norm() < 0.00001) {
 //        cov = cov + MatrixXd::Constant(1, 1, cfg_.s_n()*cfg_.s_n());
 //    }
-
     return cov;
 }
 
 void GPOptimize::check_optimal()
 {
     double last_query = x_train_.back()(0);
-//    cout << " last _query " << last_query;
+    cout << last_query*500 << ", ";
 //    if (abs(query_exposure_- last_query) < 1 || cost_ < 5 || iter_count_ > cfg_.num_iter()) {
-    if (cost_ < 100 || x_train_.size() > cfg_.num_iter()) {
-
-        cout << "Now find optimal by "<< abs(query_exposure_ - last_query) << " / " << cost_ << " / " << iter_count_ << endl;
-        cout << "q_exp =" << query_exposure_ << ", last_exp =" << last_query << endl;
+    if (cost_ < 100 || x_train_.size() > cfg_.num_iter())  {
+//        cout << "Now find optimal by "<< abs(query_exposure_ - last_query) << " / " << cost_ << " / " << iter_count_ << endl;
+        cout << "q_exp = " << query_exposure_ *500 << ", last_exp =" << last_query *500 << endl;
         set_optimal();
     }
     else
@@ -270,7 +268,6 @@ void GPOptimize::set_optimal()
     int index;
     // cout << "y prediction " << endl << y_pred_ << endl;
     y_pred_.maxCoeff(&index);
-
     optimal_index_ = index;
     optimal_exposure_ = x_pred_[index](0);
     optimal_gain_ = x_pred_[index](1);
