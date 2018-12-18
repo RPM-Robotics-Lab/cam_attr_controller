@@ -201,10 +201,10 @@ _synth_img_g (cv::Mat &synth_img_t, double &next_gain, cv::Mat &synth_img_g, boo
 {
     double init_db = next_gain;
     double g_factor, gain_step;
-    gain_step = init_db/20; 
+    gain_step = (init_db*1.414)/20; 
     g_factor = pow(7.01, gain_step); //factor = 7^((ii_g-1)/20); 
     //std::cout << "The gain step is " << gain_step << std::endl;
-    synth_img_g = synth_img_t * g_factor; // Synth img along gain
+    synth_img_g = synth_img_t * g_factor ; // Synth img along gain
 
     if (visualize) {
         CvFont font;
@@ -254,6 +254,7 @@ void load_csv_from_file (ifstream& file_path, vector<VectorXd>& x_data) {
 }
 
 
+
 int
 main(int argc, char *argv[])
 {
@@ -265,13 +266,13 @@ main(int argc, char *argv[])
     // init
     int init_expose ;  // 1000us
     double init_gain;
-    int frameRate_Hz = 10;  // fps
+    int frameRate_Hz = 30;  // fps
     int timeout_ms = 50;
 
-    double ls = 5.5; //5.5;
+    double ls = 15.5; //5.5;
     double s_f = 15.0; //15.0
-    double s_n = 5.0; //5.0
-    int num_iter = 5; //50
+    double s_n = 15.0; //5.0
+    int num_iter = 20; //5
 
     int t0 = 1000;      // 1000 = initial time
     double g0 = 0.0;    // 0.0 = initial gain
@@ -408,6 +409,10 @@ int64_t ewg_time = timestamp_now();
                 ewg = syn_grab_and_return_ewg (synth_img_g, eval, next_exp, next_gain);
 int64_t ewg_diff = (timestamp_now()-ewg_time) ;
 //std::cout << ", " << "syn_T time  " << synt_diff << ", " << "syn_G time  " << syng_diff << ", " << "ewg time  " << ewg_diff << ", "  << endl;
+
+
+
+
             }
 
         } // GPO WHILE

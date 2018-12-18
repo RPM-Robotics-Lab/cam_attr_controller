@@ -37,62 +37,58 @@ Img_eval::PrintErf(const vector<vector<double> > &res1) {
 
 
 double 
-Img_eval::getPSNR(cv::Mat &img, cv::Mat &gimg)
+Img_eval::getPSNR(const Mat& I1, const Mat& I2)
 {
-    // imGray is the grayscale of the input image
-    cv::Mat noise = Mat(img.size(),CV_32F);
-    normalize(img, gimg, 0.0, 1.0, CV_MINMAX, CV_32F);
-    cv::randn(noise, 0, 0.0001);
-    gimg = gimg + noise;
-    normalize(gimg, gimg, 0.0, 1.0, CV_MINMAX, CV_32F);
-
     Mat s1;
-    absdiff(img, gimg, s1);       // |I1 - I2|
-
+    absdiff(I1, I2, s1);       // |I1 - I2|
     s1.convertTo(s1, CV_32F);  // cannot make a square on 8 bits
     s1 = s1.mul(s1);           // |I1 - I2|^2
-
+     
     Scalar s = sum(s1);         // sum elements per channel
-
-    double sse = s.val[0] + s.val[1] + s.val[2]; // sum channels
-
-    if( sse <= 1e-10) // for small values return zero
-        return 0;
-    else
-    {
-        double  mse =sse /(double)(img.channels() * img.total());
-        double psnr = 10.0*log10((255*255)/mse);
-        return psnr;
-    }
+     
+     double sse = s.val[0] + s.val[1] + s.val[2]; // sum channels
+ 
+        if( sse <= 1e-10) // for small values return zero
+            return 0;
+        else
+        {
+            double  mse =sse /(double)(I1.channels() * I1.total());
+            double psnr = 10.0*log10((255*255)/mse);
+        cout << "Psnr = " << psnr << endl;
+            return psnr;
+        }
 }
+
 
 double
 Img_eval::calc_img_ent_grad (cv::Mat &img, bool visualize)
 {
     // Convert to grayscale
     cvtColor(img, img, cv::COLOR_BGR2GRAY);
-    cv::resize (img, img, cv::Size(240, 160));
+    cv::resize (img, img, cv::Size(188, 120));
     cv::Mat entropy, grad ;
 	cv::Mat wmask(entropy.size(), CV_32F, 1.0); // ones
     img_entropy (img, entropy);
     img_wmask (entropy, wmask);
     img_grad (img, grad);
-    
+    getPSNR(img, img);
+
     double Gmean, Emean;
     img_Gmean (grad, Gmean);
     img_Emean (entropy, Emean);
-
+    
 	//printf("Gradient sss is %d %d \n", wcols, wrows) ;
  	
 	Mat gradW = grad > Gmean * 0.15;
 	gradW *= 1;
     gradW.convertTo (gradW, CV_32F, 1.0 / 255.0);
 	
-    double satparam = -6.5;
+    double satparam = 8.5;
 	Mat columnSum, mu;   
     img_columnSum (entropy, columnSum, mu);
 	Mat Smask = satparam * Gmean * wmask;  //Smask == Sval, how to - value
-    Mat Gour = ((gradW.mul(grad*1.5))+ Smask) ;
+
+    Mat Gour = ((gradW.mul(grad* satparam)) - Smask) ;
 	Mat Gourstmp1, Gourstmp2;
     double Gours;
     img_Gours (Gour, Gourstmp1, Gourstmp2, Gours);
@@ -167,7 +163,7 @@ Img_eval::img_grad (Mat &img, Mat &grad)
  	convertScaleAbs( Gy, abs_grad_y );
 	addWeighted( abs_grad_x, 1.49999, abs_grad_y, 1.49999, 0, grad );
 
-    grad.convertTo(grad, CV_32F, 1.0/255.0);
+    grad.convertTo(grad , CV_32F, 1.0/255.0);
     // std::cout << "grad:  " << grad <<std::endl;
 }
 
