@@ -69,7 +69,7 @@ int main(int argc, char** argv)
     }
 
 
-    cout << "DONE!! Best exposure is " << best_exposure << endl;
+//    cout << "DONE!! Best exposure is " << best_exposure << endl;
 
 
 //    vector<VectorXd> x_pred;

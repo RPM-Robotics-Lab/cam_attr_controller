@@ -65,7 +65,7 @@ Img_eval::calc_img_ent_grad (cv::Mat &img, bool visualize)
 {
     // Convert to grayscale
     cvtColor(img, img, cv::COLOR_BGR2GRAY);
-    cv::resize (img, img, cv::Size(188, 120));
+    cv::resize (img, img, cv::Size(92, 60));
     cv::Mat entropy, grad ;
 	cv::Mat wmask(entropy.size(), CV_32F, 1.0); // ones
     img_entropy (img, entropy);
@@ -83,12 +83,12 @@ Img_eval::calc_img_ent_grad (cv::Mat &img, bool visualize)
 	gradW *= 1;
     gradW.convertTo (gradW, CV_32F, 1.0 / 255.0);
 	
-    double satparam = 8.5;
+    double satparam = 15.5;
 	Mat columnSum, mu;   
     img_columnSum (entropy, columnSum, mu);
 	Mat Smask = satparam * Gmean * wmask;  //Smask == Sval, how to - value
 
-    Mat Gour = ((gradW.mul(grad* satparam)) - Smask) ;
+    Mat Gour = (gradW.mul(grad* (satparam*0.8))) - Smask ;
 	Mat Gourstmp1, Gourstmp2;
     double Gours;
     img_Gours (Gour, Gourstmp1, Gourstmp2, Gours);

@@ -101,12 +101,17 @@ main(int argc, char *argv[])
 //        printf ("%d, %g\n", t,ewg);
     }
 
-    //vector<int> compression_params;
-    //compression_params.push_back(CV_IMWRITE_PNG_COMPRESSION);
-    //compression_params.push_back(0);
+//    vector<int> compression_params;
+//    compression_params.push_back(CV_IMWRITE_PNG_COMPRESSION);
+//    compression_params.push_back(0);
 
-    //string save_img_name = str_save_img_path + "/" + str_num_data + ".png";
-    //cv::imwrite(save_img_name, gray, compression_params);
+//    stringstream ss_num_data;
+//    ss_num_data << setw(1) << setfill('0') << num_data++;
+//    string str_num_data(ss_num_data.str());
+//    string str_save_path("response_data");
+//    path save_img_path(str_save_path);
+//    string save_img_name = str_save_img_path + "/" + str_num_data + ".png";
+//    cv::imwrite(save_img_name, gray, compression_params);
 
     /*cam_bluefox2.SetExposeUs(init_expose);
     cam_bluefox2.set_timeout_ms(200);    

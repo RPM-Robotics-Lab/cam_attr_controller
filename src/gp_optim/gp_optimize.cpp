@@ -251,10 +251,12 @@ MatrixXd GPOptimize::gp_cov_k_SE(VectorXd x_i, VectorXd x_j, double l, double s_
 
 void GPOptimize::check_optimal()
 {
-    double last_query = x_train_.back()(0);
+    double last_query = x_train_.back()(0)+1;
     double last_query_g = x_train_.back()(1)-1;
     double last_query_m = y_train_.back()(0);
-    cout << "["<< last_query*500 << ", " << last_query_g <<"] ," << last_query_m << "," << endl;
+//    cout << "["<< last_query*500 << ", " << last_query_g <<"] ," << last_query_m << "," << endl;
+
+
 //    if (abs(query_exposure_- last_query) < 1 || cost_ < 5 || iter_count_ > cfg_.num_iter()) {
     if (cost_ < 100 || x_train_.size() > cfg_.num_iter())  {
 

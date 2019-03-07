@@ -4,6 +4,7 @@
 #include <ctime>
 #include <chrono>
 #include <string>
+//#include <thread>
 #include<stdio.h> 
 #include<stdlib.h>
 
@@ -31,8 +32,14 @@ using namespace std;
 using namespace mvIMPACT::acquire;
 using namespace ipms_param;
 
+int t0 = 1000;      // initial expose time
+double g0 = 0.0;    // 0.0 = initial gai
+int exp_itv = 500;  // exposure interval 
+
+
 // TODO : initially generate crf curve 
 double CRF[256] = {-4.5241, -4.409, -4.2939, -4.1788, -4.0637, -3.9486, -3.8335, -3.7184, -3.6033, -3.4882, -3.3731, -3.2583, -3.1444, -3.0321, -2.9222, -2.8153, -2.7119, -2.6126, -2.5175, -2.4268, -2.3406, -2.2589, -2.1815, -2.1083, -2.0392, -1.9739, -1.9122, -1.8541, -1.7993, -1.7476, -1.6988, -1.6529, -1.6095, -1.5685, -1.5299, -1.4934, -1.4588, -1.4259, -1.3945, -1.3645, -1.3357, -1.3079, -1.281, -1.2549, -1.2296, -1.2049, -1.1807, -1.1571, -1.134, -1.1112, -1.0888, -1.0668, -1.0451, -1.0237, -1.0026, -0.9818, -0.96132, -0.94112, -0.92121, -0.9016, -0.88228, -0.86327, -0.84457, -0.82619, -0.80814, -0.7904, -0.77297, -0.75584, -0.73899, -0.72241, -0.70607, -0.68996, -0.67405, -0.65833, -0.64279, -0.62742, -0.61222, -0.59719, -0.58232, -0.56762, -0.55307, -0.53867, -0.52442, -0.51031, -0.49634, -0.48251, -0.4688, -0.45521, -0.44175, -0.42841, -0.41519, -0.40208, -0.38911, -0.37625, -0.36352, -0.35091, -0.33841, -0.32604, -0.31378, -0.30164, -0.28962, -0.27771, -0.26593, -0.25425, -0.24269, -0.23123, -0.21989, -0.20865, -0.19752, -0.1865, -0.1756, -0.16482, -0.15417, -0.14364, -0.13325, -0.12299, -0.11286, -0.10286, -0.092974, -0.083214, -0.073569, -0.064034, -0.054605, -0.045278, -0.036048, -0.026911, -0.017861, -0.008892, -1.3186e-10, 0.0088179, 0.017559, 0.026222, 0.03481, 0.043329, 0.051781, 0.060173, 0.068511, 0.076796, 0.08503, 0.093215, 0.10135, 0.10943, 0.11746, 0.12544, 0.13335, 0.1412, 0.14899, 0.1567, 0.16434, 0.17191, 0.1794, 0.18683, 0.19418, 0.20147, 0.2087, 0.21585, 0.22294, 0.22996, 0.23693, 0.24384, 0.2507, 0.25751, 0.26428, 0.271, 0.27767, 0.28431, 0.29089, 0.29744, 0.30395, 0.31043, 0.31688, 0.3233, 0.32969, 0.33605, 0.34239, 0.34869, 0.35496, 0.36117, 0.36734, 0.37344, 0.37949, 0.38549, 0.39143, 0.39732, 0.40317, 0.40897, 0.41472, 0.42044, 0.42613, 0.43181, 0.43747, 0.44312, 0.44876, 0.45439, 0.45999, 0.46558, 0.47115, 0.4767, 0.48222, 0.48773, 0.49321, 0.49868, 0.50413, 0.50957, 0.51498, 0.52038, 0.52576, 0.53112, 0.53647, 0.5418, 0.54713, 0.55244, 0.55773, 0.56299, 0.56822, 0.5734, 0.57855, 0.58364, 0.58867, 0.59364, 0.59855, 0.6034, 0.60818, 0.61291, 0.61759, 0.62221, 0.62678, 0.63131, 0.63579, 0.64022, 0.64464, 0.64902, 0.65338, 0.65772, 0.66202, 0.6663, 0.67057, 0.67483, 0.67909, 0.68334, 0.68759, 0.69184, 0.69609, 0.70033, 0.70457, 0.70881, 0.71304, 0.71727, 0.7215, 0.72572, 0.72995, 0.73418, 0.73842, 0.74265, 0.74688, 1.4093}; 
+
 
 void
 _prepare_save_dir ()
@@ -68,13 +75,9 @@ double
 _synth_img_t (cv::Mat &init_img, double &next_exp, cv::Mat &synth_img_t, bool visualize)
 {
     
-    // grab image from the next_exp
-    int t0 = 1000;      // 1000 = initial time
-    double g0 = 0.0;    // 0.0 = initial gain
-    
     // irradiance E
     int E = 20; 
-    double init_irr = log( E * (0.00081));  // initial CRF = 1ms
+    double init_irr = log( E * (0.00081));  // initial CRF = 2ms
     double intensity_ratio = 1.0;
 
     // Search CRF and find minimum exposure time greater than t corr. init_irr
@@ -86,7 +89,7 @@ _synth_img_t (cv::Mat &init_img, double &next_exp, cv::Mat &synth_img_t, bool vi
         }
     }
 
-    int exp_itv = 500;  // exposure interval 
+
     int exp_step = ((int)next_exp - (int)t0) / exp_itv + 1; //exptime = 1000 + (i-1)*500;
     double syn_n_exp = init_irr + log(exp_step);
 
@@ -107,7 +110,7 @@ _synth_img_t (cv::Mat &init_img, double &next_exp, cv::Mat &synth_img_t, bool vi
         CvScalar red = CV_RGB (255, 0, 0);
         CvPoint str_pos = cvPoint (50, 50);
         char str[30];
-        snprintf (str, sizeof str, "syn_t%d", 5000+ exp_step*1500 );
+        snprintf (str, sizeof str, "syn_t%d", 2000+ exp_step*1500 );
         cv::Mat result;
         cv::cvtColor(synth_img_t, result, cv::COLOR_GRAY2BGR);
         cv::resize (result, result, cv::Size(320, 240));
@@ -121,12 +124,7 @@ _synth_img_t (cv::Mat &init_img, double &next_exp, cv::Mat &synth_img_t, bool vi
 
 double // REMOVE THIS LATER.
 _synth_img_t_with_grab (bluefox2::Bluefox2 &cam_bluefox2, double &next_exp, cv::Mat &synth_img_t, bool visualize)
-{
-    
-    // grab image from the next_exp
-    int t0 = 1000;      // 1000 = initial time
-    double g0 = 0.0;    // 0.0 = initial gain
-    
+{   
     // to measure time
     int64_t time1 = timestamp_now();
 
@@ -157,7 +155,6 @@ _synth_img_t_with_grab (bluefox2::Bluefox2 &cam_bluefox2, double &next_exp, cv::
         }
     }
 
-    int exp_itv = 500;  // exposure interval 
     int exp_step = ((int)next_exp - (int)t0) / exp_itv + 1; //exptime = 1000 + (i-1)*500;
     double syn_n_exp = init_irr + log(exp_step);
 
@@ -184,7 +181,7 @@ _synth_img_t_with_grab (bluefox2::Bluefox2 &cam_bluefox2, double &next_exp, cv::
         CvScalar red = CV_RGB (255, 0, 0);
         CvPoint str_pos = cvPoint (50, 50);
         char str[30];
-        snprintf (str, sizeof str, "syn_t%d", 1000+ exp_step*500 );
+        snprintf (str, sizeof str, "syn_t%d", t0+ exp_step*exp_itv );
         cv::Mat result;
         cv::cvtColor(synth_img_t, result, cv::COLOR_GRAY2BGR);
         cv::resize (result, result, cv::Size(320, 240));
@@ -201,7 +198,7 @@ _synth_img_g (cv::Mat &synth_img_t, double &next_gain, cv::Mat &synth_img_g, boo
 {
     double init_db = next_gain;
     double g_factor, gain_step;
-    gain_step = (init_db*1.414)/20; 
+    gain_step = (init_db*1.23412)/20; 
     g_factor = pow(7.01, gain_step); //factor = 7^((ii_g-1)/20); 
     //std::cout << "The gain step is " << gain_step << std::endl;
     synth_img_g = synth_img_t * g_factor ; // Synth img along gain
@@ -236,7 +233,6 @@ void load_csv_from_file (ifstream& file_path, vector<VectorXd>& x_data) {
 //        std::cout << "READ " << std::endl;
         while(std::getline(lineStream,cell,','))
         {
-//            std::cout << "LINE " << std::endl;
 
             if (index == 0){
                 exposure = std::strtod(cell.c_str(),0);
@@ -263,21 +259,21 @@ main(int argc, char *argv[])
     Img_eval eval;
     GPOptimize gpo;
 
+    string str_times("result_data/times.txt");
+    ofstream outFile;
+    outFile.open(str_times.c_str());
+
     // init
     int init_expose ;  // 1000us
     double init_gain;
-    int frameRate_Hz = 30;  // fps
+    int frameRate_Hz = 50;  // fps
     int timeout_ms = 50;
 
-    double ls = 15.5; //5.5;
-    double s_f = 15.0; //15.0
-    double s_n = 15.0; //5.0
+    double ls = 20.5; //5.5 / 15.5;
+    double s_f = 15.0; //15.0 / 15.0
+    double s_n = 15.0; //5.0 / 15.0
     int num_iter = 20; //5
 
-    int t0 = 1000;      // 1000 = initial time
-    double g0 = 0.0;    // 0.0 = initial gain
-
-    // post processing for report
     bool vis_and_imwrite_best = true;
 
     // camera prepare
@@ -296,39 +292,29 @@ main(int argc, char *argv[])
     _prepare_save_dir ();
     
     // main process start
-    printf ("[ExpCtrl]\tStart to grab images.\n");
+//    printf ("[ExpCtrl]\tStart to grab images.\n");
 
     // GP
     Config cfg(ls, s_f, s_n, AcqType::MAXVAR, 0.5, num_iter);
-
     vector<double> x_data_t, x_data_g;
     vector<VectorXd> x_data;    
     load_csv_from_file(file_path, x_data);
     cout << "Data load done " << endl
          << "\t Data1: " << x_data.size() << endl;
-
-    
     VectorXd x = x_data[0]; // current exposure (minimum exposure not good for initialize)
     int next_exp = init_expose;
     double next_gain = init_gain;    
     int best_exposure = x_data[0](0); // for safety
     double best_gain = x_data[0](1);
-
     // set predict once before while
     gpo.set_predict (x_data);   // query exposure range
-//    int exp_init[8] = {1,31,3,27,17,3,12,25}; // exposure idx
-//    int gain_init[8] = {1,10,13,1,13,1,1,13}; // gain idx
     double ewg = 0.f;
     while(true) {
         gpo.initialize(cfg);
-            
-
-
         double next_synth_index_t = 0.0;  // 0 ~ 20000 us
         double next_synth_index_g = 0.0;  // 0 ~ 12 db
         cv::Mat control_img;
         cv::Mat synth_img_t, synth_img_g;
-
         // camera grab for t0
         bot_core::image_t syn_test_img;
         cam_bluefox2.SetExposeUs(t0);
@@ -337,106 +323,59 @@ main(int argc, char *argv[])
         // cam_bluefox2.set_timeout_ms (50);
         cam_bluefox2.RequestSingle();
         cam_bluefox2.GrabImage (syn_test_img);
-
         // image preparation
         cv::Mat init_img;
         bot_util::botimage_to_cvMat (&syn_test_img, init_img);
         cvtColor(init_img, init_img, cv::COLOR_BGR2GRAY);
         // cv::resize (img, img, cv::Size(320, 240));
         int64_t time1 = timestamp_now();
-
-//        for (int i =0; i<num_iter; ++i) {
-//            next_exp = exp_init[i]*500;
-//            next_gain = gain_init[i]-1;
-//            next_synth_index_t = double(next_exp);
-//            next_synth_index_g = double(next_gain);
-
-
-//            // Calculate ewg            
-//            _synth_img_t (init_img, next_synth_index_t, synth_img_t, false);
-//            _synth_img_g (synth_img_t, next_synth_index_g, synth_img_g,  false);
-//            cvtColor(synth_img_g, synth_img_g, cv::COLOR_GRAY2BGR);
-//            ewg = syn_grab_and_return_ewg (synth_img_g, eval, next_exp, next_gain);
-//            std::cout << "@@@@@@@@@@@@@@@@@@@@@@EWG" << ewg << std::endl;
-//            VectorXd init_input(2);
-//            init_input << exp_init[i], gain_init[i];
-//            x = init_input;
-//            
-//            if (i < num_iter) 
-//                gpo.add_data(init_input, ewg);
-
-//        }
-
-//        std::cout << "---------------------EWG" << ewg << std::endl;
-
-        while (!gpo.is_optimal()) { // GPO WHILE
-            // cv::resize (ewg, control_img, cv::Size(320, 240));
+     
+       while (!gpo.is_optimal()) { // GPO WHILE
        
             if (gpo.evaluate (x, ewg)) {
                 // Optimal attribute found. Break while loop.
-                best_exposure = gpo.optimal_expose() * 500 ;
-                best_gain = gpo.optimal_gain()-1;  
-
-            int64_t ctrl_diff = (timestamp_now()-time1) ;
-          
-                std::cout<< "======== exp time of optimal ewg ========  " << best_exposure +500 << ", " << best_gain << ", ctrl time  " << ctrl_diff << endl;
-
+                best_exposure = gpo.optimal_expose() * exp_itv ;
+                best_gain = gpo.optimal_gain();  
+                int64_t ctrl_diff = (timestamp_now()-time1) ;
+                std::cout<< ctrl_diff << endl;
                 cvtColor(synth_img_g, synth_img_g, cv::COLOR_GRAY2BGR);
                 ewg = syn_grab_and_return_ewg (synth_img_g, eval, best_exposure, best_gain);
-                
                 break;
             }
             else {
-
                 int next_index = gpo.query_index();
                 x = x_data[next_index];
-                next_exp = x_data[next_index](0) * 500;
+                next_exp = x_data[next_index](0) * exp_itv;
                 next_gain= x_data[next_index](1)-1;
                 next_synth_index_t = (double)next_exp ;
-                next_synth_index_g = (double)next_gain;
-
+                next_synth_index_g = (double)next_gain-1;
                 // synthetic image for exposure time and gain
-int64_t synt_time = timestamp_now();
                 _synth_img_t (init_img, next_synth_index_t, synth_img_t, false);
-int64_t synt_time2 = timestamp_now();
-int64_t synt_diff = (synt_time2 -synt_time) ;
-int64_t syng_time = timestamp_now();
                 _synth_img_g (synth_img_t, next_synth_index_g, synth_img_g,  false);
-int64_t syng_time2 = timestamp_now();
-int64_t syng_diff = (syng_time2-syng_time) ;
                 cvtColor(synth_img_g, synth_img_g, cv::COLOR_GRAY2BGR);
-int64_t ewg_time = timestamp_now();
                 ewg = syn_grab_and_return_ewg (synth_img_g, eval, next_exp, next_gain);
-int64_t ewg_diff = (timestamp_now()-ewg_time) ;
-//std::cout << ", " << "syn_T time  " << synt_diff << ", " << "syn_G time  " << syng_diff << ", " << "ewg time  " << ewg_diff << ", "  << endl;
-
-
-
 
             }
 
         } // GPO WHILE
-          
+    // result writing
+    string str_save_path("result_data");
+    path save_path (str_save_path);
+
         // optimal found!
         if (vis_and_imwrite_best) {
-            printf ("[ExpCtrl]\tStart to grab best imagesss.\n");
             cv::Mat best_img;
-
             // assing the found optimal gain and exposure time
-            int best_exposure_compensate_init = best_exposure + 500;
+            int best_exposure_compensate_init = best_exposure ;  // + 500
             cam_bluefox2.SetExposeUs(best_exposure_compensate_init);
             cam_bluefox2.GetExposeUs();
-//            cout << "get exp - " << cam_bluefox2.GetExposeUs() << endl;
             cam_bluefox2.SetGainDB(best_gain);  // gain (-1db ~ 12 db )
-            // cam_bluefox2.set_timeout_ms (50);
             cam_bluefox2.RequestSingle();
-
             // prepare opencv for visualize
             bot_core::image_t best_img_t;
             cam_bluefox2.GrabImage(best_img_t);
             bot_util::botimage_to_cvMat(&best_img_t, best_img);
             cvtColor(best_img, best_img, cv::COLOR_BGR2GRAY);
-            
             // show text 
             CvFont font;
             cvInitFont (&font, CV_FONT_HERSHEY_PLAIN, 2.0, 2.0, 0, 2, 8);
@@ -450,28 +389,31 @@ int64_t ewg_diff = (timestamp_now()-ewg_time) ;
             cv::putText(result, str, Point(550,30), CV_FONT_HERSHEY_SIMPLEX, 1, CV_RGB(0,255,0), 2, 8);
             cv::imshow("best", result);
             cv::waitKey(10);
-
-            // result writing
-            string str_save_path("result_data");
-            path save_path (str_save_path);
             
             if (!is_directory(save_path)) {
                 if(boost::filesystem::create_directory(save_path)) {
-//                    cerr << "[ExpCtrl]\t Make a directory" << endl;   
                 }        
             }
+        
+        int num_data = 0;     
+            for (int j=0; j<1; j++) {     // num capture img
+                stringstream ss_num_data;
+                ss_num_data << setw(5) << setfill('0') << num_data++;
+                string str_num_data(ss_num_data.str());
+                string str_time = std::to_string(timestamp_now());
+                outFile << str_time <<  " " <<  (int)best_gain << " " << best_exposure_compensate_init << setprecision(5) << endl;
+                string fname1 = str_save_path + "/" + str_time + ".png"; 
+//                string fname2 = str_save_path + "/2/" + str_time + ".png";
+                cv::imwrite(fname1, best_img);
+//                cv::imwrite(fname2, result);
 
-//            string str_time = std::to_string(timestamp_now());
-//            string fname1 = str_save_path + "/" + str_time + ".png";
-//            string fname2 = str_save_path + "/2/" + str_time + ".png";
-//            cv::imwrite(fname1, best_img);
-//            cv::imwrite(fname2, result);
+            }
+
         }
-
-        printf ("ExpCtrl\tSet to %d.\n", best_exposure);
+//        printf ("ExpCtrl\tSet to %d. %d \n", best_exposure, (int)best_gain);
 
     } // main while
-  
+    outFile.close();  
     return 0;
 }
 

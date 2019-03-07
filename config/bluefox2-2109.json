@@ -1,13 +1,13 @@
 {
     "camera":
     {
-        "serial":"25001931",
+        "serial":"25001931" ,
         "config":
         {
             "width": 752,
             "height": 480,
             "idpf": "ibpfBGR888Packed",
-            "idpf2": "ibpfMono16",
+            "idpf2": "ibpfMono8",
             "cbm": "cbmOff",
             "agc": false,
             "gain_db": 0.0,
