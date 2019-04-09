@@ -5,7 +5,7 @@ clear all;  close all;
 
 % data = csvread('../dat/090823f.csv');
 % data = csvread('../dat/37datar.csv');1
-data = csvread('../data/redata_d4.csv');
+data = csvread('../data/redata_d1.csv');
 
 % exposure = data(:,1);   % ms
 % metric = data(:,2); % sum of w grad
@@ -41,10 +41,11 @@ title_fontsize = 16;
 %% train
 fidx = length(exp_arr(:));
 % next_in(1) = round(fidx*.05);
-next_in(1) = 1;
 % next_in(1) = 1;
+% next_in(1) = 1;
+next_in = [1 sub2ind([13 59], 5, 5) sub2ind([13 59], 3, 10)];
 psi = 0;
-for i = 1:10
+for i = 1:5
 %     idx = [next_in,  round(fidx*0.95)] % 38,50,26,8
 %     idx = [next_in,  next_in(1)+5] % 38,50,26,8 
     idx_train = [next_in];
@@ -68,9 +69,10 @@ for i = 1:10
     t_pred
 
 %     selection by GPMI
-    alpha = 0.5;
+    alpha = 10;
     max_var = max(diag(var_pred));
-    [next_in(i+1), psi, acq_func] = gpmi_optim(y_pred, var_pred, alpha, psi);
+    index_next = length(next_in) + 1;
+    [next_in(index_next), psi, acq_func] = gpmi_optim(y_pred, var_pred, alpha, psi);
 
 
 %     % selection by var max
@@ -96,7 +98,7 @@ for i = 1:10
     mesh(reshape(acq_func-50, size(metric))); colormap(jet);
     view(-3, 18);
 
-%     pause(1);
+    pause();
     
     
 %     title(sprintf('Exposure Control using GPGO \n t opt = %d [ms]\n' , time(topt_idx)))

@@ -22,8 +22,8 @@ cfg.gp.k = cfg.gp.k_SE;
 
 switch (cfg.gp.k)
 case cfg.gp.k_SE
-    param.l = 10;                 % length term
-    param.s_f = 15;               % exp term
+    param.l = 3;                 % length term
+    param.s_f = 5;               % exp term
     param.h1_range = 10:10:500;    % == l
     param.h2_range = 10:10:500;    % == s_f
     param.h1_name = 'l';
