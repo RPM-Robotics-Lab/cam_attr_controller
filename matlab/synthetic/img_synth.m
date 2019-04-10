@@ -13,7 +13,7 @@ K_t = img_synth_factor_exp (crf, target_dt);   % factor from exposure time
 K_g = img_synth_factor_gain (target_gain);     % factor from gain
 
 if (K_t < 0 || K_g < 0)
-	display('[ERROR: img_synth] No scale factor K found')
+	disp('[ERROR: img_synth] No scale factor K found');
     synth_img = [];
     return;
 end

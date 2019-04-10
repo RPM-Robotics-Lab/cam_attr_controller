@@ -14,8 +14,8 @@ B = log(E* (0.00005+ (1.* 0.00005)));
 
 % find point on CRF for initial exposure time B(1)
 c_in = find (crf >= B(1));
-if (isempty(c_in)),
-    display('[ERROR: img_synth_factor_exp] No value found in CRF correponding to init exposure time')
+if (isempty(c_in))
+    disp('[ERROR: img_synth_factor_exp] No value found in CRF correponding to init exposure time');
     return;
 end
 
@@ -24,8 +24,8 @@ n_exp = B(1) + log(target_dt);
 
 % find point on CRF for target exposure time
 n_in = find (crf >= n_exp); 
-if (isempty(n_in)),
-    display('[ERROR: img_synth_factor_exp] No value found in CRF correponding to target exposure time')
+if (isempty(n_in))
+    disp('[ERROR: img_synth_factor_exp] No value found in CRF correponding to target exposure time');
     return;
 end
 n_int = n_in(1);
