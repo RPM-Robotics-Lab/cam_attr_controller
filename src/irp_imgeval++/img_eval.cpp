@@ -56,6 +56,7 @@ Img_eval::getPSNR(const Mat& I1, const Mat& I2)
             double psnr = 10.0*log10((255*255)/mse);
         cout << "Psnr = " << psnr << endl;
             return psnr;
+
         }
 }
 
@@ -65,7 +66,7 @@ Img_eval::calc_img_ent_grad (cv::Mat &img, bool visualize)
 {
     // Convert to grayscale
     cvtColor(img, img, cv::COLOR_BGR2GRAY);
-    cv::resize (img, img, cv::Size(92, 60));
+    cv::resize (img, img, cv::Size(188, 120));
     cv::Mat entropy, grad ;
 	cv::Mat wmask(entropy.size(), CV_32F, 1.0); // ones
     img_entropy (img, entropy);
@@ -79,23 +80,23 @@ Img_eval::calc_img_ent_grad (cv::Mat &img, bool visualize)
     
 	//printf("Gradient sss is %d %d \n", wcols, wrows) ;
  	
-	Mat gradW = grad > Gmean * 0.15;
+	Mat gradW = grad > Gmean * 0.06;
 	gradW *= 1;
     gradW.convertTo (gradW, CV_32F, 1.0 / 255.0);
-	
-    double satparam = 15.5;
+    
+
+
+    double satparam = -2.0; //determine the satuation ratio
 	Mat columnSum, mu;   
     img_columnSum (entropy, columnSum, mu);
 	Mat Smask = satparam * Gmean * wmask;  //Smask == Sval, how to - value
+    Mat Gour = ((gradW.mul(grad))+ Smask) ;
 
-    Mat Gour = (gradW.mul(grad* (satparam*0.8))) - Smask ;
 	Mat Gourstmp1, Gourstmp2;
     double Gours;
     img_Gours (Gour, Gourstmp1, Gourstmp2, Gours);
-//     std::cout << "Gmean=  " << Gmean << " Emean= " << Emean << " Gours= " << Gours <<std::endl;
-    // cv::waitKey(1);
-    // std::cout << "   Sval: "<< Smask << std::endl;
-
+     std::cout << "Gradsum=  " << Gmean * img.cols * img.rows <<"Gmean= " << Gmean << " Gours= " << Gours <<std::endl;
+//     cv::waitKey(1);
 
     if (visualize) {
         cv::resize (img, img, cv::Size(752, 480));
@@ -138,11 +139,11 @@ Img_eval::img_wmask (Mat &entropy, Mat &wmask)
 	Mat wmasktmp1(entropy.size(), CV_32F, 0.);
     Mat wmasktmp2(entropy.size(), CV_32F, 0.);
 
- 	wmasktmp1 = entropy > 0.15;
+ 	wmasktmp1 = entropy > 0.01;
     Mat tmp1; // 1 1 1 ...
     wmasktmp1.convertTo(tmp1, CV_32F, 0.0/-255.0);
     wmask = tmp1;
-    wmasktmp2 = entropy <=  0.001; 
+    wmasktmp2 = entropy <=  0.01; 
     Mat tmp2; 
     wmasktmp2.convertTo(tmp2, CV_32F, 1.0/255.0);
     
@@ -406,3 +407,4 @@ Img_eval::getLocalEntropyImage (cv::Mat &gray, cv::Rect &roi, cv::Mat &entropy)
 //        }
 //    }
 //}
+

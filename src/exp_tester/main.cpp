@@ -28,7 +28,7 @@ int main(int argc, char** argv)
 
     // Load image
     // src = cv::imread(argv[1], 1);
-    img = cv::imread ("../../data/110_1.png", 1);
+    img = cv::imread ("../../data/0410.png", 1);
 	Mat resized;
 //	cv::resize (img, img, cv::Size(320, 240));
     if (!img.data) {
@@ -38,20 +38,22 @@ int main(int argc, char** argv)
 
     double ewg = eval.calc_img_ent_grad (img, true);
     int exptime = 1000  ; 
-    int E = 200; 
-    double init_irr = log( E * (0.00005+ (1 * 0.00005)));  // initial et = 1ms
+    // irradiance E
+    int E = 20; 
+    double init_irr = log( E * (0.00081));  // initial CRF = 2ms
     double intensity_ratio = 1.0;
+
 
     int A;
    
-     for (int i = 1; i<39; i++)   {
+     for (int i = 1; i<40; i++)   {
         for(int j = 0; j < 256; j++){
             if(et[j] > init_irr) {
             A = j;
             break;
             }
         exptime = 1000 + (i-1)*500;
-        std::cout << "initial exposure time is " << exptime <<" us" <<  std::endl;
+//        std::cout << "initial exposure time is " << exptime <<" us" <<  std::endl;
         }
 
         
@@ -62,10 +64,10 @@ int main(int argc, char** argv)
             int B = k;  // 6~~
             double k_int = B / A;
         
-            std::cout << "Next intensity is " << B << ",  "  << et[B] << ",  " << k_int <<  std::endl;
+//            std::cout << "Next intensity is " << B << ",  "  << et[B] << ",  " << k_int <<  std::endl;
             Mat etimg = img * k_int; 
     
-            for (int k = 0; k<12; k++)   {
+            for (int k = 0; k<13; k++)   {
                 double g_factor, gain_step;
                 gain_step = (double)k/20; 
                 g_factor = pow(7.01, gain_step); //factor = 7^((ii_g-1)/20); 
@@ -75,14 +77,14 @@ int main(int argc, char** argv)
                 cv::imshow("gain img", gainimg);
                 cv::waitKey(10);
                 double gainewg = eval.calc_img_ent_grad (gainimg, true);
-                std::cout << "Computed Gain ewg = " << gainewg << ",  " << k << std::endl;  
+                std::cout << exptime << " " << k  << " " << gainewg<< std::endl;  
             }
 
             cv::imshow("etimg", etimg);
             cv::waitKey(10);
             cvtColor(etimg, etimg, cv::COLOR_GRAY2BGR);
             double etewg = eval.calc_img_ent_grad (etimg, true);
-            std::cout << "Computed entropy weighted gain = " << etewg << std::endl;
+//            std::cout << "Computed entropy weighted etewg = " << etewg << std::endl;
             break;
 //            double snr = eval.getPSNR (img, img); 
 //            Mat noise_img = img; 
@@ -97,7 +99,6 @@ int main(int argc, char** argv)
             cv::putText(result, str, Point(100,50), CV_FONT_HERSHEY_SIMPLEX, 1, CV_RGB(255,0,0), 2, 8);
             cv::imshow("best", result);
             cv::waitKey(0);
-            std::cout << "Computed entropy weighted gain = " << ewg << std::endl;
 
             return 0;
                         

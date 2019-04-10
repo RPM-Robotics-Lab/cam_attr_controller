@@ -63,13 +63,25 @@ _prepare_save_dir ()
     outFile.open(str_times.c_str());
 }
 
+
+double
+syn_grab_and_return_snr (cv::Mat &synth_img_g,  cv::Mat &synth_img_t, Img_eval &eval, double exp_t, double gain_t)
+{
+    double snr = eval.getPSNR (synth_img_g, synth_img_t);
+
+    return snr;
+}
+
+
 double
 syn_grab_and_return_ewg (cv::Mat &synth_img_g, Img_eval &eval, double exp_t, double gain_t)
 {
     double ewg = eval.calc_img_ent_grad (synth_img_g, false);
-
+    
     return ewg;
 }
+
+
 
 double 
 _synth_img_t (cv::Mat &init_img, double &next_exp, cv::Mat &synth_img_t, bool visualize)
@@ -272,7 +284,7 @@ main(int argc, char *argv[])
     double ls = 20.5; //5.5 / 15.5;
     double s_f = 15.0; //15.0 / 15.0
     double s_n = 15.0; //5.0 / 15.0
-    int num_iter = 20; //5
+    int num_iter = 20; //5 //20
 
     bool vis_and_imwrite_best = true;
 
@@ -289,7 +301,7 @@ main(int argc, char *argv[])
     // --------------------------------------------//
 
     // to save images
-    _prepare_save_dir ();
+//    _prepare_save_dir ();
     
     // main process start
 //    printf ("[ExpCtrl]\tStart to grab images.\n");
@@ -335,7 +347,7 @@ main(int argc, char *argv[])
             if (gpo.evaluate (x, ewg)) {
                 // Optimal attribute found. Break while loop.
                 best_exposure = gpo.optimal_expose() * exp_itv ;
-                best_gain = gpo.optimal_gain();  
+                best_gain = gpo.optimal_gain() -1;  
                 int64_t ctrl_diff = (timestamp_now()-time1) ;
                 std::cout<< ctrl_diff << endl;
                 cvtColor(synth_img_g, synth_img_g, cv::COLOR_GRAY2BGR);
@@ -345,7 +357,7 @@ main(int argc, char *argv[])
             else {
                 int next_index = gpo.query_index();
                 x = x_data[next_index];
-                next_exp = x_data[next_index](0) * exp_itv;
+                next_exp = x_data[next_index](0)  * exp_itv;
                 next_gain= x_data[next_index](1)-1;
                 next_synth_index_t = (double)next_exp ;
                 next_synth_index_g = (double)next_gain-1;
@@ -416,4 +428,5 @@ main(int argc, char *argv[])
     outFile.close();  
     return 0;
 }
+
 

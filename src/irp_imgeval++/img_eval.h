@@ -24,7 +24,7 @@ public:
     void CreatGrf(vector<vector<double> > &res2);
     void PrintGrf(const vector<vector<double> > &res2); 
     double calc_img_ent_grad (cv::Mat &img, bool visualize = false);
-
+    double getPSNR(const Mat &I1, const Mat &I2);
 
 
 private:
@@ -40,7 +40,7 @@ private:
     int *cumprod, int *coords);
 	void getLocalEntropyImage(cv::Mat &gray, cv::Rect &roi, cv::Mat &entropy);
 	void GammaCorrection(Mat& src, Mat& dst, float fGamma);
-    double getPSNR(const Mat &I1, const Mat &I2);
+
 
 
 };
