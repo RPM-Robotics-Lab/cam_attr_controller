@@ -9,7 +9,7 @@ function crf = hdr_curve_fitting(img_series)
 %        x-axis [0, ..., 255]
 %        y-axis [crf(1), ..., crf(256)]
 
-global  B
+global E B;
 
 % Smoothness parameter used in equation (3). Increase it, if you have a lot
 % of noise in your images.

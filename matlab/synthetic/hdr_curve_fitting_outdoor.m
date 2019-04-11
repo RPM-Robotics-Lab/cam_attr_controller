@@ -9,13 +9,17 @@ function crf = hdr_curve_fitting(img_series)
 %        x-axis [0, ..., 255]
 %        y-axis [crf(1), ..., crf(256)]
 
-global  B
+global E;
 
 % Smoothness parameter used in equation (3). Increase it, if you have a lot
 % of noise in your images.
 l = 200;
 
+% time array samples (we use four samples)
+time_array = [1, 15, 70, 90];   % [ms]
 
+% B = log(E*dt) for time array samples
+B = log(E* (0.00005+ (time_array.* 0.00005)));
 
 % Number of randomly selected sample pixel points from each image. 
 % This amount will affect the quality of the approximation of the 
