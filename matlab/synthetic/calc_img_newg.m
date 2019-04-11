@@ -1,4 +1,4 @@
-function NEWG = calc_img_newg (img)
+function EWG = calc_img_ewg (img)
 % function NEWG = calc_img_newg ()
 
 img = im2double(img); % normalize
@@ -28,8 +28,8 @@ G_weight= Gmag >= (mean(mean(Gmag))) * 0.1 ;
 S = zeros(size(img));
 S(M(:,1), M(:,2)) = (mean(mean(Gmag))) * 2;    
 
+
+
 % Metric
 EWG = sum(sum(G_weight .* Gmag - S));
 
-
-NEWG = EWG; % TODO

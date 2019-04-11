@@ -1,19 +1,19 @@
 close all;
 clear all;
-
+clc;
 %% HDR CRF curve fitting from a set of images
 global E;   % irradiance
 global B;   % sample time array for crf curve fitting
 
 %% option
 plot_on = 1;
-is_indoor = 0;  % 0 for outdoor
+is_indoor = 1;  % 0 for outdoor
 
 E = 20;
 
 % Desired exposure time and gain for synthesis (0.5 + 0.05*i) ms 
-target_dt = 70;     %[ms]
-target_gain = 0;   %[db]
+target_dt = 6;     %[ms]
+target_gain = 1;   %[db]
 
 
 %% hdr curve fitting
@@ -83,9 +83,18 @@ if (plot_on)
     subplot(1,2,2); imshow(s_img); title('Synthetic')
 end
 
+if (target_gain < 1)
+    Nsnr =0;
+else 
+    Nsnr = calc_img_snr (s_img, o_img);
+end
+
+
 %% image metric evaluation
-NEWG = calc_img_newg (s_img);
+EWG = calc_img_ewg (s_img);
+NEWG = EWG - Nsnr;
 
 fprintf('Synth_exp: %.2f [ms] \n' , (0.5 + 0.05*target_dt)  )
 fprintf('synth_gain: %.1f [dB] \n', target_gain)
-fprintf('Entropy Weighted Gradient metric is : %.2f \n', NEWG )
+fprintf('EWG : %.2f \n', EWG )
+fprintf('NEWG : %.2f \n', NEWG )
