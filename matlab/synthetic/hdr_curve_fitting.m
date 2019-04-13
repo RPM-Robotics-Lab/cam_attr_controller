@@ -23,7 +23,7 @@ l = 200;
 % You need at least N(P-1) > (Z_max - Z_min)
 % N - amount of sample points
 % P - amount of images % Assumes:% Zmin = 0% Zmax = 255
-N_sample_pxpts = 1000;
+N_sample_pxpts = 500;
 
 % Bands (=channel) in each of the images. Usually RGB(3) or grayscale(1)
 N_bands = 1;    % 3 for RGB

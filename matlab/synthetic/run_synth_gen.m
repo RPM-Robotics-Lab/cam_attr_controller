@@ -1,41 +1,58 @@
 close all;
 clear all;
-clc;
+clc; 
+
+%% time_array : image sequence along each exposure time interval , ex) indoor : 500us interval
+%% target_dt : desired image sequence, ex) 18 = initial_exp_t + (17 * exp_itv)
+
+
+
 %% HDR CRF curve fitting from a set of images
 global E;   % irradiance
 global B;   % sample time array for crf curve fitting
-
-%% option
+global time_itv;
+global target_exp_index;
+global is_indoor;
+%% options
 plot_on = 1;
 is_indoor = 1;  % 0 for outdoor
 
-E = 20;
+
+
+E = 120;  %mean(mean(img_series{1}))/2;-exclude saturated region\TODO
 
 % Desired exposure time and gain for synthesis (0.5 + 0.05*i) ms 
-target_dt = 6;     %[ms]
-target_gain = 1;   %[db]
+target_exp_index = 18;
+target_gain = 0;   %[db]
+
+if (is_indoor)
+    time_itv = 0.0005; 
+else 
+    time_itv = 0.00005; 
+end
 
 
 %% hdr curve fitting
 [time_array,images_names,o_img] = deal([]);
 
 if (is_indoor)
-    % time array samples (we use four samples)
+    % time array samples (we use four samples) for CRF curve 
     time_array = [1, 18, 28, 38];   % [ms]
     % B = log(E*dt) for time array samples
-    B = log(E* (0.0004+ (time_array.* 0.0005)));
+    B = log(E* (0.0001+ (time_array.* time_itv)))
+    % Names of the images to be used, 1000, 9500, 14500, 195000 us
+    images_names = {'indoor_sample/1_1.png' 
+                    'indoor_sample/18_1.png'
+                    'indoor_sample/28_1.png'
+                    'indoor_sample/38_1.png'};
 
-    % Names of the images to be used
-    images_names = {'indoor_sample/1.png' 
-                    'indoor_sample/18.png'
-                    'indoor_sample/28.png'
-                    'indoor_sample/38.png'};
+             
 else
-    time_array = [1, 15, 69, 89];   % [ms]
+    time_array = [1, 15, 70, 90];   % [ms]
     % B = log(E*dt) for time array samples
-    B = log(E* (0.00005+ (time_array.* 0.00005)));
+    B = log(E* (0.00005+ (time_array.* time_itv)));
     
-    % Names of the images to be used
+    % Names of the images to be used, 50, 125, 400, 500 us
     images_names = {'outdoor_sample/1.png' 
                     'outdoor_sample/15.png'
                     'outdoor_sample/70.png'
@@ -70,17 +87,20 @@ end
 
 %% Using the fitted curve, image synthesizing
 if (is_indoor)
-    o_img = imread('indoor_sample/1.png');
+    o_img = imread('indoor_sample/1_1.png');
+    if (size(o_img,3) > 1)
+        o_img = rgb2gray(o_img);
+    end
 else
     o_img = imread('outdoor_sample/1.png');
 end
 
-[s_img,K_t,K_g] = img_synth (o_img, target_dt, target_gain, crf);
+[s_img,K_t,K_g] = img_synth (o_img, target_exp_index, target_gain, crf);
 
 if (plot_on)
     figure(3)
-    subplot(1,2,1); imshow(o_img); title('Original')
-    subplot(1,2,2); imshow(s_img); title('Synthetic')
+    subplot(1,2,1); imshow(o_img); title(sprintf('Original [index = %d], 0 dB', time_array(1)))
+    subplot(1,2,2); imshow(s_img); title(sprintf('Synthetic [index = %d] , %d dB',target_exp_index, target_gain))
 end
 
 if (target_gain < 1)
@@ -91,10 +111,11 @@ end
 
 
 %% image metric evaluation
-EWG = calc_img_ewg (s_img);
+EWG = calc_img_newg (s_img);
+%% image metric evaluation with snr considered 
 NEWG = EWG - Nsnr;
 
-fprintf('Synth_exp: %.2f [ms] \n' , (0.5 + 0.05*target_dt)  )
+fprintf('Synth_exp: %.2f [ms] \n' , (0.04 + 0.005*target_exp_index)  )
 fprintf('synth_gain: %.1f [dB] \n', target_gain)
 fprintf('EWG : %.2f \n', EWG )
 fprintf('NEWG : %.2f \n', NEWG )

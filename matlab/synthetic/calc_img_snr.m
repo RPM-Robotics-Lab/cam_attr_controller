@@ -14,6 +14,6 @@ ref_img = imresize(ref_img,0.25); % image down scale
 % acceptance snr 
 ref_snr = 20; 
 % calculate snr compensate
-Nsnr = (1- peaksnr/ref_snr) * mean(mean(Gmag)) * (size(img,1) * size(img,2))/5^2;
+Nsnr = (1- peaksnr/ref_snr) * mean(mean(Gmag)) * (size(img,1) * size(img,2))/5^3;
 
 

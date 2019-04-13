@@ -6,28 +6,42 @@ function K_t = img_synth_factor_exp (crf, target_dt)
 % Output:
 %  K_t = scaling factor for image synthesis 
 
-global  B 
+% B1 = log(E* 1 * exp_itv)
+% target_exp = log(E* (1 * target_dt * exp_itv)) 
+%       = log(E * 1 * target_dt * exp_itv) = B1 + log(target_dt) 
 
+global B;
+global E;
+global time_itv;
+global target_exp_index;
+global is_indoor;
+    
 K_t = -1;
 
 
 % find point on CRF for initial exposure time B(1)
-c_in = find (crf >= B(1));
-if (isempty(c_in))
+init_index = find (crf >= B(1));
+if (isempty(init_index))
     disp('[ERROR: img_synth_factor_exp] No value found in CRF correponding to init exposure time');
     return;
 end
 
-c_int = c_in(1);
-n_exp = B(1) + log(target_dt);
+gi = init_index(1)
+
+
+if (is_indoor)
+    target_exp =  log(E* (0.0001+ (target_exp_index.* time_itv)))
+else
+    target_exp = log(E* (0.00005+ (target_exp_index.* time_itv)))
+end
 
 % find point on CRF for target exposure time
-n_in = find (crf >= n_exp); 
-if (isempty(n_in))
+target_index = find (crf >= target_exp); 
+if (isempty(target_index))
     disp('[ERROR: img_synth_factor_exp] No value found in CRF correponding to target exposure time');
     return;
 end
-n_int = n_in(1);
+go = target_index(1)
 
 % compute ratio and return
-K_t = (n_int) / (c_int) ; 
+K_t = (go) / (gi)

@@ -1,4 +1,5 @@
-function [g,LE]=gsolve(Z,B,l,w)
+function [g]=gsolve(Z,B,l,w)
+% function [g,LE]=gsolve(Z,B,l,w)
 
     % gsolve.m − Solve for imaging system response function
     % Given a set of pixel values observed for several pixels in several
@@ -46,4 +47,5 @@ function [g,LE]=gsolve(Z,B,l,w)
     %% Solve the system using SVD
     x = A\b;
     g = x(1:n);
-    LE = x(n+1:size(x,1));
+%     LE = x(n+1:size(x,1));
+    
