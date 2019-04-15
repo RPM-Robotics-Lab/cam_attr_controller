@@ -46,6 +46,6 @@ function [g]=gsolve(Z,B,l,w)
 
     %% Solve the system using SVD
     x = A\b;
-    g = x(1:n)
+    g = x(1:n);
 %     LE = x(n+1:size(x,1));
     

@@ -32,6 +32,8 @@ G_weight= Gmag >= (mean(mean(Gmag))) * 0.1 ;
 S = zeros(size(img));
 S(M(:,1), M(:,2)) = (mean(mean(Gmag))) * 1.5;    
 
+mean(mean(S))
+mean(mean(Gmag))
 
 % Metric
 EWG = sum(sum(G_weight .* Gmag - S));

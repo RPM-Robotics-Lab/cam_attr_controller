@@ -24,7 +24,7 @@ E = 100;  %mean(mean(img_series{1}))/2;-exclude saturated region\TODO
 % Desired exposure time and gain for synthesis (0.5 + 0.05*i) ms 
 
 target_exp_index = 10;
-target_gain = 4;   %[db]
+target_gain = 1;   %[db]
 
 
 if (is_indoor)
