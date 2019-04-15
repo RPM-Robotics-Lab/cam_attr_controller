@@ -30,9 +30,9 @@ gi = init_index(1)
 
 
 if (is_indoor)
-    target_exp =  log(E* (0.0001+ (target_exp_index.* time_itv)))
+    target_exp = log(E* (0.0001+ (target_dt.* time_itv)));
 else
-    target_exp = log(E* (0.00005+ (target_exp_index.* time_itv)))
+    target_exp = log(E* (0.00005+ (target_dt.* time_itv)));
 end
 
 % find point on CRF for target exposure time

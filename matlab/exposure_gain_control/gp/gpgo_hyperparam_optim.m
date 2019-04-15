@@ -25,9 +25,11 @@ for i = 1:length(datalist)
     idx_pred = 1:1:fidx;
     t_pred = [exp_arr(idx_pred), gain_arr(idx_pred)]';
 
+%     gpm = fitrgp(t_train', y_train','KernelFunction','squaredexponential',...
+%                 'OptimizeHyperparameters','auto','HyperparameterOptimizationOptions',...
+%                 struct('AcquisitionFunctionName','expected-improvement-plus'));
     gpm = fitrgp(t_train', y_train','KernelFunction','squaredexponential',...
-                'OptimizeHyperparameters','auto','HyperparameterOptimizationOptions',...
-                struct('AcquisitionFunctionName','expected-improvement-plus'));
+                'OptimizeHyperparameters','auto');
     % [y_pred, var_pred] = gpm.predict(t_pred');
     
     hyperparam_list(i,:) = gpm.KernelInformation.KernelParameters';

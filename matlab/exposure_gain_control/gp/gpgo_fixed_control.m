@@ -1,11 +1,12 @@
 clear all;  close all;
 
+addpath('functions');
 %datanum = 2;
 %data = csvread(sprintf('../dat/d%d_Ours.csv',datanum));
 
 % data = csvread('../dat/090823f.csv');
 % data = csvread('../dat/37datar.csv');1
-data = csvread('../data/redata_d1.csv');
+data = csvread('../data/redata_d4.csv');
 
 % exposure = data(:,1);   % ms
 % metric = data(:,2); % sum of w grad
@@ -43,9 +44,12 @@ fidx = length(exp_arr(:));
 % next_in(1) = round(fidx*.05);
 % next_in(1) = 1;
 % next_in(1) = 1;
-next_in = [1 sub2ind([13 59], 5, 5) sub2ind([13 59], 3, 10)];
+
+initial_points = [sub2ind([13 59], 4, 10) sub2ind([13 59], 4, 30), ...
+                  sub2ind([13 59], 10, 10) sub2ind([13 59], 10, 30)];
+next_in = initial_points;
 psi = 0;
-for i = 1:5
+for i = 1:4
 %     idx = [next_in,  round(fidx*0.95)] % 38,50,26,8
 %     idx = [next_in,  next_in(1)+5] % 38,50,26,8 
     idx_train = [next_in];
@@ -59,7 +63,7 @@ for i = 1:5
 
     %% predict
 %     idx = next_in(1):1:round(fidx*0.95);
-    idx_pred = next_in(1):1:fidx;
+    idx_pred = 1:1:fidx;
     t_pred = [exp_arr(idx_pred), gain_arr(idx_pred)]';
 %     y_true = metric_arr(idx);
 
@@ -169,31 +173,31 @@ plot3(t_train(1,:), t_train(2,:), y_train, 'rx', 'LineWidth', 3);
 
 
 %% Save figure
-figure(fig_true);
-% font setup
-set(gca, 'FontName', 'Arial')  
-set(gca, 'FontSize', 13);
-% paper setup
-set(fig_true, 'PaperUnits', 'centimeters');
-set(fig_true, 'PaperSize', [12 8]);
-pause(0.4);
-print('-fillpage',['True'],'-dpdf');
-
-figure(fig_estim);
-% font setup
-set(gca, 'FontName', 'Arial')  
-set(gca, 'FontSize', 13);
-% paper setup
-set(fig_estim, 'PaperUnits', 'centimeters');
-set(fig_estim, 'PaperSize', [12 8]);
-pause(0.4);
-print('-fillpage',['Estim'],'-dpdf');
-
+% figure(fig_true);
+% % font setup
+% set(gca, 'FontName', 'Arial')  
+% set(gca, 'FontSize', 13);
+% % paper setup
+% set(fig_true, 'PaperUnits', 'centimeters');
+% set(fig_true, 'PaperSize', [12 8]);
+% pause(0.4);
+% print('-fillpage',['True'],'-dpdf');
+% 
+% figure(fig_estim);
+% % font setup
+% set(gca, 'FontName', 'Arial')  
+% set(gca, 'FontSize', 13);
+% % paper setup
+% set(fig_estim, 'PaperUnits', 'centimeters');
+% set(fig_estim, 'PaperSize', [12 8]);
+% pause(0.4);
+% print('-fillpage',['Estim'],'-dpdf');
+% 
 
 
 %% Change file save option
-print_pdf = 0;
-
-if (print_pdf)
-    print -dpdf ../figs/GPGO6.pdf
-end
+% print_pdf = 0;
+% 
+% if (print_pdf)
+%     print -dpdf ../figs/GPGO6.pdf
+% end
