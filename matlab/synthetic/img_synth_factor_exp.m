@@ -30,9 +30,9 @@ gi = init_index(1)
 
 
 if (is_indoor)
-    target_exp =  log(E* (0.0001+ (target_exp_index.* time_itv)))
+    target_exp =  log(E* (0.001+ ((target_exp_index-1).* time_itv)))
 else
-    target_exp = log(E* (0.00005+ (target_exp_index.* time_itv)))
+    target_exp = log(E* (0.00005+ ((target_exp_index-1).* time_itv)))
 end
 
 % find point on CRF for target exposure time
@@ -41,7 +41,7 @@ if (isempty(target_index))
     disp('[ERROR: img_synth_factor_exp] No value found in CRF correponding to target exposure time');
     return;
 end
-go = target_index(1)
+go = target_index(1);
 
 % compute ratio and return
 K_t = (go) / (gi)
