@@ -80,7 +80,7 @@ Img_eval::calc_img_ent_grad (cv::Mat &img, bool visualize)
     
 	//printf("Gradient sss is %d %d \n", wcols, wrows) ;
  	
-	Mat gradW = grad > Gmean * 0.06;
+	Mat gradW = grad > Gmean * 0.01;
 	gradW *= 1;
     gradW.convertTo (gradW, CV_32F, 1.0 / 255.0);
     
@@ -95,7 +95,7 @@ Img_eval::calc_img_ent_grad (cv::Mat &img, bool visualize)
 	Mat Gourstmp1, Gourstmp2;
     double Gours;
     img_Gours (Gour, Gourstmp1, Gourstmp2, Gours);
-     std::cout << "Gradsum=  " << Gmean * img.cols * img.rows <<"Gmean= " << Gmean << " Gours= " << Gours <<std::endl;
+//     std::cout << "Gradsum=  " << Gmean * img.cols * img.rows <<"Gmean= " << Gmean << " Gours= " << Gours <<std::endl;
 //     cv::waitKey(1);
 
     if (visualize) {
@@ -148,7 +148,6 @@ Img_eval::img_wmask (Mat &entropy, Mat &wmask)
     wmasktmp2.convertTo(tmp2, CV_32F, 1.0/255.0);
     
     wmask = tmp2;
-//     std::cout << "wmask: kkk " << wmask <<std::endl;
 }
 
 

@@ -19,11 +19,13 @@ is_indoor = 0;  % 0 for outdoor
 
 
 
-E = 120;  %mean(mean(img_series{1}))/2;-exclude saturated region\TODO
+E = 100;  %mean(mean(img_series{1}))/2;-exclude saturated region\TODO
 
 % Desired exposure time and gain for synthesis (0.5 + 0.05*i) ms 
+
 target_exp_index = 10;
 target_gain = 4;   %[db]
+
 
 if (is_indoor)
     time_itv = 0.0005; 
@@ -39,7 +41,7 @@ if (is_indoor)
     % time array samples (we use four samples) for CRF curve 
     time_array = [1, 18, 28, 38];   % [ms]
     % B = log(E*dt) for time array samples
-    B = log(E* (0.0001+ (time_array.* time_itv)))
+    B = log(E* (0.001+ ((time_array-1).* time_itv)))
     % Names of the images to be used, 1000, 9500, 14500, 195000 us
     images_names = {'indoor_sample/1.png' 
                     'indoor_sample/18.png'
@@ -50,9 +52,9 @@ if (is_indoor)
 else
     time_array = [1, 15, 70, 90];   % [ms]
     % B = log(E*dt) for time array samples
-    B = log(E* (0.00005+ (time_array.* time_itv)));
+    B = log(E* (0.00005+ ((time_array-1).* time_itv)));
     
-    % Names of the images to be used, 50, 125, 400, 500 us
+    % Names of the images to be used, 50, , 750 ,  us
     images_names = {'outdoor_sample/1.png' 
                     'outdoor_sample/15.png'
                     'outdoor_sample/70.png'

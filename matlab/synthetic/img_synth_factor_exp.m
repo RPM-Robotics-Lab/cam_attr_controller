@@ -41,7 +41,7 @@ if (isempty(target_index))
     disp('[ERROR: img_synth_factor_exp] No value found in CRF correponding to target exposure time');
     return;
 end
-go = target_index(1)
+go = target_index(1);
 
 % compute ratio and return
 K_t = (go) / (gi)
