@@ -11,10 +11,10 @@ else
     Nsnr = calc_img_snr (s_img, o_img);
 end
 
-figure(3);
-imshow(s_img);
-title(strcat(num2str(target_exp_index), '/', num2str(target_gain)));
-pause;
+% figure(3);
+% imshow(s_img);
+% title(strcat(num2str(target_exp_index), '/', num2str(target_gain)));
+% pause;
 
 EWG = calc_img_newg (s_img);
 if (is_newg)
@@ -25,6 +25,8 @@ else
     %% image metric evaluation
     metric = EWG;
 end
+
+metric = metric / 100;
 
 end 
 

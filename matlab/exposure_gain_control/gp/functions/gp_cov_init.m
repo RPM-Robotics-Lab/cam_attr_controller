@@ -22,13 +22,16 @@ cfg.gp.k = cfg.gp.k_SE;
 
 switch (cfg.gp.k)
 case cfg.gp.k_SE
+    % for prev dataset
+%     param.l = 2;                 % length term
+%     param.s_f = 3;               % exp term
     param.l = 2;                 % length term
     param.s_f = 3;               % exp term
     param.h1_range = 10:10:500;    % == l
     param.h2_range = 10:10:500;    % == s_f
     param.h1_name = 'l';
     param.h2_name = 's_f';
-    param.s_n = 5;
+    param.s_n = 1;
     log_p = @log_prob_k_SE;
 case cfg.gp.k_NN
     % NN S = diag (so,s,s,....)

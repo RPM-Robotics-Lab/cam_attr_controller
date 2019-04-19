@@ -46,7 +46,9 @@ fidx = length(exp_arr(:));
 % next_in(1) = 1;
 
 initial_points = [sub2ind([13 59], 4, 10) sub2ind([13 59], 4, 30), ...
-                  sub2ind([13 59], 10, 10) sub2ind([13 59], 10, 30)];
+                  sub2ind([13 59], 10, 10) sub2ind([13 59], 10, 30), ...
+                  sub2ind([13 39], 7, 20)];
+              
 next_in = initial_points;
 psi = 0;
 for i = 1:4
@@ -73,7 +75,7 @@ for i = 1:4
     t_pred
 
 %     selection by GPMI
-    alpha = 10;
+    alpha = 50;
     max_var = max(diag(var_pred));
     index_next = length(next_in) + 1;
     [next_in(index_next), psi, acq_func] = gpmi_optim(y_pred, var_pred, alpha, psi);

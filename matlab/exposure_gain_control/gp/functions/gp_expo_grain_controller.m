@@ -1,15 +1,12 @@
-clear; close all;
-
-
+function [optimal_expo, optimal_gain, optimal_img] = gp_expo_grain_controller(o_img, plot_optimal)
+%GP_EXPO_GRAIN_CONTROLLER Summary of this function goes here
+%   Detailed explanation goes here
 
 %% HDR CRF curve fitting from a set of images
 global E;   % irradiance
 global B;   % sample time array for crf curve fitting
 global time_itv;
 global is_indoor;
-
-is_indoor = 0;  % 0 for outdoor
-E = 120;  %mean(mean(img_series{1}))/2;-exclude saturated region\TODO
 
 %% Configuration, Data load
 addpath('../../synthetic');
@@ -30,14 +27,6 @@ end
 
 datapath = strcat('../../synthetic/', test_env, '_sample/');
 
-img_list = dir(strcat(datapath, '*.png'));
-
-% o_img = imread(strcat(img_list(1).folder, '/', img_list(1).name));
-o_img = imread('/mnt/data2/exposure_control/201903_exp_gridsearch/50/0001.png');
-
-if size(o_img, 3) == 3
-    o_img = rgb2gray(o_img);
-end
 crf = csvread(strcat(datapath, 'crf.csv'));
 
 %%
@@ -97,10 +86,8 @@ for i = 1:4
     [vals, optimal_id] = max(y_pred);
     toc;
     
-    t_pred
-
 %     selection by GPMI
-    alpha = 50;
+    alpha = 70;
     max_var = max(diag(var_pred));
     index_next = length(next_in) + 1;
     [next_in(index_next), psi, acq_func] = gpmi_optim(y_pred, var_pred, alpha, psi);
@@ -112,24 +99,6 @@ for i = 1:4
 %     in(i) = in;
 %     next_in(i+1) = in(i);
 %     t_pred(next_in(i+1));
-
-    
-%     % plot graph    
-%     [val,topt_idx] = max(metric(:)); 
-%     figure(2); clf; 
-%     mesh(data); xlabel('exposure'); ylabel('gain'); hold on; grid on; colormap(jet);
-%     plot3(expo_arr(topt_idx), gain_arr(topt_idx), metric_arr(topt_idx), 'ro');
-%     
-%     mesh(reshape(y_pred, size(metric))); colormap(jet);
-%     plot3(t_train(1,:), t_train(2,:), y_train, 'rx');
-%     view(-3, 18);
-%     
-%     figure(3);
-%     mesh(reshape(acq_func-50, size(metric))); colormap(jet);
-%     view(-3, 18);
-
-%     pause();
-    
     
 %     % stop criteria
 %     if abs(t_pred(next_in(i+1))-t_pred(next_in(i))) < 15 || max_var < 500
@@ -141,16 +110,22 @@ for i = 1:4
 end
 
 %%
-fig_estim = figure(222);
-[~, s_img] = extract_img_metric(true, o_img, target_expo_index, target_gain, crf);
-
-s2 = surf(reshape(y_pred, size(expos)), 'FaceAlpha',0.85); xlabel('exposure'); ylabel('gain'); zlabel('EWG'); hold on;
-s2.EdgeColor = 'none';
 t_selected = t_pred(:, optimal_id);
 y_selected = y_pred(optimal_id);
-plot3(t_selected(1), t_selected(2), y_selected, 'bo', 'LineWidth', 4); 
-plot3(t_train(1,:), t_train(2,:), y_train, 'rx', 'LineWidth', 3);
 
-figure();
-imshow([o_img s_img]);
+optimal_expo = t_selected(1);
+optimal_gain = t_selected(2);
+[~, optimal_img] =  extract_img_metric(true, o_img, optimal_expo, optimal_gain, crf);
+
+if plot_optimal
+    figure(222);
+    clf;
+    s2 = surf(reshape(y_pred, size(expos)), 'FaceAlpha',0.85); xlabel('exposure'); ylabel('gain'); zlabel('EWG'); hold on;
+    s2.EdgeColor = 'none';
+    plot3(t_selected(1), t_selected(2), y_selected, 'bo', 'LineWidth', 4); 
+    plot3(t_train(1,:), t_train(2,:), y_train, 'rx', 'LineWidth', 3);
+    view(2);
+end
+
+end
 
