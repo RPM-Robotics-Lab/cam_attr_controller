@@ -9,7 +9,7 @@ global time_itv;
 global is_indoor;
 
 is_indoor = 0;  % 0 for outdoor
-E = 120;  %mean(mean(img_series{1}))/2;-exclude saturated region\TODO
+E = 100;  %mean(mean(img_series{1}))/2;-exclude saturated region\TODO
 
 %% Configuration, Data load
 addpath('../../synthetic');

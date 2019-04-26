@@ -26,7 +26,7 @@ if (isempty(init_index))
     return;
 end
 
-gi = init_index(1)
+gi = init_index(1);
 
 
 if (is_indoor)
@@ -44,4 +44,4 @@ end
 go = target_index(1);
 
 % compute ratio and return
-K_t = (go) / (gi)
+K_t = (go) / (gi) ;

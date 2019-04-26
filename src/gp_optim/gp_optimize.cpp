@@ -74,6 +74,7 @@ void GPOptimize::set_predict(vector<double>& x_pred)
         VectorXd x(1);
         x << x_val;
         x_pred_.push_back(x);
+
     }
 }
 
@@ -85,7 +86,7 @@ void GPOptimize::set_predict(vector<VectorXd>& x_pred)
 void GPOptimize::set_autopredict()
 {
     for (int e = 1; e < 40; ++e) {
-        for (int g = 1; g < 14; ++g) {
+        for (int g = 1; g < 13; ++g) {
             VectorXd single_set(2);
             single_set << e, g;
             x_pred_.push_back(single_set);
@@ -107,10 +108,27 @@ bool GPOptimize::evaluate(double x_val, double y_val)
 
 bool GPOptimize::evaluate(VectorXd& x_val, double y_val)
 {
+    uint64_t t1, t2, t3, t4, t5;
+    t1 = CurrentTime_microseconds();
     add_data(x_val, y_val);
+    t2 = CurrentTime_microseconds();
     train();
+    t3 = CurrentTime_microseconds();    
     predict();
+    t4 = CurrentTime_microseconds();
     find_query_point();
+    t5 = CurrentTime_microseconds();
+
+    double gpo_train_dt = static_cast<double>(t3-t2) / 1e6;
+    double gpo_pred_dt = static_cast<double>(t4-t3) / 1e6;
+    double gpo_query_dt = static_cast<double>(t5-t4) / 1e6;
+
+//    cout << "gpo times\t" << gpo_train_dt << "/"
+//         << gpo_pred_dt << "/"
+//         << gpo_query_dt << endl;
+
+                    
+    
     return is_optimal();
 }
 
@@ -178,7 +196,7 @@ void GPOptimize::predict()
     double s_n = cfg_.s_n();
     MatrixXd N = (s_n*s_n)*MatrixXd::Identity(n_train, n_train);
     MatrixXd K = K_ + N;
-    MatrixXd invK = K.inverse();
+    MatrixXd invK = K.inverse(); 
 
     VectorXd y_train(n_train);
     for (int i = 0; i < n_train; ++i) {
@@ -216,14 +234,13 @@ void GPOptimize::find_query_point()
         var_diag_sq = var_diag_sq.cwiseSqrt() - tmp;
         var_diag_sq = sqrt(cfg_.alpha()) * var_diag_sq;
         VectorXd acq_func = y_pred_ + var_diag_sq;
-
+        // cout << "Acq func " << acq_func << endl;
         int index;
         cost_ = acq_func.maxCoeff(&index);
-
         psi_ = psi_ + var_diag(index);
-
         query_exposure_ = x_pred_[index](0);
         query_index_ = index;
+//    cout << "cost = " << cost_ << endl;
     }
 
     check_optimal();
@@ -256,9 +273,8 @@ void GPOptimize::check_optimal()
     double last_query_m = y_train_.back()(0);
 //    cout << "["<< last_query*500 << ", " << last_query_g <<"] ," << last_query_m << "," << endl;
 
-
 //    if (abs(query_exposure_- last_query) < 1 || cost_ < 5 || iter_count_ > cfg_.num_iter()) {
-    if (cost_ < 100 || x_train_.size() > cfg_.num_iter())  {
+    if (cost_ < 90 || x_train_.size() > cfg_.num_iter())  {
 
 //        cout << "Now find optimal by "<< abs(query_exposure_ - last_query) << " / " << cost_ << " / " << iter_count_ << endl;
 //        cout << "q_exp = " << query_exposure_ *500 << ", last_exp =" << last_query *500 << endl;
@@ -266,6 +282,7 @@ void GPOptimize::check_optimal()
     }
     else
         iter_count_++;
+
 }
 
 void GPOptimize::set_optimal()

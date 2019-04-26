@@ -43,9 +43,10 @@ expo_roi = 1:39; %
 gain_arr = gains(:);
 expo_arr = expos(:);
 
-initial_points = [sub2ind([13 59], 4, 10) sub2ind([13 59], 4, 30), ...
-                  sub2ind([13 59], 10, 10) sub2ind([13 59], 10, 30), ...
-                  sub2ind([13 39], 7, 20)];
+% initial_points = [sub2ind([13 59], 4, 10) sub2ind([13 59], 4, 30), ...
+%                   sub2ind([13 59], 10, 10) sub2ind([13 59], 10, 30), ...
+%                   sub2ind([13 39], 7, 20)];
+initial_points = [sub2ind([13 59], 1, 1) ]
 
 next_in = initial_points;
               
@@ -87,7 +88,7 @@ for i = 1:4
     toc;
     
 %     selection by GPMI
-    alpha = 70;
+    alpha = 100; % 70 
     max_var = max(diag(var_pred));
     index_next = length(next_in) + 1;
     [next_in(index_next), psi, acq_func] = gpmi_optim(y_pred, var_pred, alpha, psi);
@@ -110,8 +111,8 @@ for i = 1:4
 end
 
 %%
-t_selected = t_pred(:, optimal_id);
-y_selected = y_pred(optimal_id);
+t_selected = t_pred(:, optimal_id)
+y_selected = y_pred(optimal_id)
 
 optimal_expo = t_selected(1);
 optimal_gain = t_selected(2);
@@ -124,7 +125,10 @@ if plot_optimal
     s2.EdgeColor = 'none';
     plot3(t_selected(1), t_selected(2), y_selected, 'bo', 'LineWidth', 4); 
     plot3(t_train(1,:), t_train(2,:), y_train, 'rx', 'LineWidth', 3);
+
     view(2);
+%     axis([0 40 0 12 0 10])
+
 end
 
 end

@@ -96,7 +96,7 @@ for i = 1:10
     mesh(reshape(acq_func-50, size(metric))); colormap(jet);
     view(-3, 18);
 
-%     pause(1);
+    pause();
     
     
 %     title(sprintf('Exposure Control using GPGO \n t opt = %d [ms]\n' , time(topt_idx)))

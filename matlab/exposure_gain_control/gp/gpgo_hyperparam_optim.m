@@ -6,7 +6,7 @@ hyperparam_list = zeros(length(datalist), 2);
 for i = 1:length(datalist)
     disp(datalist(i).name);
     
-    data = csvread([datalist(i).folder '/' datalist(i).name]);
+    data = csvread(['../data/analysis_gain/' '/' datalist(i).name]);
     [exposure, gain] = meshgrid(1:size(data,2),1:size(data,1));
     data = data - mean(data(:));
     metric = data;

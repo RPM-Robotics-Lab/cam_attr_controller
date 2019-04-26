@@ -23,10 +23,10 @@ if (is_newg)
     metric = NEWG;
 else
     %% image metric evaluation
-    metric = EWG;
+    metric = EWG ;
 end
 
-metric = metric / 100;
+metric = metric /100 ; 
 
 end 
 

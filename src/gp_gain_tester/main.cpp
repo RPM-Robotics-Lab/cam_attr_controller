@@ -50,10 +50,10 @@ void load_csv_from_file (ifstream& file_path, vector<VectorXd>& x_data, vector<d
         std::stringstream  lineStream(line);
         std::string        cell;
         double exposure, gain, metric;
-        std::cout << "READ " << std::endl;
+//        std::cout << "READ " << std::endl;
         while(std::getline(lineStream,cell,','))
         {
-            std::cout << "LINE " << std::endl;
+//            std::cout << "LINE " << std::endl;
 
             if (index == 0){
                 exposure = std::strtod(cell.c_str(),0);
@@ -63,7 +63,7 @@ void load_csv_from_file (ifstream& file_path, vector<VectorXd>& x_data, vector<d
                 VectorXd data(2);
                 data << exposure, gain;
                 x_data.push_back(data);
-                std::cout << "LINE " << std::endl;
+//                std::cout << "LINE " << std::endl;
 
             }
             else if (index == 2){
@@ -82,9 +82,9 @@ int main(int argc, char** argv)
     x_i << 2, 2;
     VectorXd x_j(2);
     x_j << 3, 3;
-    double ls = 5.5;
-    double s_f = 15.0;
-    double s_n = 5.0;
+    double ls = 15.5;
+    double s_f = 4.85;
+    double s_n = 15.0;
     int num_iter = 20;
 
 //    ifstream file_path("/home/yg/svn/docs/papers/conferences/icra2018-jwkim/trunk/matlab/dat/38datar.csv");
@@ -102,7 +102,7 @@ int main(int argc, char** argv)
          << "\t Data2: " << x_data2.size() << endl;
     // GPO initialize (set once, globally)
     GPOptimize gpo;
-    Config cfg(ls, s_f, s_n, AcqType::MAXVAR, 0.5, num_iter);
+    Config cfg(ls, s_f, s_n, AcqType::MAXMI, 50, num_iter);
 
     // For first frame
     gpo.initialize(cfg);

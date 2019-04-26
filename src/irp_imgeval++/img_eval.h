@@ -25,8 +25,10 @@ public:
     void PrintGrf(const vector<vector<double> > &res2); 
     double calc_img_ent_grad (cv::Mat &img, bool visualize = false);
     double getPSNR(const Mat &I1, const Mat &I2);
-
-
+    double syn_grab_and_return_snr (cv::Mat &synth_img_g,  cv::Mat &synth_img_t, Img_eval &eval, double exp_t, double gain_t);
+    void _synth_img_t (cv::Mat &init_img, double &next_exp, cv::Mat &synth_img_t, bool visualize);
+    void _synth_img_g (cv::Mat &synth_img_t, double &next_gain, cv::Mat &synth_img_g, bool visualize);
+    double syn_grab_and_return_ewg (cv::Mat &synth_img_g, Img_eval &eval, double exp_t, double gain_t);
 private:
     void img_entropy (Mat &img, Mat &entropy);
     void img_wmask (Mat &entropy, Mat &wmask);
