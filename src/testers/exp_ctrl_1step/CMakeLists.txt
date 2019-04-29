@@ -12,8 +12,8 @@ libhandler_glib ()
 add_executable (exp_ctrl_1step ${SRC})
 target_link_libraries (exp_ctrl_1step
   irp-imgeval++
-  irp-common
-  gp_optimize
+  irp_gpgo++
+  irp-common 
   ${IRPLIB_BOOST}
   ${IRAP_LCMTYPES}
   ${IRPLIB_LCM}

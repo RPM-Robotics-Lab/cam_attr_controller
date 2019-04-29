@@ -1,8 +1,8 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
-#include <gp_optimize/gp_optimize.h>
-#include <gp_optimize/config.h>
+#include <irp_gpgo++/gp_optimize.h>
+#include <irp_gpgo++/config.h>
 
 void load_csv_from_file (ifstream& file_path, vector<double>& x_data, vector<double>& y_data) {
     string line;

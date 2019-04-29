@@ -7,8 +7,8 @@
 #include<stdio.h> 
 #include<stdlib.h>
 #include <boost/filesystem.hpp>
-#include <gp_optimize/gp_optimize.h>
-#include <gp_optimize/config.h>
+#include <irp_gpgo++/gp_optimize.h>
+#include <irp_gpgo++/config.h>
 #include "Bluefox2Driver/bluefox2.h"
 #include "Bluefox2Driver/Bluefox2Config.h"
 #include "param_util.h"

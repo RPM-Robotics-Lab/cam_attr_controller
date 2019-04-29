@@ -18,7 +18,7 @@ target_link_libraries (exp_ctrl
   Bluefox2Driver
   irp-imgeval++
   irp-common
-  gp_optimize
+  irp_gpgo++
   ${IRPLIB_BOOST}
   ${IRAP_LCMTYPES}
   ${IRPLIB_LCM}
