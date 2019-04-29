@@ -15,17 +15,25 @@ Run `run_synth_gen` to synthesize using a sample image.
 
 3) Libraries: fcns_synth and fcns_gp
 
-## Src
-1) exp_tester
+## C/C++
+1) crf_fitting
 
-Camera exposure tester. Given an image, load the image and evaluate the image information level.
+Given four images, fit a CRF curve.
 
+2) data_collector
 
-2) exp_ctrl
+Image collector using Bluefox2Driver.
 
-Camera exposure controller. Similar funcitonality as in exp_tester except it captures an image from the camera directly.
+3) exp_ctrl
 
+Main executable, camera exposure controller. Similar funcitonality as in tester code except it captures an image from the camera directly.
 
-3) irp_imgeval++
+4) gpgo
+
+Using Gaussian Process Global Optimzer, compute optimal exposure time and gain.
+
+5) irp_imgeval++ and irp_gpgo++
 
 Image evaluation and camera attribute control library.
+
+## Testers (C/C++)
