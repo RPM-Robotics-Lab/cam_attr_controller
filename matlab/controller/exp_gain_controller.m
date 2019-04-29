@@ -2,7 +2,7 @@ clear all; close all;
 
 %% Configuration, Data load
 addpath('../data');
-addpath('../fcns_synth');
+addpath('../fcns_img');
 addpath('../fcns_gp');      
 
 %% HDR CRF curve fitting from a set of images

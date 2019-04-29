@@ -2,6 +2,9 @@ close all;
 clear all;
 clc; 
 
+%% Configuration, Data load
+datdir = '../data/';
+
 %% time_array : image sequence along each exposure time interval , ex) indoor : 500us interval
 %% target_dt : desired image sequence, ex) 18 = initial_exp_t + (17 * exp_itv)
 
@@ -66,7 +69,7 @@ img_amount = length(images_names);
 img_series = {};
 
 for img_nus_imger = 1:img_amount
-    img_series{img_nus_imger} = imread(images_names{img_nus_imger});
+    img_series{img_nus_imger} = imread([datdir,images_names{img_nus_imger}]);
 %     img_container{img_nus_imger} = rgb2gray(img_container{img_nus_imger});
     img_series{img_nus_imger} = (img_series{img_nus_imger});
 end
@@ -89,14 +92,14 @@ end
 
 %% Using the fitted curve, image synthesizing
 if (is_indoor)
-    o_img = imread('indoor_sample/1.png');
+    o_img = imread([datdir,'indoor_sample/1.png']);
     o_img = imresize(o_img, 0.25);
     if (size(o_img,3) > 1)
         o_img = rgb2gray(o_img);
 
     end
 else
-    o_img = imread('outdoor_sample/1.png');
+    o_img = imread([datdir,'outdoor_sample/1.png']);
     o_img = imresize(o_img, 0.25);
 
 end
