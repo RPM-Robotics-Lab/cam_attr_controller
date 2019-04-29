@@ -46,7 +46,7 @@ expo_arr = expos(:);
 % initial_points = [sub2ind([13 59], 4, 10) sub2ind([13 59], 4, 30), ...
 %                   sub2ind([13 59], 10, 10) sub2ind([13 59], 10, 30), ...
 %                   sub2ind([13 39], 7, 20)];
-initial_points = [sub2ind([13 59], 1, 1) ]
+initial_points = [sub2ind([13 39], 13, 38) ];
 
 next_in = initial_points;
               
@@ -58,7 +58,7 @@ for i = 1:length(initial_points)
     metrics(i) = img_metric;
 end
 
-for i = 1:4
+for i = 1:6
 %     idx = [next_in,  round(fidx*0.95)] % 38,50,26,8
 %     idx = [next_in,  next_in(1)+5] % 38,50,26,8 
     if length(next_in) > length(metrics)
@@ -124,6 +124,7 @@ if plot_optimal
     s2 = surf(reshape(y_pred, size(expos)), 'FaceAlpha',0.85); xlabel('exposure'); ylabel('gain'); zlabel('EWG'); hold on;
     s2.EdgeColor = 'none';
     plot3(t_selected(1), t_selected(2), y_selected, 'bo', 'LineWidth', 4); 
+%     figure(333);
     plot3(t_train(1,:), t_train(2,:), y_train, 'rx', 'LineWidth', 3);
 
     view(2);

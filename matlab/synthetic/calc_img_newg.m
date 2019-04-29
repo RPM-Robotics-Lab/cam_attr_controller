@@ -2,8 +2,8 @@ function EWG = calc_img_newg (img)
 % function NEWG = calc_img_newg ()
 
 global is_indoor;
-
 img = im2double(img); % normalize
+% img = im2double(o_img); % normalize
 img = imresize(img,0.25); % image down scale 
 
 if (size(img,3) > 1)
@@ -18,33 +18,40 @@ norm_entropy = normpdf(H, mu, sigma);
 
 % generate saturation mask
 [rs, cs] = find(H <= 0.01); % Saturated region  
+
 M = [rs, cs]; 
+
 
 % entropy weight
 H_weight = norm_entropy / sum(sum(norm_entropy)); % optional 
 
 % image Gradient
-[Gmag, Gdir] = imgradient(img,'prewit'); 
-Gmag = Gmag /2.17;
+[Gmag, Gdir] = imgradient(img,'sobel'); 
+Gmag = Gmag  / 4.4867;
 
 % Ours
 G_weight= Gmag >= (mean(mean(Gmag))) * 0.01 ;
 
 % Saturation weight
-S = zeros(size(img));
+Smask = uint8(zeros(size(img))) ;
+Sval = (mean(mean(Gmag))) *  2;
+Smask(sub2ind([size(H)], rs, cs)) =255;
+
 if (is_indoor)
-S(M(:,1), M(:,2)) = (mean(mean(Gmag))) * 1.5;    
+    Sval = (mean(mean(Gmag))) *  2.5;
+    Smask = Smask.*Sval;
 else
-S(M(:,1), M(:,2)) = (mean(mean(Gmag))) * 1.0;  
+    Sval = (mean(mean(Gmag))) *  2;
+    Smask = Smask.*Sval;
 end    
 
 
-saturation = sum(sum(S));
+saturation = sum(sum(Smask)) / 255;
 gradient = sum(sum(Gmag));
 
 % Metric
-EWG = sum(sum(G_weight .* Gmag - S)) 
+EWG = sum(sum(G_weight .* Gmag )) - saturation; 
 
-GsE= [saturation gradient EWG]
+GsE= [gradient saturation  EWG]
 
 

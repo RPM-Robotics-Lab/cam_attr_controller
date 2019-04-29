@@ -26,7 +26,7 @@ else
     metric = EWG ;
 end
 
-metric = metric /100 ; 
+metric = metric / 50 ; 
 
 end 
 
