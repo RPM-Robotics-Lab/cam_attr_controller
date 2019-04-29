@@ -1,8 +1,21 @@
-# cam_attr_contoller
+# Camera Attribute Controller
 camera attribute controller
 
 # Modules
 
+## Matlab
+
+1) controller
+
+Run `exp_gain_controller` to run with sample images.
+
+2) synthetic
+
+Run `run_synth_gen` to synthesize using a sample image.
+
+3) Libraries: fcns_synth and fcns_gp
+
+## Src
 1) exp_tester
 
 Camera exposure tester. Given an image, load the image and evaluate the image information level.
