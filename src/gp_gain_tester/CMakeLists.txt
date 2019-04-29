@@ -7,8 +7,8 @@ add_executable (gp_gain_tester
 )
 target_link_libraries (gp_gain_tester
   irp-imgeval++
+  irp_gpgo++
   ${IRPLIB_OPENCV}
-  gp_optimize
   ${IRPLIB_EIGEN3}
 )
 

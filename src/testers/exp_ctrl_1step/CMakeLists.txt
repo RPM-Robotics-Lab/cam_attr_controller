@@ -9,8 +9,8 @@ libhandler_eigen3 ()
 libhandler_boost (COMPONENTS program_options system filesystem)
 libhandler_glib ()
 
-add_executable (exp_ctrl_tester ${SRC})
-target_link_libraries (exp_ctrl_tester
+add_executable (exp_ctrl_1step ${SRC})
+target_link_libraries (exp_ctrl_1step
   irp-imgeval++
   irp-common
   gp_optimize

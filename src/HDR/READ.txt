@@ -1,6 +1,0 @@
-
-g++ hdr.cpp -L ~/opencv/opencv-3.4.0/build/lib -lopencv_core -lopencv_imgcodecs -lopencv_photo -o Test
-sudo vi /etc/ld.so.conf.d/opencv.conf
-sudo find / -name "lopencv_*
-
-/usr/local/lib/x86_64-linux-gnu/
