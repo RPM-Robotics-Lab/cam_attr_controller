@@ -28,7 +28,7 @@ int main(int argc, char** argv)
 
     // Load image
     // src = cv::imread(argv[1], 1);
-    img = cv::imread ("../../data/0410.png", 1);
+    img = cv::imread ("../../data/110_1.png", 1);
 	Mat resized;
 //	cv::resize (img, img, cv::Size(320, 240));
     if (!img.data) {

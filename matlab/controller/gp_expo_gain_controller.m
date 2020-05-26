@@ -18,7 +18,7 @@ else
     test_env = 'outdoor';
     time_array = [1, 15, 70, 90];   % [ms]
     time_itv = 0.00005; 
-    B = log(E* (0.00005+ (time_array.* time_itv)));
+    B = log(E* (0.00005 + (time_array.* time_itv)));
 end
 
 datapath = strcat('../data/', test_env, '_sample/');
@@ -42,19 +42,19 @@ expo_arr = expos(:);
 % initial_points = [sub2ind([13 59], 4, 10) sub2ind([13 59], 4, 30), ...
 %                   sub2ind([13 59], 10, 10) sub2ind([13 59], 10, 30), ...
 %                   sub2ind([13 39], 7, 20)];
-initial_points = [sub2ind([13 39], 13, 38) ];
+initial_points = [sub2ind([13 39], 1, 1) ];
 
 next_in = initial_points;
               
 psi = 0;
 
 for i = 1:length(initial_points)
-    [target_gain, target_expo_index] = ind2sub([13 59], initial_points(i));
+    [target_gain, target_expo_index] = ind2sub([13 39], initial_points(i));
     img_metric = extract_img_metric(true, o_img, target_expo_index, target_gain, crf);
     metrics(i) = img_metric;
 end
 
-for i = 1:6
+for i = 1:5
 %     idx = [next_in,  round(fidx*0.95)] % 38,50,26,8
 %     idx = [next_in,  next_in(1)+5] % 38,50,26,8 
     if length(next_in) > length(metrics)
@@ -67,7 +67,8 @@ for i = 1:6
     idx_train = [next_in];
     t_train = [expo_arr(idx_train), gain_arr(idx_train)]';
     y_train = metrics;
-    disp([num2str(i) ' train vals: ' num2str(expo_arr(idx_train(end))) ' / ' num2str(gain_arr(idx_train(end)))]);
+    disp([num2str(i) ' ' num2str(expo_arr(idx_train(end))) '  ' num2str(gain_arr(idx_train(end))) '  ' num2str(y_train(end)) '; ']);
+    
 
     tic;
     cfg = gp_cov_init ();
@@ -81,10 +82,10 @@ for i = 1:6
 
     [y_pred, var_pred] = gp_predict (t_pred, t_train, K, y_train', cfg);
     [vals, optimal_id] = max(y_pred);
-    toc;
+%     toc;
     
 %     selection by GPMI
-    alpha = 100; % 70 
+    alpha = 50; % 70 
     max_var = max(diag(var_pred));
     index_next = length(next_in) + 1;
     [next_in(index_next), psi, acq_func] = gpmi_optim(y_pred, var_pred, alpha, psi);
@@ -104,6 +105,15 @@ for i = 1:6
 %         break;
 %     end
 
+
+% data = csvread(strcat(datapath, '/our_data.csv'));
+% 
+% real = data(gain_arr(idx_train(end)), expo_arr(idx_train(end)))/2.5;
+% real_y = data(gain_arr(idx_train(:)), expo_arr(idx_train(:)))/2.5;
+% 
+% disp([num2str(i) '  ' num2str(expo_arr(idx_train(end))) '  ' num2str(gain_arr(idx_train(end))) '  ' num2str(real) ';  ']);
+%     
+
 end
 
 %%
@@ -112,19 +122,49 @@ y_selected = y_pred(optimal_id)
 
 optimal_expo = t_selected(1);
 optimal_gain = t_selected(2);
+
+
 [~, optimal_img] =  extract_img_metric(true, o_img, optimal_expo, optimal_gain, crf);
 
 if plot_optimal
     figure(222);
     clf;
-    s2 = surf(reshape(y_pred, size(expos)), 'FaceAlpha',0.85); xlabel('exposure'); ylabel('gain'); zlabel('EWG'); hold on;
+    s2 = surf(reshape(y_pred, size(expos)), 'FaceAlpha',0.7); xlabel('Exposure time'); ylabel('Gain'); zlabel('NEWG'); hold on;
     s2.EdgeColor = 'none';
-    plot3(t_selected(1), t_selected(2), y_selected, 'bo', 'LineWidth', 4); 
-%     figure(333);
-    plot3(t_train(1,:), t_train(2,:), y_train, 'rx', 'LineWidth', 3);
+%     colormap(bone)
 
+    p1 = plot3(t_selected(1), t_selected(2), y_selected  , 'ro', 'LineWidth', 5);
+%     figure(333);
+    p2 = plot3(t_train(1,:), t_train(2,:), y_train , 'kx', 'LineWidth', 5);
+    
+% data = csvread(strcat(datapath, '/our_data.csv'));
+% 
+% hold on
+% data = data/2.5;
+% caxis('manual');
+% surf(data, 'LineStyle', 'none')
+
+
+legend boxoff
+    for ii = 1:length(t_train(1,:) )
+        t = text(t_train(1,ii)-1.5, t_train(2,ii), 40, num2str(ii));
+        t.Color = [0 0 0];
+        t.FontSize = 20;
+    end
+    le = legend([p1 p2], 'Optimal point', 'Training points', 'Location', 'northeast', 'TextColor', 'b')
+    colorbar;
+    le.FontSize = 20;
+    legend boxoff
     view(2);
-%     axis([0 40 0 12 0 10])
+%     axis([0 40 0 15 0 40])
+%    colormap(bone)
+
+
+
+
+
+
+
 
 end
 

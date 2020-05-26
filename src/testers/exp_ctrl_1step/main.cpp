@@ -44,7 +44,6 @@ _prepare_save_dir ()
 
 void load_csv_from_file (ifstream& file_path, vector<VectorXd>& x_data) {
     string line;
-
     // Load data
     while(getline(file_path, line))
     {
@@ -112,7 +111,7 @@ int main(int argc, char *argv[])
         // camera grab for t0
         // image preparation
         cv::Mat init_img;
-        init_img = cv::imread ("../../data/indoor/1_4.png", 1);
+        init_img = cv::imread ("../../data/indoor_sample/1.png", 1);
 	    Mat resized;
         if (!init_img.data) {
             std::cout << "Error <path_to_image>" << std::endl;
@@ -121,7 +120,6 @@ int main(int argc, char *argv[])
         cvtColor(init_img, init_img, cv::COLOR_BGR2GRAY);
      
        while (!gpo.is_optimal()) { // GPO WHILE
-       
             if (gpo.evaluate (x, ewg)) {
                 cv::Mat synth_img_t_best, synth_img_g_best;
                 // Optimal attribute found. Break while loop.

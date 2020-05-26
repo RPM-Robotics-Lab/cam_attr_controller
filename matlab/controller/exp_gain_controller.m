@@ -12,8 +12,8 @@ global time_itv;    % exposure time interval
 
 global is_indoor;
 
-is_indoor =1;  % 0 for outdoor
-E = 100;  %mean(mean(img_series{1}))/2;-exclude saturated region\TODO
+is_indoor =0;  % 0 for outdoor
+E = 20;  %mean(mean(img_series{1}))/2;-exclude saturated region\TODO
 
 %% Configuration, Data load
 if (is_indoor)
@@ -26,7 +26,7 @@ seqs = 1:1;
 attr_list = zeros(66, 2);
 
 for i =  1:length(seqs)
-    o_img = imread(strcat(datapath,  '/1.png'));
+    o_img = imread(strcat(datapath,  '/0003.jpg'));
     if  size(o_img,3) > 1
         o_img = rgb2gray(o_img);
     end
@@ -36,7 +36,8 @@ for i =  1:length(seqs)
     imshow([o_img, opt_img]);
     title(strcat('frame: ', num2str(i), ' expo/gain: ', num2str(opt_expo), ' / ', num2str(opt_gain)));
     attr_list(i, :) = [opt_expo, opt_gain];
-   
     drawnow;
     
 end
+
+

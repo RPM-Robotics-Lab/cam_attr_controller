@@ -41,7 +41,7 @@ if (is_indoor)
     Sval = (mean(mean(Gmag))) *  2.5;
     Smask = Smask.*Sval;
 else
-    Sval = (mean(mean(Gmag))) *  2;
+    Sval = (mean(mean(Gmag))) *  2.5;
     Smask = Smask.*Sval;
 end    
 
@@ -52,6 +52,6 @@ gradient = sum(sum(Gmag));
 % Metric
 EWG = sum(sum(G_weight .* Gmag )) - saturation; 
 
-GsE= [gradient saturation  EWG]
+GsE= [gradient saturation  EWG];
 
 

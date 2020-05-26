@@ -14,7 +14,6 @@ Img_eval::syn_grab_and_return_ewg (cv::Mat &synth_img_g, Img_eval &eval, double 
 }
 
 
-
 double
 Img_eval::syn_grab_and_return_snr (cv::Mat &synth_img_g,  cv::Mat &synth_img_t, Img_eval &eval, double exp_t, double gain_t)
 {
@@ -22,7 +21,6 @@ Img_eval::syn_grab_and_return_snr (cv::Mat &synth_img_g,  cv::Mat &synth_img_t, 
 
     return snr;
 }
-
 
 
 void 
@@ -37,11 +35,10 @@ Img_eval::_synth_img_t (cv::Mat &init_img, double &next_exp, cv::Mat &synth_img_
     int t0 = 1000;      // initial expose time
     int exp_itv = 500;  // exposure interval 
     // irradiance E
-    int E = 100; 
-    double init_irr = log( E * (0.001 + 0 * (0.0005)));  // initial CRF = 2ms
+    int Etv = 20; 
+    double init_irr = log( Etv * (  (t0/pow(10, 6)) + 0 * (  (exp_itv/pow(10, 6))  )));  // initial CRF = 2ms
 //    double init_irr = log( E * (0.0005 + 0 * (0.00005)));  // initial CRF = 2ms
     double intensity_ratio ;
-
     // Search CRF and find minimum exposure time greater than t corr. init_irr
     int A;
     for(int i = 0; i < 255; i++){
@@ -53,7 +50,7 @@ Img_eval::_synth_img_t (cv::Mat &init_img, double &next_exp, cv::Mat &synth_img_
 
     int exp_step = ((int)next_exp - (int)t0) / exp_itv + 1; //exptime = 1000 + (i-1)*500;
 //    double syn_n_exp = init_irr + log(exp_step);
-    double syn_n_exp = log(E *  (0.001 + ((exp_step-1) * 0.0005))); // for indoor 
+    double syn_n_exp = log(Etv *  ((t0/pow(10, 6)) + ((exp_step-1) * (exp_itv/pow(10, 6))))); // for indoor 
 //    double syn_n_exp = log(E * (0.0005 + ((exp_step-1) * 0.00005))); // for outdoor 
     for(int k = 0; k < 255; k++){
         if(CRF[k] > syn_n_exp){ 
@@ -173,7 +170,7 @@ Img_eval::calc_img_ent_grad (cv::Mat &img, bool visualize)
 {
     // Convert to grayscale
     cvtColor(img, img, cv::COLOR_BGR2GRAY);
-    cv::resize (img, img, cv::Size(188, 120));
+    cv::resize (img, img, cv::Size(94, 60));
     cv::Mat entropy, grad ;
 	cv::Mat wmask(entropy.size(), CV_32F, 1.0); // ones
     img_entropy (img, entropy);
@@ -193,7 +190,7 @@ Img_eval::calc_img_ent_grad (cv::Mat &img, bool visualize)
     
 
 
-    double satparam = -2.5; //determine the satuation ratio
+    double satparam = -4.8; //determine the satuation ratio
 	Mat columnSum, mu;   
     img_columnSum (entropy, columnSum, mu);
 	Mat Smask = satparam * Gmean * wmask;  //Smask == Sval, how to - value
@@ -233,9 +230,10 @@ Img_eval::img_entropy (Mat &img, Mat &entropy)
     cv::Mat dst = Mat::zeros(img.rows, img.cols, CV_32F); // init with zero padded
 
     getLocalEntropyImage (img, roi, dst);
+//     std::cout << "Entropy:  " << dst <<std::endl;
     cv::normalize (dst, dst, 0, 1, cv::NORM_MINMAX);
     dst.convertTo (entropy, CV_32F, 1.0);
-    // std::cout << "Entropy:  " << entropy <<std::endl;
+
     //imshow("Entropy", entropy);
 }
 
@@ -431,8 +429,9 @@ Img_eval::getLocalEntropyImage (cv::Mat &gray, cv::Rect &roi, cv::Mat &entropy)
     entroy_table[0] = 0.0;
     float frequency = 0;
     for (int i = 1; i < 10; i++){  // 82, 50, 26, 10 
-        frequency = (float)i / 3;  // 9, 8, 5, 3 
+        frequency = (float)i / 9;  // 9, 8, 5, 3 
         entroy_table[i] = frequency * (log(frequency) / log2);
+
     }
 
     int neighbood_index;

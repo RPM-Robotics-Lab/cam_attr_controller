@@ -2,6 +2,7 @@ function [ metric, s_img] = extract_img_metric(is_newg, o_img, target_exp_index,
 %EXTRACT_IMG_METRIC Summary of this function goes here
 %   Detailed explanation goes here
 
+is_newg =1;
 
 [s_img, K_t, K_g] = img_synth (o_img, target_exp_index, target_gain, crf);
 
@@ -19,7 +20,7 @@ end
 EWG = calc_img_newg (s_img);
 if (is_newg)
     %% image metric evaluation with snr considered 
-    NEWG = EWG - Nsnr;
+    NEWG = EWG - Nsnr+ Nsnr;
     metric = NEWG;
 else
     %% image metric evaluation

@@ -232,7 +232,8 @@ void GPOptimize::find_query_point()
         var_diag_sq = var_diag_sq + tmp;
         tmp = sqrt(psi_)*VectorXd::Ones(n_pred);
         var_diag_sq = var_diag_sq.cwiseSqrt() - tmp;
-        var_diag_sq = sqrt(cfg_.alpha()) * var_diag_sq;
+        var_diag_sq = sqrt(cfg_.alpha()) * var_diag_sq;  //pi
+
         VectorXd acq_func = y_pred_ + var_diag_sq;
         // cout << "Acq func " << acq_func << endl;
         int index;
@@ -240,7 +241,7 @@ void GPOptimize::find_query_point()
         psi_ = psi_ + var_diag(index);
         query_exposure_ = x_pred_[index](0);
         query_index_ = index;
-//    cout << "cost = " << cost_ << endl;
+    cout << "psi = " << psi_  <<", mu  = " << y_pred_.maxCoeff() << ", var = " << var_diag.maxCoeff() << ", cost_ = " << cost_ << endl;
     }
 
     check_optimal();
@@ -268,13 +269,13 @@ MatrixXd GPOptimize::gp_cov_k_SE(VectorXd x_i, VectorXd x_j, double l, double s_
 
 void GPOptimize::check_optimal()
 {
-    double last_query = x_train_.back()(0);
+    double last_query   = x_train_.back()(0);
     double last_query_g = x_train_.back()(1);
     double last_query_m = y_train_.back()(0);
 //    cout << "["<< last_query*500 << ", " << last_query_g <<"] ," << last_query_m << "," << endl;
 
 //    if (abs(query_exposure_- last_query) < 1 || cost_ < 5 || iter_count_ > cfg_.num_iter()) {
-    if (cost_ < 90 || x_train_.size() > cfg_.num_iter())  {
+    if (cost_ < 50 || x_train_.size() > cfg_.num_iter())  {  //cost 90
 
 //        cout << "Now find optimal by "<< abs(query_exposure_ - last_query) << " / " << cost_ << " / " << iter_count_ << endl;
 //        cout << "q_exp = " << query_exposure_ *500 << ", last_exp =" << last_query *500 << endl;
