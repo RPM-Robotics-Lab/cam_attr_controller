@@ -1,10 +1,14 @@
 # Camera Attribute Controller
 camera attribute controller
 
-Proactive camera control scheme for two main attributes of the camera: exposure time (shutter speed) and gain control. Unlike existing approaches, this camera attributes control is formulated with optimization problems in which the underlying function is not known a priori.
+Proactive camera control scheme for two main attributes of the camera: exposure time (shutter speed) and gain control.
+
+Unlike existing approaches, this camera attributes control is formulated with optimization problems in which the underlying function is not known a priori.
 
 # Modules
-The overall procedure consists of three modules, (1) image synthesis, (2) metric evaluation, and (3) control module.
+The overall procedure consists of three modules, 
+
+(1) image synthesis, (2) metric evaluation, and (3) control module.
 
 ## Matlab
 
@@ -42,18 +46,27 @@ Image evaluation and camera attribute control library.
 ## Dependency
 
 ### Download OpenCV
-OpenCV 3.4.0 
+OpenCV 3.4.0
+ 
 mkdir opencv
+
 cd opencv
+
 wget -O opencv.zip https://github.com/opencv/opencv/archive/3.4.0.zip 
+
 wget -O opencv_contrib.zip https://github.com/opencv/opencv_contrib/archive/3.4.0.zip
+
 unzip opencv.zip
+
 unzip opencv_contrib.zip
+
 cd opencv-3.4.0
 
 ### Compile OpenCV
 mkdir build
+
 cd build
+
 cmake -D CMAKE_BUILD_TYPE=RELEASE \
 -D CMAKE_INSTALL_PREFIX=/usr/local \
 -D WITH_TBB=OFF \
@@ -83,16 +96,24 @@ cmake -D CMAKE_BUILD_TYPE=RELEASE \
 -D PYTHON3_PACKAGES_PATH=/usr/lib/python3/dist-packages \
 -D PYTHON3_LIBRARY=/usr/lib/x86_64-linux-gnu/libpython3.6m.so \
 ../
+
 make 
 ### Install OpenCV
 sudo make install
+
 sudo sh -c echo '/usr/local/lib/' > sudo /etc/ld.so.conf.d/opencv.conf
+
 sudo ldconfig
+
 ## Compile
 You can use the following commands to download and compile the package.
+
 mkdir build
+
 cd build
+
 cmake ..
+
 make
 
 
@@ -102,10 +123,17 @@ make
 ## Cite Camera Attribute Controller
 
 @ARTICLE{jwkim-2020-tro,
+
 author={J. {Kim} and Y. {Cho} and A. {Kim}},
+
 journal={IEEE Transactions on Robotics},
+
 title={Proactive Camera Attribute Control Using Bayesian Optimization for Illumination-Resilient Visual Navigation},
+
 year={2020},
+
 volume={},
+
 number={},
+
 pages={1-16},}
