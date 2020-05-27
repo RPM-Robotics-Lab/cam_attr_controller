@@ -4,20 +4,23 @@
 #include <ctime>
 #include <chrono>
 #include <string>
-#include<stdio.h> 
-#include<stdlib.h>
+#include <stdio.h> 
+#include <stdlib.h>
+#include <math.h>
 #include <boost/filesystem.hpp>
+
 #include <irp_gpgo++/gp_optimize.h>
 #include <irp_gpgo++/config.h>
+#include "irp-common/timestamp.h"
+#include "irp_imgeval++/img_eval.h"
+
 #include "Bluefox2Driver/bluefox2.h"
 #include "Bluefox2Driver/Bluefox2Config.h"
 #include "param_util.h"
 #include "lcmtypes++/bot_core/image_sync_t.hpp"
-#include "irp-common/timestamp.h"
 #include "Parser.h"
 #include "bot_util/BotUtils.h"
-#include "irp_imgeval++/img_eval.h"
-#include <math.h>
+
 using namespace boost::filesystem;
 using namespace std;
 using namespace mvIMPACT::acquire;

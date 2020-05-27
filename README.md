@@ -1,6 +1,6 @@
 # Proactive Camera Attribute Control using Bayesian Optimization
 
-This Github repo is for a proactive camera controller. We control two main camera attributes: exposure time (shutter speed) and gain simultaneously. The overall procedure consists of three modules, 
+This Github repo is for a proactive camera controller. We control two main camera attributes: exposure time (shutter speed) and gain simultaneously. The overall procedure consists of three modules,
 
 * image synthesis module
 * metric evaluation module
@@ -12,57 +12,54 @@ We provide Matlab and C/C++ code. Since this code is to control a camera, the co
 
 # Matlab
 
-1) controller
+Matlab folder contains the following subfolders.
 
-Run `exp_gain_controller` to run with sample images.
+* **controller**<br>
+  Run `exp_gain_controller` to run with sample images.
+* **synthetic**<br>
+  Run `run_synth_gen` to synthesize using a sample image.
+* **data**<br>
+  This folder contains sample images.
+* **fcns_synth** and **fcns_gp**<br>
+  These folders contain libraries to run camera control and synthesis.
 
-2) synthetic
+Matlab scripts illustrate how the algorithm works using sample images. In the Matlab examples, we do not ***control*** the camera.
 
-Run `run_synth_gen` to synthesize using a sample image.
+# C/C++
 
-3) Libraries: fcns_synth and fcns_gp
+To effectively use this camera controller, the algorithm should run begin coupled with the camera driver. In this sample code, we show how to use with Bluefox camera driver. Thus some code has a high dependency with the `Bluefox2Driver`, but you are welcome to adjust the code to couple with your own camera driver.
 
-## C/C++
-1) crf_fitting
+The `src` folder contains C/C++ code to run camera controller.
 
-Given four images, fit a CRF curve.
+* **crf_fitting**<br>
+  Given four images, we fit a CRF curve.
+* **gpgo**<br>
+  Using Gaussian Process Global Optimzer, compute optimal exposure time and gain.
+* **data_collector**<br>
+  Image collector using `Bluefox2Driver`.
+* **exp_ctrl**<br>
+  This contains the main executable camera exposure controller. Similar functionality as in tester code except it captures an image from the camera directly using `Bluefox2Driver`.
+* **irp_imgeval++** and **irp_gpgo++**<br>
+  Image evaluation and camera attribute control library.
 
-2) data_collector
 
-Image collector using Bluefox2Driver.
+## Dependency (Pre-installation)
 
-3) exp_ctrl
+### 1) OpenCV
 
-Main executable, camera exposure controller. Similar funcitonality as in tester code except it captures an image from the camera directly.
+We have tested the code using `OpenCV 3.4.0`. You can skip this steps if you have `OpenCV 3.4.0` or higher installed.
 
-4) gpgo
+```
+mkdir opencv
+cd opencv
+wget -O opencv.zip https://github.com/opencv/opencv/archive/3.4.0.zip
+wget -O opencv_contrib.zip https://github.com/opencv/opencv_contrib/archive/3.4.0.zip
+unzip opencv.zip
+unzip opencv_contrib.zip
+cd opencv-3.4.0
+```
 
-Using Gaussian Process Global Optimzer, compute optimal exposure time and gain.
-
-5) irp_imgeval++ and irp_gpgo++
-
-Image evaluation and camera attribute control library.
-
-## Dependency
-
-### Download OpenCV
-1) OpenCV 3.4.0
- 
-2) mkdir opencv
-
-3) cd opencv
-
-4) wget -O opencv.zip https://github.com/opencv/opencv/archive/3.4.0.zip 
-
-5) wget -O opencv_contrib.zip https://github.com/opencv/opencv_contrib/archive/3.4.0.zip
-
-6) unzip opencv.zip
-
-7) unzip opencv_contrib.zip
-
-8) cd opencv-3.4.0
-
-### Compile OpenCV
+Compile OpenCV
 
 ```
 mkdir build
@@ -96,27 +93,36 @@ cmake -D CMAKE_BUILD_TYPE=RELEASE \
 -D PYTHON3_PACKAGES_PATH=/usr/lib/python3/dist-packages \
 -D PYTHON3_LIBRARY=/usr/lib/x86_64-linux-gnu/libpython3.6m.so \
 ../
+make
 ```
 
-4) make 
-### Install OpenCV
-1) sudo make install
+Install OpenCV
 
-2) sudo sh -c echo '/usr/local/lib/' > sudo /etc/ld.so.conf.d/opencv.conf
+```
+sudo make install
+sudo sh -c echo '/usr/local/lib/' > sudo /etc/ld.so.conf.d/opencv.conf
+sudo ldconfig
+```
 
-3) sudo ldconfig
+### 2) Bluefox2Driver
 
-## Compile
+Goto third-party and install the driver.
+
+```
+cd third-party
+./install_mvBlueFOX.sh
+```
+
+## Camera Controller Compile and Installation
+
 You can use the following commands to download and compile the package.
 
-1) mkdir build
-
-2) cd build
-
-3) cmake ..
-
-4) make
-
+```
+mkdir build
+cd build
+cmake ..
+make
+```
 
 ## Testers (C/C++)
 
