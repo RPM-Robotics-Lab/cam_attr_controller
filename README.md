@@ -1,20 +1,16 @@
-# Camera Attribute Controller
-camera attribute controller
+# Proactive Camera Attribute Control using Bayesian Optimization
 
-Proactive camera control scheme for two main attributes of the camera: exposure time (shutter speed) and gain control.
+This Github repo is for a proactive camera controller. We control two main camera attributes: exposure time (shutter speed) and gain simultaneously. The overall procedure consists of three modules, 
 
-Unlike existing approaches, this camera attributes control is formulated with optimization problems in which the underlying function is not known a priori.
-
-# Modules
-The overall procedure consists of three modules, 
-
-(1) image synthesis, (2) metric evaluation, and (3) control module.
-
+* image synthesis module
+* metric evaluation module
+* control module module
 
 ![ezgif com-resize](https://user-images.githubusercontent.com/21049835/82980471-817de600-a024-11ea-9283-4f260c658ddb.gif)
 
+We provide Matlab and C/C++ code. Since this code is to control a camera, the code should be compiled together with the camera driver. In this sample code, we implement our controller code with Bluefox camera driver.
 
-## Matlab
+# Matlab
 
 1) controller
 
