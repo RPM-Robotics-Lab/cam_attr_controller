@@ -27,21 +27,20 @@ H_weight = norm_entropy / sum(sum(norm_entropy)); % optional
 
 % image Gradient
 [Gmag, Gdir] = imgradient(img,'sobel'); 
-Gmag = Gmag  / 4.4867;
 
 % Ours
 G_weight= Gmag >= (mean(mean(Gmag))) * 0.01 ;
 
 % Saturation weight
 Smask = uint8(zeros(size(img))) ;
-Sval = (mean(mean(Gmag))) *  2;
+Sval = (mean(mean(Gmag))) ;
 Smask(sub2ind([size(H)], rs, cs)) =255;
 
 if (is_indoor)
-    Sval = (mean(mean(Gmag))) *  2.5;
+    Sval = (mean(mean(Gmag))) ;
     Smask = Smask.*Sval;
 else
-    Sval = (mean(mean(Gmag))) *  2.5;
+    Sval = (mean(mean(Gmag))) ;
     Smask = Smask.*Sval;
 end    
 

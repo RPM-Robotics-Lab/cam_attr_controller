@@ -12,21 +12,24 @@ global time_itv;    % exposure time interval
 
 global is_indoor;
 
-is_indoor =0;  % 0 for outdoor
-E = 20;  %mean(mean(img_series{1}))/2;-exclude saturated region\TODO
+is_indoor = 0;  % 0 for outdoor
 
 %% Configuration, Data load
 if (is_indoor)
     datapath = '../data/indoor_sample';
+    E = 18;  %mean(mean(img_series{1}))/2;-exclude saturated region\TODO
+
 else
     datapath = '../data/outdoor_sample';
+    E = 180;  %mean(mean(img_series{1}))/2;-exclude saturated region\TODO
+
 end
 seqs = 1:1;
 
 attr_list = zeros(66, 2);
 
 for i =  1:length(seqs)
-    o_img = imread(strcat(datapath,  '/0003.jpg'));
+    o_img = imread(strcat(datapath,  '/1.png'));
     if  size(o_img,3) > 1
         o_img = rgb2gray(o_img);
     end

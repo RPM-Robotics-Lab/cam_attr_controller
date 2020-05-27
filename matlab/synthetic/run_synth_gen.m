@@ -21,18 +21,17 @@ plot_on = 1;
 is_indoor = 1;  % 0 for outdoor
 
 
-
-E = 100;  %mean(mean(img_series{1}))/2;-exclude saturated region\TODO
-
-% Desired exposure time and gain for synthesis (0.5 + 0.05*i) ms 
-
-target_exp_index = 1;
-target_gain = 1;   %[d3]
-
-
 if (is_indoor)
+    E = 18;  %mean(mean(img_series{1}))/2;-exclude saturated region\TODO
+    % Desired exposure time and gain for synthesis (0.5 + 0.05*i) ms 
+    target_exp_index = 20;
+    target_gain = 0;   %[d3]
     time_itv = 0.0005; 
 else 
+    E = 180;  %mean(mean(img_series{1}))/2;-exclude saturated region\TODO
+    % Desired exposure time and gain for synthesis (0.5 + 0.05*i) ms 
+    target_exp_index = 90;
+    target_gain = 0;   %[d3]end
     time_itv = 0.00005; 
 end
 
@@ -44,7 +43,7 @@ if (is_indoor)
     % time array samples (we use four samples) for CRF curve 
     time_array = [1, 18, 28, 38];   % [ms]
     % B = log(E*dt) for time array samples
-    B = log(E* (0.001+ ((time_array-1).* time_itv)))
+    B = log(E* (0.001+ ((time_array-1).* time_itv)));
     % Names of the images to be used, 1000, 9500, 14500, 195000 us
     images_names = {'indoor_sample/1.png' 
                     'indoor_sample/18.png'
@@ -124,7 +123,7 @@ EWG = calc_img_newg (s_img);
 %% image metric evaluation with snr considered 
 NEWG = EWG - Nsnr;
 
-fprintf('Synth_exp: %.2f [ms] \n' , (0.04 + 0.005*target_exp_index)  )
+fprintf('Synth_exp: %.3f [us] \n' , (0.001 + time_itv*target_exp_index)  )
 fprintf('synth_gain: %.1f [dB] \n', target_gain)
 fprintf('EWG : %.2f \n', EWG )
 fprintf('NEWG : %.2f \n', NEWG )
