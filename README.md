@@ -67,11 +67,11 @@ Image evaluation and camera attribute control library.
 8) cd opencv-3.4.0
 
 ### Compile OpenCV
-1) mkdir build
 
-2) cd build
-
-3) cmake -D CMAKE_BUILD_TYPE=RELEASE \
+```
+mkdir build
+cd build
+cmake -D CMAKE_BUILD_TYPE=RELEASE \
 -D CMAKE_INSTALL_PREFIX=/usr/local \
 -D WITH_TBB=OFF \
 -D WITH_IPP=OFF \
@@ -87,7 +87,7 @@ Image evaluation and camera attribute control library.
 -D WITH_GTK=ON \
 -D WITH_OPENGL=ON \
 -D OPENCV_EXTRA_MODULES_PATH=../../opencv_contrib-3.4.0/modules \
--D WITH_V4L=ON  \
+-D WITH_V4L=ON \
 -D WITH_FFMPEG=ON \
 -D WITH_XINE=ON \
 -D BUILD_NEW_PYTHON_SUPPORT=ON \
@@ -96,10 +96,11 @@ Image evaluation and camera attribute control library.
 -D PYTHON2_PACKAGES_PATH=/usr/lib/python2.7/dist-packages \
 -D PYTHON2_LIBRARY=/usr/lib/x86_64-linux-gnu/libpython2.7.so \
 -D PYTHON3_INCLUDE_DIR=/usr/include/python3.6m \
--D PYTHON3_NUMPY_INCLUDE_DIRS=/usr/lib/python3/dist-packages/numpy/core/include/  \
+-D PYTHON3_NUMPY_INCLUDE_DIRS=/usr/lib/python3/dist-packages/numpy/core/include/ \
 -D PYTHON3_PACKAGES_PATH=/usr/lib/python3/dist-packages \
 -D PYTHON3_LIBRARY=/usr/lib/x86_64-linux-gnu/libpython3.6m.so \
 ../
+```
 
 4) make 
 ### Install OpenCV
