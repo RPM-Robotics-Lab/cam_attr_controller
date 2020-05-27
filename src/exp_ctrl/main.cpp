@@ -4,7 +4,7 @@
 #include <ctime>
 #include <chrono>
 #include <string>
-#include <stdio.h> 
+#include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include <boost/filesystem.hpp>
@@ -28,7 +28,7 @@ using namespace ipms_param;
 
 int t0 = 1000;      // initial expose time
 double g0 = 0.0;    // 0.0 = initial gai
-int exp_itv = 500;  // exposure interval 
+int exp_itv = 500;  // exposure interval
 
 void
 _prepare_save_dir ()
@@ -37,22 +37,22 @@ _prepare_save_dir ()
     path save_path (str_save_path);
     if (!is_directory(save_path)) {
         if(boost::filesystem::create_directory(save_path)) {
-            cerr << "[ExpCtrl]\t Make a directory" << endl;   
-        }        
+            cerr << "[ExpCtrl]\t Make a directory" << endl;
+        }
     }
     string str_save_img_path("response_data/images");
     path save_img_path(str_save_img_path);
     if (!is_directory(save_img_path)) {
         if(boost::filesystem::create_directory(save_img_path)) {
-            cerr << "[ExpCtrl]\t Make a directory" << endl;   
-        }        
+            cerr << "[ExpCtrl]\t Make a directory" << endl;
+        }
     }
-    ofstream outFile;
+    std::ofstream outFile;
     string str_times("response_data/times.txt");
     outFile.open(str_times.c_str());
 }
 
-void load_csv_from_file (ifstream& file_path, vector<VectorXd>& x_data) {
+void load_csv_from_file (std::ifstream& file_path, vector<VectorXd>& x_data) {
     string line;
 
     // Load data
@@ -82,7 +82,7 @@ void load_csv_from_file (ifstream& file_path, vector<VectorXd>& x_data) {
 int
 main(int argc, char *argv[])
 {
-    ifstream file_path("../../data/exp_gain_table_index3.csv");
+    std::ifstream file_path("../../data/exp_gain_table_index3.csv");
     Bluefox2Parser parser;
     Img_eval eval;
     GPOptimize gpo;
@@ -90,7 +90,7 @@ main(int argc, char *argv[])
     string str_metric_times("result_data/metric_times.txt");
     string str_total_times("result_data/total_times.txt");
 
-    ofstream outFile, outFile2, outFile3;
+    std::ofstream outFile, outFile2, outFile3;
     outFile.open(str_times.c_str());
     outFile2.open(str_metric_times.c_str());
     outFile3.open(str_total_times.c_str());
@@ -114,20 +114,20 @@ main(int argc, char *argv[])
     cam_bluefox2.SetFPSandExposeTime (frameRate_Hz, init_expose);
     // take #2
     cam_bluefox2.SetExposeUs(init_expose);
-    cam_bluefox2.SetGainDB(init_gain); 
+    cam_bluefox2.SetGainDB(init_gain);
     bot_core::image_t tmp_img;
     // --------------------------------------------//
 
     // GP
     Config cfg(ls, s_f, s_n, AcqType::MAXMI, 50, num_iter); //var : 0.5
     vector<double> x_data_t, x_data_g;
-    vector<VectorXd> x_data;    
+    vector<VectorXd> x_data;
     load_csv_from_file(file_path, x_data);
     cout << "Data load done " << endl
          << "\t Data1: " << x_data.size() << endl;
     VectorXd x = x_data[0]; // current exposure (minimum exposure not good for initialize)
     int next_exp = init_expose;
-    double next_gain = init_gain;    
+    double next_gain = init_gain;
     int best_exposure = x_data[0](0); // for safety
     double best_gain = x_data[0](1);
     // set predict once before while
@@ -155,21 +155,21 @@ main(int argc, char *argv[])
         cvtColor(init_img, init_img, cv::COLOR_BGR2GRAY);
         // cv::resize (img, img, cv::Size(320, 240));
         int64_t time1 = timestamp_now();
-     
+
        while (!gpo.is_optimal()) { // GPO WHILE
-       
+
             if (gpo.evaluate (x, ewg)) {
                 // Optimal attribute found. Break while loop.
                 best_exposure = gpo.optimal_expose() * exp_itv ;
                 best_synth_index_t = (double)best_exposure;
-                best_gain = gpo.optimal_gain() -1;  
+                best_gain = gpo.optimal_gain() -1;
                 int64_t ctrl_diff = (timestamp_now()-time1) ;
                 double hz = 1/ ((double)ctrl_diff/1000000);
 //                std::cout<< ctrl_diff<< "[us], " << hz << "[hz] "<< endl;
                 eval._synth_img_t (init_img, best_synth_index_t, synth_img_t, false);
                 eval._synth_img_g (synth_img_t, best_gain, synth_img_g,  true);
-                
-            
+
+
                 cvtColor(synth_img_g, synth_img_g, cv::COLOR_GRAY2BGR);
                 ewg_opt = eval.syn_grab_and_return_ewg (synth_img_g, eval, best_exposure, best_gain);
 //                cout << "Best = " << best_synth_index_t <<", " << best_gain  << ", metric = " << ewg_opt << endl;
@@ -179,14 +179,14 @@ main(int argc, char *argv[])
 ////selective
 //            else if ( 0.7 < ((ewg_real/50)/ ewg_opt)  && ((ewg_real/50)/ ewg_opt) < 1.4)  {
 //                cout << "ratio = " << ewg_opt/ (ewg_real/50) << endl;
-//                break; 
+//                break;
 //            }
 ////selective//
 
 
             else {
 
-            int64_t time_ctrl = timestamp_now(); 
+            int64_t time_ctrl = timestamp_now();
                 int next_index = gpo.query_index();
                 x = x_data[next_index];
                 next_exp = x_data[next_index](0)  * exp_itv;
@@ -196,16 +196,16 @@ main(int argc, char *argv[])
             int64_t timesyn = timestamp_now();
                 eval._synth_img_t (init_img, next_synth_index_t, synth_img_t, false);
                 eval._synth_img_g (synth_img_t, next_gain, synth_img_g,  false);
-                
+
             int64_t synth_diff = (timestamp_now()-timesyn) ;
             double synhz = 1/ ((double)synth_diff/1000000);
 
-            int64_t timeeval = timestamp_now();            
+            int64_t timeeval = timestamp_now();
             cout << "synthetic time = " << synth_diff << "us" << ", " <<  synhz << "hz" <<endl;
                 cvtColor(synth_img_g, synth_img_g, cv::COLOR_GRAY2BGR);
                 ewg = eval.syn_grab_and_return_ewg (synth_img_g, eval, next_exp, next_gain);
-            int64_t eval_diff = timestamp_now() - timeeval; 
-            double evalhz =  1/ ((double)eval_diff/1000000);   
+            int64_t eval_diff = timestamp_now() - timeeval;
+            double evalhz =  1/ ((double)eval_diff/1000000);
             cout << "eval time = " << eval_diff << "us , " << evalhz <<"hz "<< endl;
 
 
@@ -241,7 +241,7 @@ main(int argc, char *argv[])
 
             bot_util::botimage_to_cvMat(&best_img_t, best_img);
             cvtColor(best_img, best_img, cv::COLOR_BGR2GRAY);
-            // show text 
+            // show text
             CvFont font;
             cvInitFont (&font, CV_FONT_HERSHEY_PLAIN, 2.0, 2.0, 0, 2, 8);
             CvScalar red = CV_RGB (255, 0, 0);
@@ -260,19 +260,19 @@ main(int argc, char *argv[])
 //            std::cout << "real ewg_= " << ewg_real / 50 <<  std::endl;
             if (!is_directory(save_path)) {
                 if(boost::filesystem::create_directory(save_path)) {
-                }        
+                }
             }
-        
-        int num_data = 0;     
+
+        int num_data = 0;
             for (int j=0; j<1; j++) {     // num capture img
                 stringstream ss_num_data;
                 ss_num_data << setw(5) << setfill('0') << num_data++;
                 string str_num_data(ss_num_data.str());
                 string str_time = std::to_string(timestamp_now());
-                
+
                 outFile << str_time <<  " " <<  (int)best_gain << " " << best_exposure_compensate_init << setprecision(5) << endl;
 
-                string fname1 = str_save_path + "/" + str_time + ".png"; 
+                string fname1 = str_save_path + "/" + str_time + ".png";
 //                string fname2 = str_save_path + "/2/" + str_time + ".png";
                 cv::imwrite(fname1, best_img);
 //                cv::imwrite(fname2, result);
@@ -282,11 +282,8 @@ main(int argc, char *argv[])
 //        printf ("ExpCtrl\tSet to %d. %d \n", best_exposure, (int)best_gain);
 
     } // main while
-    outFile.close();  
+    outFile.close();
     outFile2.close();
     outFile3.close();
     return 0;
 }
-
-
-

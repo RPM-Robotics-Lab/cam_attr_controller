@@ -4,7 +4,7 @@
 #include <ctime>
 #include <chrono>
 #include <string>
-#include <stdio.h> 
+#include <stdio.h>
 #include <stdlib.h>
 #include <boost/filesystem.hpp>
 #include <irp_gpgo++/gp_optimize.h>
@@ -18,7 +18,7 @@ using namespace ipms_param;
 
 int t0 = 1000;      // initial expose time
 double g0 = 0.0;    // 0.0 = initial gai
-int exp_itv = 500;  // exposure interval 
+int exp_itv = 500;  // exposure interval
 
 void
 _prepare_save_dir ()
@@ -27,22 +27,22 @@ _prepare_save_dir ()
     path save_path (str_save_path);
     if (!is_directory(save_path)) {
         if(boost::filesystem::create_directory(save_path)) {
-            cerr << "[ExpCtrl]\t Make a directory" << endl;   
-        }        
+            cerr << "[ExpCtrl]\t Make a directory" << endl;
+        }
     }
     string str_save_img_path("response_data/images");
     path save_img_path(str_save_img_path);
     if (!is_directory(save_img_path)) {
         if(boost::filesystem::create_directory(save_img_path)) {
-            cerr << "[ExpCtrl]\t Make a directory" << endl;   
-        }        
+            cerr << "[ExpCtrl]\t Make a directory" << endl;
+        }
     }
-    ofstream outFile;
+    std::ofstream outFile;
     string str_times("response_data/times.txt");
     outFile.open(str_times.c_str());
 }
 
-void load_csv_from_file (ifstream& file_path, vector<VectorXd>& x_data) {
+void load_csv_from_file (std::ifstream& file_path, vector<VectorXd>& x_data) {
     string line;
     // Load data
     while(getline(file_path, line))
@@ -70,11 +70,11 @@ void load_csv_from_file (ifstream& file_path, vector<VectorXd>& x_data) {
 
 int main(int argc, char *argv[])
 {
-    ifstream file_path("../../data/exp_gain_table_index1.csv");
+    std::ifstream file_path("../../data/exp_gain_table_index1.csv");
     Img_eval eval;
     GPOptimize gpo;
     string str_times("result_data/times.txt");
-    ofstream outFile;
+    std::ofstream outFile;
     outFile.open(str_times.c_str());
     // init
     int init_expose ;  // 1000us
@@ -87,13 +87,13 @@ int main(int argc, char *argv[])
     // GP
     Config cfg(ls, s_f, s_n, AcqType::MAXMI, 50, num_iter); //var : 0.5
     vector<double> x_data_t, x_data_g;
-    vector<VectorXd> x_data;    
+    vector<VectorXd> x_data;
     load_csv_from_file(file_path, x_data);
     cout << "Data load done " << endl
          << "\t Data1: " << x_data.size() << endl;
     VectorXd x = x_data[0]; // current exposure (minimum exposure not good for initialize)
     int next_exp = init_expose;
-    double next_gain = init_gain;    
+    double next_gain = init_gain;
     int best_exposure = x_data[0](0); // for safety
     double best_gain = x_data[0](1);
     // set predict once before while
@@ -118,12 +118,12 @@ int main(int argc, char *argv[])
         return -1;
         }
         cvtColor(init_img, init_img, cv::COLOR_BGR2GRAY);
-     
+
        while (!gpo.is_optimal()) { // GPO WHILE
             if (gpo.evaluate (x, ewg)) {
                 cv::Mat synth_img_t_best, synth_img_g_best;
                 // Optimal attribute found. Break while loop.
-                int best_index = gpo.optimal_index(); 
+                int best_index = gpo.optimal_index();
                 best_exposure = t0 + x_data[best_index](0)  * exp_itv - exp_itv;
                 best_gain= x_data[best_index](1)-1;
                 best_synth_index_t = (double)best_exposure ;
@@ -159,7 +159,7 @@ int main(int argc, char *argv[])
             // assing the found optimal gain and exposure time
             int best_exposure_compensate_init = best_exposure ;  // + 500
             // prepare opencv for visualize
-            // show text 
+            // show text
             CvFont font;
             cvInitFont (&font, CV_FONT_HERSHEY_PLAIN, 2.0, 2.0, 0, 2, 8);
             CvScalar red = CV_RGB (255, 0, 0);
@@ -174,9 +174,9 @@ int main(int argc, char *argv[])
             cv::waitKey();
             if (!is_directory(save_path)) {
                 if(boost::filesystem::create_directory(save_path)) {
-                }        
+                }
             }
-        int num_data = 0;     
+        int num_data = 0;
             for (int j=0; j<1; j++) {     // num capture img
                 stringstream ss_num_data;
                 ss_num_data << setw(5) << setfill('0') << num_data++;
@@ -186,9 +186,6 @@ int main(int argc, char *argv[])
         }
 
     } // main while
-    outFile.close();  
+    outFile.close();
     return 0;
 }
-
-
-

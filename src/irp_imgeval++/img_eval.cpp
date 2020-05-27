@@ -2,7 +2,7 @@
 #include <math.h>
 #include <iostream>
 #include<fstream>
-//TODO get synthtic imgs  
+//TODO get synthtic imgs
 
 
 double
@@ -23,19 +23,19 @@ Img_eval::syn_grab_and_return_snr (cv::Mat &synth_img_g,  cv::Mat &synth_img_t, 
 }
 
 
-void 
+void
 Img_eval::_synth_img_t (cv::Mat &init_img, double &next_exp, cv::Mat &synth_img_t, bool visualize)
 {
 
-// TODO : initially generate crf curve 
-    double CRF[256] = {-4.5241,-4.409,-4.2939,-4.1788,-4.0637,-3.9486,-3.8335,-3.7184,-3.6033,-3.4882,-3.3731,-3.2583,-3.1444,-3.0321,-2.9222,-2.8153,-2.7119,-2.6126,-2.5175,-2.4268,-2.3406,-2.2589,-2.1815,-2.1083,-2.0392,-1.9739,-1.9122,-1.8541,-1.7993,-1.7476,-1.6988,-1.6529,-1.6095,-1.5685,-1.5299,-1.4934,-1.4588,-1.4259,-1.3945,-1.3645,-1.3357,-1.3079,-1.281,-1.2549,-1.2296,-1.2049,-1.1807,-1.1571,-1.134,-1.1112,-1.0888,-1.0668,-1.0451,-1.0237,-1.0026,-0.9818,-0.96132,-0.94112,-0.92121,-0.9016,-0.88228,-0.86327,-0.84457,-0.82619,-0.80814,-0.7904,-0.77297,-0.75584,-0.73899,-0.72241,-0.70607,-0.68996,-0.67405,-0.65833,-0.64279,-0.62742,-0.61222,-0.59719,-0.58232,-0.56762,-0.55307,-0.53867,-0.52442,-0.51031,-0.49634,-0.48251,-0.4688,-0.45521,-0.44175,-0.42841,-0.41519,-0.40208,-0.38911,-0.37625,-0.36352,-0.35091,-0.33841,-0.32604,-0.31378,-0.30164,-0.28962,-0.27771,-0.26593,-0.25425,-0.24269,-0.23123,-0.21989,-0.20865,-0.19752,-0.1865,-0.1756,-0.16482,-0.15417,-0.14364,-0.13325,-0.12299,-0.11286,-0.10286,-0.092974,-0.083214,-0.073569,-0.064034,-0.054605,-0.045278,-0.036048,-0.026911,-0.017861,-0.008892,-1.3186e-10,0.0088179,0.017559,0.026222,0.03481,0.043329,0.051781,0.060173,0.068511,0.076796,0.08503,0.093215,0.10135,0.10943,0.11746,0.12544,0.13335,0.1412,0.14899,0.1567,0.16434,0.17191,0.1794,0.18683,0.19418,0.20147,0.2087,0.21585,0.22294,0.22996,0.23693,0.24384,0.2507,0.25751,0.26428,0.271,0.27767,0.28431,0.29089,0.29744,0.30395,0.31043,0.31688,0.3233,0.32969,0.33605,0.34239,0.34869,0.35496,0.36117,0.36734,0.37344,0.37949,0.38549,0.39143,0.39732,0.40317,0.40897,0.41472,0.42044,0.42613,0.43181,0.43747,0.44312,0.44876,0.45439,0.45999,0.46558,0.47115,0.4767,0.48222,0.48773,0.49321,0.49868,0.50413,0.50957,0.51498,0.52038,0.52576,0.53112,0.53647,0.5418,0.54713,0.55244,0.55773,0.56299,0.56822,0.5734,0.57855,0.58364,0.58867,0.59364,0.59855,0.6034,0.60818,0.61291,0.61759,0.62221,0.62678,0.63131,0.63579,0.64022,0.64464,0.64902,0.65338,0.65772,0.66202,0.6663,0.67057,0.67483,0.67909,0.68334,0.68759,0.69184,0.69609,0.70033,0.70457,0.70881,0.71304,0.71727,0.7215,0.72572,0.72995,0.73418,0.73842,0.74265,0.74688,1.4093}; 
+// TODO : initially generate crf curve
+    double CRF[256] = {-4.5241,-4.409,-4.2939,-4.1788,-4.0637,-3.9486,-3.8335,-3.7184,-3.6033,-3.4882,-3.3731,-3.2583,-3.1444,-3.0321,-2.9222,-2.8153,-2.7119,-2.6126,-2.5175,-2.4268,-2.3406,-2.2589,-2.1815,-2.1083,-2.0392,-1.9739,-1.9122,-1.8541,-1.7993,-1.7476,-1.6988,-1.6529,-1.6095,-1.5685,-1.5299,-1.4934,-1.4588,-1.4259,-1.3945,-1.3645,-1.3357,-1.3079,-1.281,-1.2549,-1.2296,-1.2049,-1.1807,-1.1571,-1.134,-1.1112,-1.0888,-1.0668,-1.0451,-1.0237,-1.0026,-0.9818,-0.96132,-0.94112,-0.92121,-0.9016,-0.88228,-0.86327,-0.84457,-0.82619,-0.80814,-0.7904,-0.77297,-0.75584,-0.73899,-0.72241,-0.70607,-0.68996,-0.67405,-0.65833,-0.64279,-0.62742,-0.61222,-0.59719,-0.58232,-0.56762,-0.55307,-0.53867,-0.52442,-0.51031,-0.49634,-0.48251,-0.4688,-0.45521,-0.44175,-0.42841,-0.41519,-0.40208,-0.38911,-0.37625,-0.36352,-0.35091,-0.33841,-0.32604,-0.31378,-0.30164,-0.28962,-0.27771,-0.26593,-0.25425,-0.24269,-0.23123,-0.21989,-0.20865,-0.19752,-0.1865,-0.1756,-0.16482,-0.15417,-0.14364,-0.13325,-0.12299,-0.11286,-0.10286,-0.092974,-0.083214,-0.073569,-0.064034,-0.054605,-0.045278,-0.036048,-0.026911,-0.017861,-0.008892,-1.3186e-10,0.0088179,0.017559,0.026222,0.03481,0.043329,0.051781,0.060173,0.068511,0.076796,0.08503,0.093215,0.10135,0.10943,0.11746,0.12544,0.13335,0.1412,0.14899,0.1567,0.16434,0.17191,0.1794,0.18683,0.19418,0.20147,0.2087,0.21585,0.22294,0.22996,0.23693,0.24384,0.2507,0.25751,0.26428,0.271,0.27767,0.28431,0.29089,0.29744,0.30395,0.31043,0.31688,0.3233,0.32969,0.33605,0.34239,0.34869,0.35496,0.36117,0.36734,0.37344,0.37949,0.38549,0.39143,0.39732,0.40317,0.40897,0.41472,0.42044,0.42613,0.43181,0.43747,0.44312,0.44876,0.45439,0.45999,0.46558,0.47115,0.4767,0.48222,0.48773,0.49321,0.49868,0.50413,0.50957,0.51498,0.52038,0.52576,0.53112,0.53647,0.5418,0.54713,0.55244,0.55773,0.56299,0.56822,0.5734,0.57855,0.58364,0.58867,0.59364,0.59855,0.6034,0.60818,0.61291,0.61759,0.62221,0.62678,0.63131,0.63579,0.64022,0.64464,0.64902,0.65338,0.65772,0.66202,0.6663,0.67057,0.67483,0.67909,0.68334,0.68759,0.69184,0.69609,0.70033,0.70457,0.70881,0.71304,0.71727,0.7215,0.72572,0.72995,0.73418,0.73842,0.74265,0.74688,1.4093};
 
 //    double CRF[256] ={-8.3864,-8.2303,-8.0742,-7.9182,-7.7621,-7.606,-7.4499,-7.2939,-7.1378,-6.9817,-6.8256,-6.6696,-6.5135,-6.3574,-6.2016,-6.0466,-5.8926,-5.7402,-5.5898,-5.4417,-5.2963,-5.1541,-5.0155,-4.8807,-4.7502,-4.6242,-4.5028,-4.3862,-4.2744,-4.1673,-4.065,-3.9672,-3.8738,-3.7845,-3.699,-3.6169,-3.5379,-3.4617,-3.388,-3.3165,-3.247,-3.1793,-3.1134,-3.0489,-2.9858,-2.9236,-2.8625,-2.8022,-2.7428,-2.6842,-2.6263,-2.5691,-2.5127,-2.4572,-2.4024,-2.3486,-2.2956,-2.2437,-2.1927,-2.1426,-2.0936,-2.0456,-1.9986,-1.9527,-1.9079,-1.8642,-1.8217,-1.7804,-1.7402,-1.7012,-1.6631,-1.6261,-1.5898,-1.5543,-1.5195,-1.4852,-1.4514,-1.418,-1.3848,-1.3518,-1.3189,-1.2861,-1.2534,-1.2207,-1.1881,-1.1554,-1.1227,-1.09,-1.0572,-1.0243,-0.9914,-0.9585,-0.9257,-0.8929,-0.8602,-0.8278,-0.7956,-0.7637,-0.7321,-0.7009,-0.6701,-0.6396,-0.6096,-0.5801,-0.5511,-0.5225,-0.4945,-0.4669,-0.4399,-0.4134,-0.3874,-0.362,-0.337,-0.3126,-0.2887,-0.2653,-0.2424,-0.2199,-0.1979,-0.1764,-0.1553,-0.1346,-0.1143,-0.0944,-0.0749,-0.0557,-0.0368,-0.0182,0,0.018,0.0356,0.0529,0.07,0.0868,0.1033,0.1195,0.1355,0.1512,0.1667,0.182,0.1971,0.212,0.2266,0.241,0.2551,0.2689,0.2825,0.2958,0.3089,0.3216,0.3341,0.3464,0.3585,0.3705,0.3822,0.3939,0.4054,0.4169,0.4282,0.4395,0.4507,0.4618,0.4728,0.4838,0.4946,0.5055,0.5162,0.527,0.5377,0.5484,0.5592,0.57,0.5808,0.5916,0.6025,0.6135,0.6245,0.6355,0.6467,0.6579,0.6692,0.6806,0.6922,0.7038,0.7157,0.7277,0.7399,0.7523,0.7649,0.7777,0.7907,0.8038,0.817,0.8302,0.8435,0.8568,0.8701,0.8834,0.8967,0.9101,0.9233,0.9365,0.9494,0.9622,0.9746,0.9869,0.9988,1.0105,1.0219,1.0329,1.0436,1.0541,1.0643,1.0743,1.0842,1.0939,1.1034,1.1128,1.122,1.1311,1.14,1.1489,1.1577,1.1666,1.1755,1.1845,1.1936,1.2027,1.2119,1.2211,1.2304,1.2399,1.2495,1.2593,1.2693,1.2794,1.2896,1.2998,1.3101,1.3203,1.3305,1.3408,1.351,1.3614,1.3718,1.3822,1.3927,1.4033,1.414,1.4247,1.4354,1.4462,1.457,1.4678,1.4785,3.1675};
 
     int t0 = 1000;      // initial expose time
-    int exp_itv = 500;  // exposure interval 
+    int exp_itv = 500;  // exposure interval
     // irradiance E
-    int Etv = 20; 
+    int Etv = 20;
     double init_irr = log( Etv * (  (t0/pow(10, 6)) + 0 * (  (exp_itv/pow(10, 6))  )));  // initial CRF = 2ms
 //    double init_irr = log( E * (0.0005 + 0 * (0.00005)));  // initial CRF = 2ms
     double intensity_ratio ;
@@ -50,10 +50,10 @@ Img_eval::_synth_img_t (cv::Mat &init_img, double &next_exp, cv::Mat &synth_img_
 
     int exp_step = ((int)next_exp - (int)t0) / exp_itv + 1; //exptime = 1000 + (i-1)*500;
 //    double syn_n_exp = init_irr + log(exp_step);
-    double syn_n_exp = log(Etv *  ((t0/pow(10, 6)) + ((exp_step-1) * (exp_itv/pow(10, 6))))); // for indoor 
-//    double syn_n_exp = log(E * (0.0005 + ((exp_step-1) * 0.00005))); // for outdoor 
+    double syn_n_exp = log(Etv *  ((t0/pow(10, 6)) + ((exp_step-1) * (exp_itv/pow(10, 6))))); // for indoor
+//    double syn_n_exp = log(E * (0.0005 + ((exp_step-1) * 0.00005))); // for outdoor
     for(int k = 0; k < 255; k++){
-        if(CRF[k] > syn_n_exp){ 
+        if(CRF[k] > syn_n_exp){
             int B = k;  // 6~~
             intensity_ratio = (double)B / (double)A;
 //    std::cout << "next_exp= " << syn_n_exp <<  ", " << next_exp<< ", " << exp_step << " A= " << A << ", B= " << B << ", Ratio= "<< intensity_ratio << std::endl;
@@ -63,8 +63,8 @@ Img_eval::_synth_img_t (cv::Mat &init_img, double &next_exp, cv::Mat &synth_img_
     }
 
     // for visualization
-    if (visualize) {     
-        // show text 
+    if (visualize) {
+        // show text
         CvFont font;
         cvInitFont (&font, CV_FONT_HERSHEY_PLAIN, 2.0, 2.0, 0, 2, 8);
         CvScalar red = CV_RGB (255, 0, 0);
@@ -83,14 +83,14 @@ Img_eval::_synth_img_t (cv::Mat &init_img, double &next_exp, cv::Mat &synth_img_
 }
 
 
-void 
+void
 Img_eval::_synth_img_g (cv::Mat &synth_img_t, double &next_gain, cv::Mat &synth_img_g, bool visualize)
 {
     double g0 = 0.0;    // 0.0 = initial gai
     double init_db = next_gain;
     double g_factor, gain_step;
-    gain_step = (init_db*1.23412)/20; 
-    g_factor = pow(7.01, gain_step); //factor = 7^((ii_g-1)/20); 
+    gain_step = (init_db*1.23412)/20;
+    g_factor = pow(7.01, gain_step); //factor = 7^((ii_g-1)/20);
     synth_img_g = synth_img_t * g_factor ; // Synth img along gain
 
     if (visualize) {
@@ -107,14 +107,14 @@ Img_eval::_synth_img_g (cv::Mat &synth_img_t, double &next_gain, cv::Mat &synth_
         cv::putText(result, str, Point(50,30), CV_FONT_HERSHEY_SIMPLEX, 1, CV_RGB(0,255,0), 2, 8);
         cv::imshow("synth_img_g", result);
         cv::waitKey(5);
-    }           
+    }
 }
 
 
-void 
+void
 Img_eval::CreatErf(vector<vector<double> > &res1)
 {
-	ifstream infile("/home/irap-dron/git/cam_attr_contoller/src/exp_tester/erf.txt");
+	std::ifstream infile("/home/irap-dron/git/cam_attr_contoller/src/exp_tester/erf.txt");
 	string line;
 	while (getline(infile,line)) // Read a line
 	{
@@ -130,7 +130,7 @@ Img_eval::CreatErf(vector<vector<double> > &res1)
 	infile.close();
 }
 
-void 
+void
 Img_eval::PrintErf(const vector<vector<double> > &res1) {
 	for (auto row : res1) {
 		for (auto evalue : row)
@@ -140,18 +140,18 @@ Img_eval::PrintErf(const vector<vector<double> > &res1) {
 }
 
 
-double 
+double
 Img_eval::getPSNR(const Mat& I1, const Mat& I2)
 {
     Mat s1;
     absdiff(I1, I2, s1);       // |I1 - I2|
     s1.convertTo(s1, CV_32F);  // cannot make a square on 8 bits
     s1 = s1.mul(s1);           // |I1 - I2|^2
-     
+
     Scalar s = sum(s1);         // sum elements per channel
-     
+
      double sse = s.val[0] + s.val[1] + s.val[2]; // sum channels
- 
+
         if( sse <= 1e-10) // for small values return zero
             return 0;
         else
@@ -181,17 +181,17 @@ Img_eval::calc_img_ent_grad (cv::Mat &img, bool visualize)
     double Gmean, Emean;
     img_Gmean (grad, Gmean);
     img_Emean (entropy, Emean);
-    
+
 	//printf("Gradient sss is %d %d \n", wcols, wrows) ;
- 	
+
 	Mat gradW = grad > Gmean * 0.01;
 	gradW *= 1;
     gradW.convertTo (gradW, CV_32F, 1.0 / 255.0);
-    
+
 
 
     double satparam = -4.8; //determine the satuation ratio
-	Mat columnSum, mu;   
+	Mat columnSum, mu;
     img_columnSum (entropy, columnSum, mu);
 	Mat Smask = satparam * Gmean * wmask;  //Smask == Sval, how to - value
     Mat Gour = ((gradW.mul(grad))+ Smask) ;
@@ -205,11 +205,11 @@ Img_eval::calc_img_ent_grad (cv::Mat &img, bool visualize)
     if (visualize) {
         cv::resize (img, img, cv::Size(752, 480));
 //	    cv::namedWindow("Original", cv::WINDOW_AUTOSIZE);
-	    cv::namedWindow("Entropy Mask", cv::WINDOW_AUTOSIZE);	
+	    cv::namedWindow("Entropy Mask", cv::WINDOW_AUTOSIZE);
 //	    cv::namedWindow("Entropy Filter", cv::WINDOW_AUTOSIZE);
 	    cv::namedWindow("Gradient Image", cv::WINDOW_AUTOSIZE);
 //	    cv::imshow("Original", img);
-	    cv::imshow("Entropy Mask", wmask);  //dst 
+	    cv::imshow("Entropy Mask", wmask);  //dst
 //	    cv::imshow("Entropy Filter", entropy);
 	    cv::imshow("Gradient Image",grad);
         /// Wait until user exits the program
@@ -237,10 +237,10 @@ Img_eval::img_entropy (Mat &img, Mat &entropy)
     //imshow("Entropy", entropy);
 }
 
-void 
+void
 Img_eval::img_wmask (Mat &entropy, Mat &wmask)
 {
-    // Create Entropy binary mask, wmask == [rs, cs] 
+    // Create Entropy binary mask, wmask == [rs, cs]
 	Mat wmasktmp1(entropy.size(), CV_32F, 0.);
     Mat wmasktmp2(entropy.size(), CV_32F, 0.);
 
@@ -248,10 +248,10 @@ Img_eval::img_wmask (Mat &entropy, Mat &wmask)
     Mat tmp1; // 1 1 1 ...
     wmasktmp1.convertTo(tmp1, CV_32F, 0.0/-255.0);
     wmask = tmp1;
-    wmasktmp2 = entropy <=  0.01; 
-    Mat tmp2; 
+    wmasktmp2 = entropy <=  0.01;
+    Mat tmp2;
     wmasktmp2.convertTo(tmp2, CV_32F, 1.0/255.0);
-    
+
     wmask = tmp2;
 }
 
@@ -272,46 +272,46 @@ Img_eval::img_grad (Mat &img, Mat &grad)
     // std::cout << "grad:  " << grad <<std::endl;
 }
 
-void 
+void
 Img_eval::img_Gmean (Mat &grad, double &Gmean)
 {
     int wrows = grad.rows;
-	int wcols = grad.cols; 
-	Gmean = sum(grad)[0]  / (wrows * wcols);  // mean(mean(Gmag))) 
+	int wcols = grad.cols;
+	Gmean = sum(grad)[0]  / (wrows * wcols);  // mean(mean(Gmag)))
 }
 
-void 
+void
 Img_eval::img_Emean (Mat &entropy, double &Emean)
 {
     int wrows = entropy.rows;
-	int wcols = entropy.cols; 
-	Emean = sum(entropy)[0] / (wrows * wcols); // mean(mean(J))) 
+	int wcols = entropy.cols;
+	Emean = sum(entropy)[0] / (wrows * wcols); // mean(mean(J)))
 }
 
 
-void 
+void
 Img_eval::img_columnSum (Mat &entropy, Mat &columnSum, Mat &mu)
 {
-    for (int i = 0; i<entropy.cols; i++)    
+    for (int i = 0; i<entropy.cols; i++)
 		columnSum.push_back(cv::sum(entropy.col(i))[0]);    // K
 
 	mu.push_back(cv::sum(columnSum)[0] / entropy.cols);  // mu cols=320
-    //	Mat sigma = pow((columnSum-mu),2)  / (entropy.cols); 
+    //	Mat sigma = pow((columnSum-mu),2)  / (entropy.cols);
 	Mat temp = columnSum-mu;
-		
+
 	Scalar std;
 	meanStdDev(columnSum, mu, std);
 	vector <Mat> HSV;
 	split(columnSum, HSV);
 }
 
-void 
+void
 Img_eval::img_Gours (Mat &Gour, Mat &Gourstmp1, Mat &Gourstmp2, double &Gours)
 {
 	for (int i=0; i<Gour.rows; i++)	{
 	    Gourstmp1.push_back(cv::sum(Gour.row(i))[0]);
 	}
-	
+
 	for (int j=0; j<Gourstmp1.cols; j++) {
     	Gourstmp2.push_back(cv::sum(Gourstmp1.col(j))[0]);
 	}
@@ -320,16 +320,16 @@ Img_eval::img_Gours (Mat &Gour, Mat &Gourstmp1, Mat &Gourstmp2, double &Gours)
 }
 
 
-// TODO normal pdf  normpdf equvalent !! 	
+// TODO normal pdf  normpdf equvalent !!
 //	const float ONE_OVER_SQRT_2PI = 0.39894228040143267793994605993438;
 //    std::cout << "Mean: kkk " << k <<std::endl;
 
-//	Mat normal_pdf(columnSum, mu.at<double>(0,0), std[0]); 
-//	{ 
+//	Mat normal_pdf(columnSum, mu.at<double>(0,0), std[0]);
+//	{
 //    return (ONE_OVER_SQRT_2PI/std)*exp(-0.5*squared((columnSum-mu)/std));
 //	}
 
-int 
+int
 Img_eval::sub_to_ind (int *coords, int *cumprod, int num_dims)
 {
     int index = 0;
@@ -348,7 +348,7 @@ Img_eval::sub_to_ind (int *coords, int *cumprod, int num_dims)
 
 
 
-void 
+void
 Img_eval::ind_to_sub (int p, int num_dims, const int size[],
                       int *cumprod, int *coords)
 {
@@ -364,7 +364,7 @@ Img_eval::ind_to_sub (int p, int num_dims, const int size[],
     }
 }
 
-void 
+void
 Img_eval::getLocalEntropyImage (cv::Mat &gray, cv::Rect &roi, cv::Mat &entropy)
 {
     using namespace cv;
@@ -424,12 +424,12 @@ Img_eval::getLocalEntropyImage (cv::Mat &gray, cv::Rect &roi, cv::Mat &entropy)
     //4.calculate entropy for pixel
     uchar *array = (uchar *)pad_src->data;
     //here,use entroy_table to avoid frequency log function which cost losts of time
-    float entroy_table[10];  // 9 = > 82 , 5 => 26, 3 => 10 
+    float entroy_table[10];  // 9 = > 82 , 5 => 26, 3 => 10
     const float log2 = log(2.0f);
     entroy_table[0] = 0.0;
     float frequency = 0;
-    for (int i = 1; i < 10; i++){  // 82, 50, 26, 10 
-        frequency = (float)i / 9;  // 9, 8, 5, 3 
+    for (int i = 1; i < 10; i++){  // 82, 50, 26, 10
+        frequency = (float)i / 9;  // 9, 8, 5, 3
         entroy_table[i] = frequency * (log(frequency) / log2);
 
     }
@@ -512,5 +512,3 @@ Img_eval::getLocalEntropyImage (cv::Mat &gray, cv::Rect &roi, cv::Mat &entropy)
 //        }
 //    }
 //}
-
-

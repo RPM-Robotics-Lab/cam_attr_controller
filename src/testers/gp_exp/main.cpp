@@ -4,7 +4,7 @@
 #include <irp_gpgo++/gp_optimize.h>
 #include <irp_gpgo++/config.h>
 
-void load_csv_from_file (ifstream& file_path, vector<double>& x_data, vector<double>& y_data) {
+void load_csv_from_file (std::ifstream& file_path, vector<double>& x_data, vector<double>& y_data) {
     string line;
 
     // Load data
@@ -40,8 +40,8 @@ int main(int argc, char** argv)
     double s_n = 10.0;
 
 //    ifstream file_path("/home/yg/svn/docs/papers/conferences/icra2018-jwkim/trunk/matlab/dat/38datar.csv");
-    ifstream file_path("../../data/090823a.csv");
-    ifstream file_path2("../../data/0909.csv");
+    std::ifstream file_path("../../data/090823a.csv");
+    std::ifstream file_path2("../../data/0909.csv");
     string line;
     vector<double> x_data, x_data2;
     vector<double> y_data, y_data2;

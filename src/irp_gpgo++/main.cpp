@@ -12,7 +12,7 @@ int main(int argc, char** argv)
     double l = 100;
     double s = 100;
 
-    ifstream file_path("/home/yg/svn/docs/papers/conferences/icra2018-jwkim/trunk/matlab/dat/38datar.csv");
+    std::ifstream file_path("/home/yg/svn/docs/papers/conferences/icra2018-jwkim/trunk/matlab/dat/38datar.csv");
     string line;
     vector<double> x_data;
     vector<double> y_data;

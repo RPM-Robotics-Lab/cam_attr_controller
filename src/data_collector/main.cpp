@@ -28,17 +28,17 @@ _prepare_save_dir ()
     path save_path (str_save_path);
     if (!is_directory(save_path)) {
         if(boost::filesystem::create_directory(save_path)) {
-            cerr << "[ExpCtrl]\t Make a directory" << endl;   
-        }        
+            cerr << "[ExpCtrl]\t Make a directory" << endl;
+        }
     }
     string str_save_img_path("response_data/images");
     path save_img_path(str_save_img_path);
     if (!is_directory(save_img_path)) {
         if(boost::filesystem::create_directory(save_img_path)) {
-            cerr << "[ExpCtrl]\t Make a directory" << endl;   
-        }        
+            cerr << "[ExpCtrl]\t Make a directory" << endl;
+        }
     }
-    ofstream outFile;
+    std::ofstream outFile;
     string str_times("response_data/times.txt");
     outFile.open(str_times.c_str());
 }
@@ -90,7 +90,7 @@ main(int argc, char *argv[])
 
     // to save images
     _prepare_save_dir ();
-    
+
     // main process start
     printf ("[ExpCtrl]\tStart to grab images.\n");
 
@@ -114,7 +114,7 @@ main(int argc, char *argv[])
 //    cv::imwrite(save_img_name, gray, compression_params);
 
     /*cam_bluefox2.SetExposeUs(init_expose);
-    cam_bluefox2.set_timeout_ms(200);    
+    cam_bluefox2.set_timeout_ms(200);
     cam_bluefox2.RequestSingle();
     bot_core::image_t tmp_img;
     cam_bluefox2.GrabImage(tmp_img);*/

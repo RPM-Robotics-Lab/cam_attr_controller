@@ -16,7 +16,7 @@ using namespace Eigen;
 //}
 
 
-void load_csv_from_file (ifstream& file_path, vector<double>& x_data, vector<double>& y_data) {
+void load_csv_from_file (std::ifstream& file_path, vector<double>& x_data, vector<double>& y_data) {
     string line;
 
     // Load data
@@ -40,7 +40,7 @@ void load_csv_from_file (ifstream& file_path, vector<double>& x_data, vector<dou
     }
 }
 
-void load_csv_from_file (ifstream& file_path, vector<VectorXd>& x_data, vector<double>& y_data) {
+void load_csv_from_file (std::ifstream& file_path, vector<VectorXd>& x_data, vector<double>& y_data) {
     string line;
 
     // Load data
@@ -88,8 +88,8 @@ int main(int argc, char** argv)
     int num_iter = 20;
 
 //    ifstream file_path("/home/yg/svn/docs/papers/conferences/icra2018-jwkim/trunk/matlab/dat/38datar.csv");
-    ifstream file_path("../../data/exp_gain.csv");
-    ifstream file_path2("../../data/exp_gain2.csv");
+    std::ifstream file_path("../../data/exp_gain.csv");
+    std::ifstream file_path2("../../data/exp_gain2.csv");
     string line;
     vector<VectorXd> x_data, x_data2;
     vector<double> y_data, y_data2;
