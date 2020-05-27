@@ -161,6 +161,10 @@ The main executable file is `exp_ctrl` while others are the testers.
 The main exposure (exposure time and gain) controller. It may crash because this binary assumes a bluefox camera is on the system.
 
 ```
+ln -s <your config> master.json
+
+ex) ln -s bluefox2-2122.json master.json
+
 ./exp_ctrl
 ```
 
