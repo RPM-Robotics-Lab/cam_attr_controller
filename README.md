@@ -148,4 +148,29 @@ cmake ..
 make
 ```
 
-## Testers (C/C++)
+## Running binary files
+
+The main executable file is `exp_ctrl` while others are the testers.
+
+### 1) exp_ctrl
+
+The main exposure (exposure time and gain) controller.
+
+### 2) exp_ctrl_1step
+
+
+### 3) crf_fitting
+
+```
+./crf_fitting
+```
+
+It uses ?? images in data folder to fit camera response function (CRF) and save ?result? at ?dir? in ?csv? format.
+
+### 4) gp_gain_tester
+
+### 5) gp_exp
+
+### 6) img_synthesizer
+
+### 7) img_evaluator
