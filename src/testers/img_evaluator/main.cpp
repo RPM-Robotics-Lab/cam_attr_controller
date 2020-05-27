@@ -23,9 +23,8 @@ int main(int argc, char** argv)
     }
     double ewg = eval.calc_img_ent_grad (eval_img, true);
 
-
-
     cout << "ewg = " << ewg << ", " << eval_img.size() << endl;
+    cv::resize (eval_img, eval_img, cv::Size(160, 120));
     cv::imshow("eval_img", eval_img);
     cv::waitKey();
 }

@@ -2,10 +2,10 @@
 libhandler_eigen3 ()
 
 # BUILD EXE
-add_executable (gp_exp
+add_executable (gp_exp_tester
     main.cpp
 )
-target_link_libraries (gp_exp
+target_link_libraries (gp_exp_tester
   irp_gpgo++
   ${IRPLIB_EIGEN3}
 )

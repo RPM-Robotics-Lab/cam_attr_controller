@@ -74,32 +74,19 @@ int main(int argc, char** argv)
                 Mat gainimg = etimg * g_factor; 
 
                 cvtColor(gainimg, gainimg, cv::COLOR_GRAY2BGR);
+                cv::resize (etimg, etimg, cv::Size(160, 120));
                 cv::imshow("gain img", gainimg);
                 cv::waitKey(10);
                 double gainewg = eval.calc_img_ent_grad (gainimg, true);
                 std::cout << exptime << " " << k  << " " << gainewg<< std::endl;  
             }
-
-            cv::imshow("etimg", etimg);
+            cv::resize (etimg, etimg, cv::Size(160, 120));
+            cv::imshow("exposure time img", etimg);
             cv::waitKey(10);
             cvtColor(etimg, etimg, cv::COLOR_GRAY2BGR);
             double etewg = eval.calc_img_ent_grad (etimg, true);
 //            std::cout << "Computed entropy weighted etewg = " << etewg << std::endl;
             break;
-//            double snr = eval.getPSNR (img, img); 
-//            Mat noise_img = img; 
-//            snr = eval.getPSNR (img, noise_img); 
-//            cv::imshow("Noisy", noise_img);
-
-            char str[30];
-            snprintf (str, sizeof str, "%d", 100);
-            cv::namedWindow("best", cv::WINDOW_AUTOSIZE);
-            cv::Mat result;
-            cv::cvtColor(img, result, cv::COLOR_GRAY2BGR);
-            cv::putText(result, str, Point(100,50), CV_FONT_HERSHEY_SIMPLEX, 1, CV_RGB(255,0,0), 2, 8);
-            cv::imshow("best", result);
-            cv::waitKey(0);
-
             return 0;
                         
             }
