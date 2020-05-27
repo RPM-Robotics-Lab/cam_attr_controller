@@ -113,6 +113,18 @@ cd third-party
 ./install_mvBlueFOX.sh
 ```
 
+Also you need to install lcm since our
+
+```
+unzip lcm-1.4.0.zip
+cd lcm-1.4.0/
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+```
+
 ## Camera Controller Compile and Installation
 
 You can use the following commands to download and compile the package.

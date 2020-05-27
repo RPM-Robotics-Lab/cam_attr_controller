@@ -2,3 +2,4 @@ CMakeLists.txt.user
 build
 config/master.json
 *~
+third-party/lcm-1.4.0/
