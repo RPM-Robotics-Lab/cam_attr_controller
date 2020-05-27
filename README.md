@@ -10,6 +10,10 @@ The overall procedure consists of three modules,
 
 (1) image synthesis, (2) metric evaluation, and (3) control module.
 
+
+![ezgif com-resize](https://user-images.githubusercontent.com/21049835/82980471-817de600-a024-11ea-9283-4f260c658ddb.gif)
+
+
 ## Matlab
 
 1) controller
@@ -46,28 +50,28 @@ Image evaluation and camera attribute control library.
 ## Dependency
 
 ### Download OpenCV
-OpenCV 3.4.0
+1) OpenCV 3.4.0
  
-mkdir opencv
+2) mkdir opencv
 
-cd opencv
+3) cd opencv
 
-wget -O opencv.zip https://github.com/opencv/opencv/archive/3.4.0.zip 
+4) wget -O opencv.zip https://github.com/opencv/opencv/archive/3.4.0.zip 
 
-wget -O opencv_contrib.zip https://github.com/opencv/opencv_contrib/archive/3.4.0.zip
+5) wget -O opencv_contrib.zip https://github.com/opencv/opencv_contrib/archive/3.4.0.zip
 
-unzip opencv.zip
+6) unzip opencv.zip
 
-unzip opencv_contrib.zip
+7) unzip opencv_contrib.zip
 
-cd opencv-3.4.0
+8) cd opencv-3.4.0
 
 ### Compile OpenCV
-mkdir build
+1) mkdir build
 
-cd build
+2) cd build
 
-cmake -D CMAKE_BUILD_TYPE=RELEASE \
+3) cmake -D CMAKE_BUILD_TYPE=RELEASE \
 -D CMAKE_INSTALL_PREFIX=/usr/local \
 -D WITH_TBB=OFF \
 -D WITH_IPP=OFF \
@@ -97,24 +101,24 @@ cmake -D CMAKE_BUILD_TYPE=RELEASE \
 -D PYTHON3_LIBRARY=/usr/lib/x86_64-linux-gnu/libpython3.6m.so \
 ../
 
-make 
+4) make 
 ### Install OpenCV
-sudo make install
+1) sudo make install
 
-sudo sh -c echo '/usr/local/lib/' > sudo /etc/ld.so.conf.d/opencv.conf
+2) sudo sh -c echo '/usr/local/lib/' > sudo /etc/ld.so.conf.d/opencv.conf
 
-sudo ldconfig
+3) sudo ldconfig
 
 ## Compile
 You can use the following commands to download and compile the package.
 
-mkdir build
+1) mkdir build
 
-cd build
+2) cd build
 
-cmake ..
+3) cmake ..
 
-make
+4) make
 
 
 ## Testers (C/C++)
