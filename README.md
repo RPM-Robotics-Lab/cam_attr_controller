@@ -161,43 +161,53 @@ The main exposure (exposure time and gain) controller.
 
 ### 2) exp_ctrl_1step
 
+Using captured images, control exposure for a single image.
+
 ```
 ./exp_ctrl_1step
 ```
-Example of exposure controller applied to a single image.
 
 ### 3) crf_fitting
+
+Example of generating camera response function (CRF) and saved in csv format.
 
 ```
 ./crf_fitting
 ```
-Example of generating camera response function (CRF) and saved in csv format.
 
- 
 ### 4) gp_gain_tester
 
+Test GP based controller for camera gain.
 ```
 ./gp_gain_tester
 ```
-Example control for camera gain.
 
-### 5) gp_exp_tester 
 
+### 5) gp_exp_tester
+
+Test GP based controller for camera exposure time.
 ```
 ./gp_exp_tester
 ```
-Example control for camera exposure time.
 
 ### 6) img_synthesizer
 
+Example of creating synthetic images for exposure time and gain. By running, it shows image synthesizing process.
 ```
-./img_synthesizer
+./img_synthesizer <image filename>
 ```
-Example of creating synthetic images for exposure time and gain.
+For example, you can run with the sample data attached.
+```
+./img_synthesizer ../../data/3.png
+```
 
 ### 7) img_evaluator
 
 ```
-./img_evaluator
+./img_evaluator <image filename>
 ```
-Metric evaluation through image gradient and entropy.
+It shows evaluation metric computed from image gradient and entropy.
+
+```
+./img_evaluator ../../data/3.png
+```
