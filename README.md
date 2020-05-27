@@ -155,6 +155,10 @@ The main executable file is `exp_ctrl` while others are the testers.
 ### 1) exp_ctrl
 
 ```
+ln -s <your config> master.json
+
+ex) ln -s bluefox2-2122.json master.json
+
 ./exp_ctrl
 ```
 The main exposure (exposure time and gain) controller.
