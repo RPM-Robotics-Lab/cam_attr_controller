@@ -10,6 +10,10 @@ This Github repo is for a proactive camera controller. We control two main camer
 
 We provide Matlab and C/C++ code. Since this code is to control a camera, the code should be compiled together with the camera driver. In this sample code, we implement our controller code with Bluefox camera driver.
 
+In the experiment, we have used a sensor rig consists of three bluefox cameras ().
+
+<img src="camrig.jpg" alt="camrig" width="50%"/>
+
 Cite our work via
 
 > @ARTICLE{jwkim-2020-tro,<br>
@@ -154,10 +158,13 @@ The main executable file is `exp_ctrl` while others are the testers.
 
 ### 1) exp_ctrl
 
+The main exposure (exposure time and gain) controller. It may crash because this binary assumes a bluefox camera is on the system.
+
 ```
 ./exp_ctrl
 ```
-The main exposure (exposure time and gain) controller.
+
+We have included our `master.json` file for the bluefox camera.
 
 ### 2) exp_ctrl_1step
 
@@ -203,11 +210,7 @@ For example, you can run with the sample data attached.
 
 ### 7) img_evaluator
 
+It shows evaluation metric computed from image gradient and entropy.
 ```
 ./img_evaluator <image filename>
-```
-It shows evaluation metric computed from image gradient and entropy.
-
-```
-./img_evaluator ../../data/3.png
 ```
