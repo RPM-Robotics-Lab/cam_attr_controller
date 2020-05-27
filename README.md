@@ -10,6 +10,18 @@ This Github repo is for a proactive camera controller. We control two main camer
 
 We provide Matlab and C/C++ code. Since this code is to control a camera, the code should be compiled together with the camera driver. In this sample code, we implement our controller code with Bluefox camera driver.
 
+Cite our work via
+
+> @ARTICLE{jwkim-2020-tro,<br>
+> author={J. Kim and Y. Cho and A. Kim},<br>
+> journal={IEEE Transactions on Robotics},<br>
+> title={Proactive Camera Attribute Control Using Bayesian Optimization for Illumination-Resilient Visual Navigation},<br>
+> year={2020},<br>
+> note={Accepted. In print.}}
+
+The author version of the paper can be downloaded in this [link](https://irap.kaist.ac.kr/index.php/Main/Publication?action=bibentry&bibfile=ref.bib&bibref=jwkim-2020-tro).
+
+
 # Matlab
 
 Matlab folder contains the following subfolders.
@@ -113,7 +125,7 @@ cd third-party
 ./install_mvBlueFOX.sh
 ```
 
-Also you need to install lcm since our
+Also you need to install lcm since our driver relies on [lcm](https://lcm-proj.github.io/).
 
 ```
 unzip lcm-1.4.0.zip
@@ -137,22 +149,3 @@ make
 ```
 
 ## Testers (C/C++)
-
-
-## Cite Camera Attribute Controller
-
-@ARTICLE{jwkim-2020-tro,
-
-author={J. {Kim} and Y. {Cho} and A. {Kim}},
-
-journal={IEEE Transactions on Robotics},
-
-title={Proactive Camera Attribute Control Using Bayesian Optimization for Illumination-Resilient Visual Navigation},
-
-year={2020},
-
-volume={},
-
-number={},
-
-pages={1-16},}
