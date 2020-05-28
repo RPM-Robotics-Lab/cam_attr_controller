@@ -122,12 +122,21 @@ sudo ldconfig
 
 ### 2) Bluefox2Driver
 
-Goto third-party and install the driver.
+In this README, we assume that you are using a [Bluefox camera](https://www.matrix-vision.com/USB2.0-single-board-camera-with-housing-mvbluefox-igc.html?camera=mvBlueFOX-IGC200wG&col=1&row=cmos) (`mvBlueFOX-IGC200wG`). The source code is not compilable without the Bluefox camera driver. However, the controller scheme is totally general for all cameras as long as they allow attribute control. If you are using a different camera, please modify the code accordingly and make it installable without Bluefox driver.
+
+To install Bluefox driver, go to third-party and install the driver.
 
 ```
 cd third-party
 ./install_mvBlueFOX.sh
 ```
+
+To check if the driver is properly installed, you can run the viewer provided with the driver.
+
+```
+wxPropView
+```
+### 3) LCM
 
 Also you need to install lcm since our driver relies on [lcm](https://lcm-proj.github.io/).
 
@@ -158,11 +167,17 @@ The main executable file is `exp_ctrl` while others are the testers.
 
 ### 1) exp_ctrl
 
-The main exposure (exposure time and gain) controller. It may crash because this binary assumes a bluefox camera is on the system. First, prepare your config file.
+The main exposure (exposure time and gain) controller. It may crash because this binary assumes a bluefox camera is on the system. Again in this README, we are assuming the camera is Bluefox. First, prepare your config file.
 
 ```
 cd config
 ln -s bluefox2-2122.json master.json
+```
+
+In the configuration setup,`expose_us` determines the initial seed image for the camera controller. We found that `5000` for outdoor and `1000` for indoor works okay. Depending on your target environment, you might want to adjust this initial exposure time. The default is `5000`.
+
+```
+"expose_us": 5000,
 ```
 
 Then run the binary file.
