@@ -16,12 +16,16 @@ In the experiment, we have used a sensor rig consists of three bluefox cameras (
 
 Cite our work via
 
-> @ARTICLE{jwkim-2020-tro,<br>
-> author={J. Kim and Y. Cho and A. Kim},<br>
-> journal={IEEE Transactions on Robotics},<br>
-> title={Proactive Camera Attribute Control Using Bayesian Optimization for Illumination-Resilient Visual Navigation},<br>
-> year={2020},<br>
-> note={Accepted. In print.}}
+Joowan Kim, Younggun Cho and Ayoung Kim, Proactive Camera Attribute Control using Bayesian Optimization for Illumination-Resilient Visual Navigation. IEEE Transactions on Robotics, 2020.
+
+```
+@ARTICLE{jwkim-2020-tro,
+         author={J. Kim and Y. Cho and A. Kim},
+         journal={IEEE Transactions on Robotics},
+         title={Proactive Camera Attribute Control Using Bayesian Optimization for Illumination-Resilient Visual Navigation},
+         year={2020},
+         note={Accepted. In print.}}
+```
 
 The author version of the paper can be downloaded in this [link](https://irap.kaist.ac.kr/index.php/Main/Publication?action=bibentry&bibfile=ref.bib&bibref=jwkim-2020-tro).
 
